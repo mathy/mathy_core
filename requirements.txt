@@ -1,4 +1,4 @@
-# Core library
+numpy
 colr
 srsly
 pydantic>=1.0.0
