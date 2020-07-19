@@ -1,24 +1,14 @@
 <p align="center">
-  <a href="https://mathy.ai"><img mathy-logo src="https://mathy.ai/img/mathy_logo.png" alt="Mathy.ai"></a>
-</p>
-<p align="center">
-    <em>Solve math problems with machine learning and planning algorithms.</em>
-</p>
-<p align="center">
-<a href="https://github.com/justindujardin/mathy/actions">
-    <img src="https://github.com/justindujardin/mathy/workflows/Build/badge.svg" />
+<a href="https://github.com/mathy/mathy_core/actions">
+    <img src="https://github.com/mathy/mathy_core/workflows/Build/badge.svg" />
 </a>
-<a href="https://codecov.io/gh/justindujardin/mathy">
-    <img src="https://codecov.io/gh/justindujardin/mathy/branch/master/graph/badge.svg?token=CqPEOdEMJX" />
+<a href="https://codecov.io/gh/mathy/mathy_core">
+    <img src="https://codecov.io/gh/mathy/mathy_core/branch/master/graph/badge.svg" />
 </a>
-<a href="https://pypi.org/project/mathy" target="_blank">
-    <img src="https://badge.fury.io/py/mathy.svg" alt="Package version">
-</a>
-<a href="https://gitter.im/justindujardin/mathy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge" target="_blank">
-    <img src="https://badges.gitter.im/justindujardin/mathy.svg" alt="Join the chat at https://gitter.im/justindujardin/mathy">
+<a href="https://pypi.org/project/mathy_core" target="_blank">
+    <img src="https://badge.fury.io/py/mathy_core.svg" alt="Package version">
 </a>
 </p>
-
 
 ## Website
 
@@ -40,6 +30,7 @@ Mathy wouldn't be possible without the wonderful contributions of the following 
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
