@@ -1,0 +1,89 @@
+{
+  "name": "mathy_core",
+  "version": "0.7.14",
+  "description": "making math fantastic",
+  "keywords": [
+    "math"
+  ],
+  "author": "Justin DuJardin <justin@dujardinconsulting.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/justindujardin/mathy"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@semantic-release/changelog": "^5.0.0",
+    "@semantic-release/git": "^9.0.0",
+    "@semantic-release/github": "^7.0.5",
+    "@types/node": "^13.1.1",
+    "all-contributors-cli": "^6.11.2",
+    "minimist": "^1.2.5",
+    "semantic-release": "^17.0.0",
+    "stream-buffers": "^3.0.2",
+    "ts-node": "^8.0.2",
+    "typescript": "^3.0.3"
+  },
+  "release": {
+    "plugins": [
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "preset": "angular",
+          "releaseRules": [
+            {
+              "breaking": true,
+              "release": "minor"
+            },
+            {
+              "revert": true,
+              "release": "patch"
+            },
+            {
+              "type": "feat",
+              "release": "patch"
+            },
+            {
+              "type": "fix",
+              "release": "patch"
+            },
+            {
+              "type": "perf",
+              "release": "patch"
+            }
+          ],
+          "parserOpts": {
+            "noteKeywords": [
+              "BREAKING CHANGE",
+              "BREAKING CHANGES"
+            ]
+          }
+        }
+      ],
+      "@semantic-release/release-notes-generator",
+      [
+        "@semantic-release/changelog",
+        {
+          "changelogFile": "libraries/website/docs/changelog.md"
+        }
+      ],
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "mathy_core/about.py",
+            "package.json"
+          ],
+          "message": "chore(release): ${nextRelease.version} \n\n${nextRelease.notes}"
+        }
+      ],
+      "@semantic-release/github"
+    ]
+  },
+  "peerDependencies": {},
+  "scripts": {
+    "semantic-release": "semantic-release"
+  },
+  "publishConfig": {
+    "access": "restricted"
+  }
+}
