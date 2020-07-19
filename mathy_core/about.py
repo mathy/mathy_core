@@ -1,5 +1,5 @@
 __title__ = "mathy_core"
-__version__ = "0.7.15"
+__version__ = "0.7.16"
 __summary__ = "mathy_core - Computer Algebra System for generating and manipulating expression trees from text inputs"
 __uri__ = "https://mathy.ai"
 __author__ = "Justin DuJardin"
