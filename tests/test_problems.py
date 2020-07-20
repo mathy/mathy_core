@@ -1,7 +1,7 @@
 import random
 from typing import List, Optional
 
-from mathy_core.expressions import MathExpression
+from mathy_core import MathExpression
 from mathy_core.parser import ExpressionParser
 from mathy_core.problems import (
     gen_simplify_multiple_terms,

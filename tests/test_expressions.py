@@ -1,13 +1,13 @@
 import pytest
 
-from mathy_core.parser import ExpressionParser
-from mathy_core.expressions import (
+from mathy_core import (
     AbsExpression,
     AddExpression,
     BinaryExpression,
     ConstantExpression,
     DivideExpression,
     EqualExpression,
+    ExpressionParser,
     FunctionExpression,
     MathExpression,
     MultiplyExpression,
