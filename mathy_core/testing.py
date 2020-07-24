@@ -26,7 +26,7 @@ def get_rule_tests(name):
     expected inputs and outputs.
     """
     rule_file = (
-        Path(__file__).parent.parent / "tests" / "rules" / "{}.json".format(name)
+        Path(__file__).parent / "tests" / "rules" / "{}.json".format(name)
     )
     if not rule_file.is_file() is True:
         raise ValueError(f"does not exist: {rule_file}")
