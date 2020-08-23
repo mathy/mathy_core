@@ -83,3 +83,17 @@ def test_problems_variable_sharing_unlike_terms() -> None:
     # Assert there are terms with and without exponents for this var
     assert found_var is not None
     assert found_exp is True
+
+
+def test_problems_noise_grouping_terms() -> None:
+    """Verify that the polynomial generation functions return matches that include
+    non-standard grouping of terms, in order to force the agents to commute different
+    tree configurations, rather than relying on say always commuting the 3rd node.
+
+    Standard grouping is: "4x + x^3 + 2x + 7y"
+    Grouped first two terms: "(4x + x^3) + 2x + 7y"
+    Grouped second and third terms: "4x + (x^3 + 2x) + 7y"
+    """
+    for _ in range(100):
+        problem, _ = gen_simplify_multiple_terms(6, grouping_noise_probability=1.0)
+        assert "(" in problem and ")" in problem

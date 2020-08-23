@@ -168,6 +168,7 @@ class ExpressionParser:
     def _parse(self, tokens: List[Token]) -> MathExpression:
         """Parse a given list of tokens into an expression tree"""
         self.tokens = tokens
+        self._all_tokens = tokens[:]
         self.current_token = Token("", TokenNone)
         if not self.next():
             raise InvalidExpression("Cannot parse an empty function")
@@ -180,6 +181,7 @@ class ExpressionParser:
 
         if leftover != "":
             raise TrailingTokens("Trailing characters: {}".format(leftover))
+        self._all_tokens = None
         return expression
 
     def parse_equal(self) -> MathExpression:
@@ -260,8 +262,8 @@ class ExpressionParser:
 
             if not expected or right is None:
                 raise InvalidSyntax(
-                    "Expected an expression after * or / operator, got: {}".format(
-                        opValue
+                    "Expected an expression after * or / operator, got: {}\nFull input: {}".format(
+                        opValue, [f.value for f in self._all_tokens]
                     )
                 )
 
