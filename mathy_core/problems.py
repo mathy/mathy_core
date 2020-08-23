@@ -296,6 +296,7 @@ def gen_simplify_multiple_terms(
     noise_probability: float = 0.8,
     shuffle_probability: float = 0.66,
     share_var_probability: float = 0.5,
+    grouping_noise_probability: float = 0.66,
     noise_terms: int = None,
 ) -> Tuple[str, int]:
     """Generate a polynomial problem with like terms that need to be combined and
@@ -310,6 +311,7 @@ def gen_simplify_multiple_terms(
     `mathy:2a + 3j - 7b + 17.2a + j`
     """
     power_prob_percent = powers_probability * 100
+    use_grouping_noise = rand_bool(grouping_noise_probability * 100) is True
     num_like_terms = max(2, int(num_terms * inner_terms_scaling))
     use_noise = rand_bool(noise_probability * 100) is True
     if num_terms <= 1:
@@ -338,7 +340,7 @@ def gen_simplify_multiple_terms(
 
     complexity = num_terms
 
-    # Repeat enough times to satisfy max_terms
+    # Repeat enough times to satisfy max_terms and trim
     term_templates *= num_terms
     term_templates = term_templates[0:num_terms]
 
@@ -380,13 +382,28 @@ def gen_simplify_multiple_terms(
             return random.choice(op)
         return op
 
+    group_start = group_end = -1
+    if use_grouping_noise:
+        half_point = max(len(term_templates) // 2, 1)
+        group_start = random.randint(0, half_point - 1)
+        group_end = random.randint(half_point, len(term_templates) - 1)
+        assert group_start < group_end
+        assert group_start != group_end
     root_term = term_templates.pop(0)
-    result = f"{rand_number()}{root_term}"
-    for other_var in term_templates:
-        # other_var = term_templates[i]
+    result = f"{maybe_number()}{root_term}"
+    if use_grouping_noise and group_start == 0:
+        result = f"({result}"
+    for i, other_var in enumerate(term_templates):
         if optional_var and rand_bool(optional_var_probability * 100) is False:
             other_var = ""
-        result += f" {get_op()} {rand_number()}{other_var}"
+        coefficient = rand_number() if other_var == "" else maybe_number()
+        term = f"{coefficient}{other_var}"
+        if use_grouping_noise:
+            if i + 1 == group_start:
+                term = f"({term}"
+            elif i + 1 == group_end:
+                term = f"{term})"
+        result += f" {get_op()} {term}"
     return result, complexity
 
 
