@@ -1,11 +1,10 @@
 import os
-import random
 from pathlib import Path
-from typing import Dict, List, Optional, Set
-import numpy as np
+from typing import Optional, Set
+
 import typer
-from tqdm.auto import tqdm
 from mathy.problems import rand_number
+from tqdm.auto import tqdm
 
 
 def generate_problems(

@@ -16,12 +16,10 @@ from .tokenizer import (
     Token,
     TokenCloseParen,
     TokenConstant,
-    TokenContext,
     TokenDivide,
     TokenEOF,
     TokenEqual,
     TokenExponent,
-    TokenFactorial,
     TokenFunction,
     Tokenizer,
     TokenMinus,
@@ -64,7 +62,7 @@ class TrailingTokens(ParserException):
 
 class TokenSet:
     """TokenSet objects are bitmask combinations for checking to see
-    if a token is part of a valid set. """
+    if a token is part of a valid set."""
 
     tokens: int
 
@@ -421,10 +419,10 @@ class ExpressionParser:
 
     def check(self, tokens) -> bool:
         """Check if the `self.current_token` is a member of a set Token types
-        
+
         Args:
             - `tokens` The set of Token types to check against
-        
+
         `Returns` True if the `current_token`'s type is in the set else False"""
 
         return tokens.contains(self.current_token.type)

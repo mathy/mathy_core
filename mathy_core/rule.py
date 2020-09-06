@@ -1,4 +1,5 @@
-from typing import Optional, List
+from typing import List, Optional
+
 from .expressions import MathExpression
 from .tree import STOP
 from .util import is_debug_mode

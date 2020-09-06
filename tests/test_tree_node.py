@@ -48,7 +48,7 @@ def test_tree_node_clone():
 def test_tree_node_is_leaf():
 
     """check that the known extremes of a tree are reported as leaf nodes
-    and that all other known non - extremes are not. """
+    and that all other known non - extremes are not."""
     tree = BinarySearchTree(0)
     for i in range(-1, 6):
         tree.insert(i)
@@ -61,7 +61,7 @@ def test_tree_node_is_leaf():
 def test_tree_node_rotate():
     """test to ensure that rotations do not compromise the search tree
     by randomly rotating nodes and verifying that all known numbers can
-    still be found. """
+    still be found."""
     tree = BinarySearchTree(0)
     values = []
     for i in range(-5, 6):

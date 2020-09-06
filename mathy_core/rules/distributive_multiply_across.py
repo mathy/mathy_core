@@ -1,9 +1,9 @@
 from ..expressions import (
     AddExpression,
-    MultiplyExpression,
     ConstantExpression,
-    VariableExpression,
+    MultiplyExpression,
     PowerExpression,
+    VariableExpression,
 )
 from ..rule import BaseRule
 from ..util import unlink

@@ -1,10 +1,10 @@
 from ..expressions import (
     AddExpression,
-    MultiplyExpression,
     ConstantExpression,
-    VariableExpression,
-    PowerExpression,
     MathExpression,
+    MultiplyExpression,
+    PowerExpression,
+    VariableExpression,
 )
 from ..rule import BaseRule
 

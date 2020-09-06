@@ -2,12 +2,15 @@ import os
 import random
 from pathlib import Path
 from typing import Dict, List, Optional, Set
-import numpy as np
-import typer
-from tqdm.auto import tqdm
 
+import typer
 from mathy import ExpressionParser, MathExpression, TermEx, get_term_ex, get_terms
-from mathy.problems import gen_simplify_multiple_terms, mathy_term_string, use_pretty_numbers
+from mathy.problems import (
+    gen_simplify_multiple_terms,
+    mathy_term_string,
+    use_pretty_numbers,
+)
+from tqdm.auto import tqdm
 
 parser = ExpressionParser()
 
@@ -83,7 +86,7 @@ def main(
     max_len: int = 128,
     include_eval: bool = True,
     include_generalization: bool = True,
-    pretty:bool = False
+    pretty: bool = False,
 ):
 
     use_pretty_numbers(pretty)
@@ -104,7 +107,11 @@ def main(
     if include_generalization:
         print(f"Generating generalization dataset with {eval_size} examples...")
         generate_newline_q_a(
-            generalization_file, eval_size, seen_texts, max_len=max_len, eval=True,
+            generalization_file,
+            eval_size,
+            seen_texts,
+            max_len=max_len,
+            eval=True,
         )
 
 

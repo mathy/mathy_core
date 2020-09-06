@@ -1,21 +1,8 @@
-from typing import List, Optional, Tuple
+from typing import Optional, Tuple
 
-from ..expressions import (
-    AddExpression,
-    MathExpression,
-    MultiplyExpression,
-    SubtractExpression,
-)
+from ..expressions import AddExpression, MultiplyExpression, SubtractExpression
 from ..rule import BaseRule
-from ..util import (
-    TermEx,
-    factor_add_terms_ex,
-    get_term_ex,
-    is_add_or_sub,
-    make_term,
-    terms_are_like,
-    unlink,
-)
+from ..util import TermEx, factor_add_terms_ex, get_term_ex, make_term
 
 
 class DistributiveFactorOutRule(BaseRule):

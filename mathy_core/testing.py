@@ -5,14 +5,6 @@ from typing import Type
 from .parser import ExpressionParser
 from .rule import BaseRule
 from .util import compare_expression_string_values, compare_expression_values
-from .rules import (
-    AssociativeSwapRule,
-    CommutativeSwapRule,
-    ConstantsSimplifyRule,
-    DistributiveFactorOutRule,
-    DistributiveMultiplyRule,
-    VariableMultiplyRule,
-)
 
 
 def get_rule_tests(name):
@@ -22,12 +14,10 @@ def get_rule_tests(name):
     name (str): The name of the test JSON file to open, e.g. "commutative_property"
 
     # Returns
-    (dict): A dictionary with "valid" and "invalid" keys that contain pairs of 
+    (dict): A dictionary with "valid" and "invalid" keys that contain pairs of
     expected inputs and outputs.
     """
-    rule_file = (
-        Path(__file__).parent / "tests" / "rules" / "{}.json".format(name)
-    )
+    rule_file = Path(__file__).parent / "tests" / "rules" / "{}.json".format(name)
     if not rule_file.is_file() is True:
         raise ValueError(f"does not exist: {rule_file}")
     with open(rule_file, "r") as file:
@@ -42,7 +32,7 @@ def init_rule_for_test(example: dict, rule_class: Type[BaseRule]) -> BaseRule:
 
     # Arguments:
     example (dict): The example assertion loaded from a call to `get_rule_tests`
-    rule_class (Type[BaseRule]): The 
+    rule_class (Type[BaseRule]): The
 
     # Returns
     (BaseRule): The rule instance.
@@ -79,7 +69,9 @@ def run_rule_tests(name, rule_class, callback=None):
             targets = [n.raw for n in nodes]
             node = [n for n in nodes if n.raw == target]
             targets = "\n".join(targets)
-            assert len(node) > 0, f"could not find target: {target}. targets are:\n{targets}"
+            assert (
+                len(node) > 0
+            ), f"could not find target: {target}. targets are:\n{targets}"
             node = node[0]
         else:
             node = rule.find_node(expression)

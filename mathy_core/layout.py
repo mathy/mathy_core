@@ -29,7 +29,10 @@ class TreeLayout:
         return self.transform(node, 0, unit_x_multiplier, unit_y_multiplier)
 
     def measure(
-        self, node: BinaryTreeNode = None, level=0, extremes: "TidierExtreme" = None,
+        self,
+        node: BinaryTreeNode = None,
+        level=0,
+        extremes: "TidierExtreme" = None,
     ) -> "TreeLayout":
         if extremes is None:
             extremes = TidierExtreme()
@@ -220,4 +223,3 @@ class TreeMeasurement:
         self.height = 0
         self.centerX = 0
         self.centerY = 0
-

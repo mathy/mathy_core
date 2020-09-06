@@ -4,7 +4,8 @@
 Utility functions for helping generate input problems.
 """
 import random
-from typing import Tuple, Optional, Union, List
+from typing import List, Optional, Tuple, Union
+
 from pydantic import BaseModel, Field
 
 operators = list("+*")
@@ -111,7 +112,7 @@ def maybe_power(percent_chance=80, max_power=4, or_else=""):
 
 
 def use_pretty_numbers(enabled: bool = True):
-    """Determine if problems should include only pretty numbers or 
+    """Determine if problems should include only pretty numbers or
     a whole range of integers and floats. Using pretty numbers will
     restrict the numbers that are generated to integers between 1 and
     12. When not using pretty numbers, floats and large integers will

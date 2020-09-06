@@ -34,7 +34,7 @@ def test_expressions_get_children():
 def test_expressions_type_id_abstract():
     expr = MathExpression()
     with pytest.raises(NotImplementedError):
-        cool_var = expr.type_id
+        expr.type_id
 
 
 def test_expressions_evaluate_abstract():
@@ -56,7 +56,7 @@ def test_expressions_add_class():
 def test_expressions_clear_classes():
     expr = VariableExpression("x")
     expr.add_class("as_string")
-    math_ml = expr.to_math_ml()
+    expr.to_math_ml()
     assert "as_string" in expr.classes
     expr.clear_classes()
     assert "as_string" not in expr.classes
@@ -125,7 +125,7 @@ def test_expressions_unary_specify_child_side():
 
 
 def test_expressions_unary_evaluate_errors():
-    child = ConstantExpression(1337)
+    ConstantExpression(1337)
     expr = UnaryExpression(None)
     with pytest.raises(ValueError):
         expr.evaluate()

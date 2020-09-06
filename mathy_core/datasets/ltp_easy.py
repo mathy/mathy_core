@@ -2,21 +2,12 @@
 import os
 import random
 from pathlib import Path
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Optional, Set, Tuple
 
-import numpy as np
 import typer
+from mathy import ExpressionParser
+from mathy.problems import MathyTermTemplate, get_rand_term_templates
 from tqdm.auto import tqdm
-
-from mathy import ExpressionParser, MathExpression, TermEx, get_term_ex, terms_are_like
-from mathy.problems import (
-    MathyTermTemplate,
-    gen_simplify_multiple_terms,
-    get_rand_term_templates,
-    mathy_term_string,
-    rand_bool,
-    rand_op,
-)
 
 parser = ExpressionParser()
 
@@ -124,7 +115,11 @@ def main(
     if include_generalization:
         print(f"Generating generalization dataset with {eval_size} examples...")
         generate_newline_q_a(
-            generalization_file, eval_size, seen_texts, max_len=max_len, eval=True,
+            generalization_file,
+            eval_size,
+            seen_texts,
+            max_len=max_len,
+            eval=True,
         )
 
 

@@ -1,5 +1,4 @@
-import math
-from typing import Dict, List, Optional, Tuple, Type, Union, cast, TypeVar
+from typing import Dict, List, Optional, Tuple, Type, TypeVar, Union, cast
 
 import numpy as np
 from colr import color
@@ -67,7 +66,7 @@ NodeType = TypeVar("NodeType", bound="MathExpression")
 
 class MathExpression(BinaryTreeNode):
     """Math tree node with helpers for manipulating expressions.
-    
+
     `mathy:x+y=z`
     """
 
@@ -151,7 +150,7 @@ class MathExpression(BinaryTreeNode):
     def add_class(self, classes) -> "MathExpression":
         """Associate a class name with an expression. This class name will be
         attached to nodes when the expression is converted to a capable output
-        format.  
+        format.
 
         See #MathExpression.to_math_ml_fragment"""
         if type(classes) == str:
@@ -190,7 +189,7 @@ class MathExpression(BinaryTreeNode):
         """Find an expression in this tree by type.
 
         - instanceType: The type to check for instances of
-        
+
         Returns the found #MathExpression objects of the given type.
         """
         results = []
@@ -292,8 +291,8 @@ class MathExpression(BinaryTreeNode):
 
     def clone(self) -> "MathExpression":
         """A specialization of the clone method that can track and report a cloned
-        subtree node. 
-        
+        subtree node.
+
         See #MathExpression.clone_from_root for more details."""
         result = super().clone()
         if self.cloned_target is not None and self.path_to_root() == self.cloned_target:

@@ -1,9 +1,7 @@
 import math
-from pathlib import Path
-from typing import Any, Dict, List, NamedTuple, Optional, Tuple, Union, cast
+from typing import Any, Dict, List, NamedTuple, Optional, Union, cast
 
 import numpy as np
-from pydantic import BaseModel
 from wasabi import TracebackPrinter
 
 from .expressions import (
@@ -22,6 +20,7 @@ from .parser import ExpressionParser
 from .tree import LEFT
 from .types import Literal
 
+
 def is_debug_mode() -> bool:
     """Debug mode enables extra logging and assertions, but is slower."""
     return False
@@ -39,7 +38,9 @@ def compare_expression_string_values(
 
 
 def raise_with_history(
-    title: str, description: str, history: Optional[List[Any]] = None,
+    title: str,
+    description: str,
+    history: Optional[List[Any]] = None,
 ):
     import traceback
 
@@ -81,7 +82,9 @@ def compare_expression_values(
 
     if sorted_from != sorted_to:
         raise_with_history(
-            "Unique variables changed", f"{sorted_from} != {sorted_to}", history,
+            "Unique variables changed",
+            f"{sorted_from} != {sorted_to}",
+            history,
         )
 
     # Generate random values for each variable, and then evaluate the expressions
@@ -107,8 +110,8 @@ def compare_expression_values(
 def unlink(node: Optional[MathExpression] = None) -> Optional[MathExpression]:
     """Unlink an expression from it's parent.
 
-      1. Clear expression references in `parent`
-      2. Clear `parent` in expression
+    1. Clear expression references in `parent`
+    2. Clear `parent` in expression
     """
 
     if node is None:
@@ -263,7 +266,7 @@ def is_preferred_term_form(expression: MathExpression) -> bool:
     and the coefficient on the left side
 
     Examples
-    
+
       - Complex   = 2 * 2x^2
       - Simple    = x^2 * 4
       - Preferred = 4x^2
@@ -637,7 +640,7 @@ def factor_add_terms_ex(left_term: TermEx, right_term: TermEx) -> FactorResult:
 def get_terms(expression: MathExpression) -> List[MathExpression]:
     """Walk the given expression tree and return a list of nodes
     representing the distinct terms it contains.
-    
+
     # Arguments
     expression (MathExpression): the expression to find term nodes in
 
@@ -710,7 +713,7 @@ def terms_are_like(
 
 def pad_array(in_list: List[Any], max_length: int, value: Any = 0) -> List[Any]:
     """Pad a list to the given size with the given padding value.
-    
+
     # Arguments:
     in_list (List[Any]): List of values to pad to the given length
     max_length (int): The desired length of the array
@@ -735,7 +738,9 @@ def print_error(error, text, print_error=True):
         tb=traceback.extract_tb(error.__traceback__),
     )
     caught_at = TracebackPrinter(tb_base=".", tb_range_start=-15, tb_range_end=-1)(
-        f"Error: {text}", f"Caught at:", tb=traceback.extract_stack(),
+        f"Error: {text}",
+        f"Caught at:",
+        tb=traceback.extract_stack(),
     )
 
     if print_error:

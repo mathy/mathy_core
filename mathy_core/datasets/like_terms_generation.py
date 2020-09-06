@@ -8,17 +8,16 @@ OUT: 4x[SEP]-7x
 """
 import os
 import random
-from pathlib import Path
-from typing import Dict, List, Optional, Set
-from mathy.expressions import SubtractExpression
 from collections import OrderedDict
-from mathy.tree import LEFT, RIGHT
-import numpy as np
-import typer
-from tqdm.auto import tqdm
+from pathlib import Path
+from typing import List, Optional, Set
 
+import typer
 from mathy import ExpressionParser, MathExpression, TermEx, get_term_ex, get_terms
+from mathy.expressions import SubtractExpression
 from mathy.problems import gen_simplify_multiple_terms, mathy_term_string
+from mathy.tree import RIGHT
+from tqdm.auto import tqdm
 
 parser = ExpressionParser()
 
@@ -122,7 +121,11 @@ def main(
     if include_generalization:
         print(f"Generating generalization dataset with {eval_size} examples...")
         generate_newline_q_a(
-            generalization_file, eval_size, seen_texts, max_len=max_len, eval=True,
+            generalization_file,
+            eval_size,
+            seen_texts,
+            max_len=max_len,
+            eval=True,
         )
 
 
