@@ -74,6 +74,7 @@ class MathExpression(BinaryTreeNode):
     left: Optional["MathExpression"]
     right: Optional["MathExpression"]
     parent: Optional["MathExpression"]
+    r_index: Optional[int]
 
     @property
     def raw(self) -> str:
@@ -107,7 +108,7 @@ class MathExpression(BinaryTreeNode):
     _changed: bool
     classes: List[str]
     cloned_node: Optional["MathExpression"]
-    cloned_target: str
+    cloned_target: Optional[str]
 
     def __init__(
         self,
