@@ -1,5 +1,5 @@
-from ..expressions import AddExpression, MultiplyExpression
-from ..rule import BaseRule
+from ..expressions import AddExpression, MathExpression, MultiplyExpression
+from ..rule import BaseRule, ExpressionChangeRule
 
 
 class AssociativeSwapRule(BaseRule):
@@ -33,7 +33,7 @@ class AssociativeSwapRule(BaseRule):
     def code(self) -> str:
         return "AG"
 
-    def can_apply_to(self, node) -> bool:
+    def can_apply_to(self, node: MathExpression) -> bool:
         if isinstance(node.parent, AddExpression) and isinstance(node, AddExpression):
             return True
 
@@ -44,7 +44,7 @@ class AssociativeSwapRule(BaseRule):
 
         return False
 
-    def apply_to(self, node):
+    def apply_to(self, node: MathExpression) -> ExpressionChangeRule:
         change = super().apply_to(node)
         node.rotate()
         node.set_changed()

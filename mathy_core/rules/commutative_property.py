@@ -1,3 +1,5 @@
+from typing import Optional
+
 from ..expressions import (
     AddExpression,
     ConstantExpression,
@@ -6,7 +8,7 @@ from ..expressions import (
     PowerExpression,
     VariableExpression,
 )
-from ..rule import BaseRule
+from ..rule import BaseRule, ExpressionChangeRule
 
 
 class CommutativeSwapRule(BaseRule):
@@ -29,19 +31,19 @@ class CommutativeSwapRule(BaseRule):
     """
     preferred: bool
 
-    def __init__(self, preferred=True):
+    def __init__(self, preferred: bool = True):
         # If false, terms that are in preferred order will not commute
         self.preferred = preferred
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "Commutative Swap"
 
     @property
-    def code(self):
+    def code(self) -> str:
         return "CS"
 
-    def can_apply_to(self, node: MathExpression):
+    def can_apply_to(self, node: MathExpression) -> bool:
         # Must be an add/multiply
         if isinstance(node, AddExpression):
             return True
@@ -57,7 +59,7 @@ class CommutativeSwapRule(BaseRule):
                 # UNLESS it is within a more complex term that spans multiple nodes.
                 if node.parent and isinstance(node.parent, MultiplyExpression):
                     sibling = node.get_sibling()
-                    return sibling and isinstance(sibling, MultiplyExpression)
+                    return bool(sibling and isinstance(sibling, MultiplyExpression))
                 # Nope
                 return False
 
@@ -69,15 +71,15 @@ class CommutativeSwapRule(BaseRule):
                     # UNLESS it is within a more complex term that spans multiple nodes.
                     if node.parent and isinstance(node.parent, MultiplyExpression):
                         sibling = node.get_sibling()
-                        return sibling and isinstance(sibling, MultiplyExpression)
+                        return bool(sibling and isinstance(sibling, MultiplyExpression))
                     # Nope
                     return False
         return True
 
-    def apply_to(self, node: MathExpression):
+    def apply_to(self, node: MathExpression) -> ExpressionChangeRule:
         change = super().apply_to(node)
-        a = node.left
-        b = node.right
+        a: Optional[MathExpression] = node.left
+        b: Optional[MathExpression] = node.right
         assert a is not None
 
         add_chain = isinstance(a, AddExpression) and isinstance(node, AddExpression)

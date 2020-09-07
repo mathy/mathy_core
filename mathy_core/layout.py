@@ -9,6 +9,10 @@ algorithm that works with expression trees. It produces beautiful trees like:
 `mathy:(2x^3 + y)(14 + 2.3y)`
 
 """
+from typing import Optional
+
+from .expressions import MathExpression
+
 from .tree import BinaryTreeNode
 
 
@@ -31,8 +35,8 @@ class TreeLayout:
     def measure(
         self,
         node: BinaryTreeNode = None,
-        level=0,
-        extremes: "TidierExtreme" = None,
+        level: int = 0,
+        extremes: Optional["TidierExtreme"] = None,
     ) -> "TreeLayout":
         if extremes is None:
             extremes = TidierExtreme()
@@ -163,10 +167,10 @@ class TreeLayout:
     def transform(
         self,
         node: BinaryTreeNode = None,
-        x=0,
-        unit_x_multiplier=1,
-        unit_y_multiplier=1,
-        measure=None,
+        x: float = 0,
+        unit_x_multiplier: float = 1,
+        unit_y_multiplier: float = 1,
+        measure: Optional["TreeMeasurement"] = None,
     ) -> "TreeMeasurement":
         """Transform relative to absolute coordinates, and measure the bounds of the tree.
 
@@ -175,7 +179,7 @@ class TreeLayout:
             measure = TreeMeasurement()
         if not node:
             return measure
-
+        assert node.x is not None and node.y is not None and node.offset is not None
         node.x = x * unit_x_multiplier
         node.y *= unit_y_multiplier
         self.transform(
@@ -204,7 +208,13 @@ class TreeLayout:
 
 
 class TidierExtreme:
-    def __init__(self):
+
+    left: Optional[MathExpression]
+    right: Optional[MathExpression]
+    thread: Optional[MathExpression]
+    offset: float
+
+    def __init__(self) -> None:
         self.left = None
         self.right = None
         self.thread = None
@@ -214,7 +224,16 @@ class TidierExtreme:
 class TreeMeasurement:
     """Summary of the rendered tree"""
 
-    def __init__(self):
+    minX: float
+    maxX: float
+    minY: float
+    maxY: float
+    width: float
+    height: float
+    centerX: float
+    centerY: float
+
+    def __init__(self) -> None:
         self.minX = 10000
         self.maxX = 0
         self.minY = 10000

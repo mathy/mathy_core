@@ -1,13 +1,13 @@
 import json
 from pathlib import Path
-from typing import Type
+from typing import Callable, Optional, Type
 
 from .parser import ExpressionParser
 from .rule import BaseRule
 from .util import compare_expression_string_values, compare_expression_values
 
 
-def get_rule_tests(name):
+def get_rule_tests(name: str) -> dict:
     """Load a set of JSON rule test assertions.
 
     # Arguments
@@ -44,7 +44,9 @@ def init_rule_for_test(example: dict, rule_class: Type[BaseRule]) -> BaseRule:
     return rule
 
 
-def run_rule_tests(name, rule_class, callback=None):
+def run_rule_tests(
+    name, rule_class: Type[BaseRule], callback: Optional[Callable[[dict], None]] = None
+) -> None:
     """Load and assert about the transformations and validity of rules
     based on given input examples.
 
@@ -67,18 +69,21 @@ def run_rule_tests(name, rule_class, callback=None):
             target = ex["target"]
             nodes = rule.find_nodes(expression)
             targets = [n.raw for n in nodes]
-            node = [n for n in nodes if n.raw == target]
+            nodes = [n for n in nodes if n.raw == target]
             targets = "\n".join(targets)
             assert (
-                len(node) > 0
+                len(nodes) > 0
             ), f"could not find target: {target}. targets are:\n{targets}"
-            node = node[0]
+            node = nodes[0]
         else:
             node = rule.find_node(expression)
 
         if node is None:
-            assert "expected to find node but did not for" == str(expression)
+            assert node is not None, f"expected to find node but did not: {expression}"
         change = rule.apply_to(node)
+        assert (
+            change.result is not None
+        ), f"none result from rule({rule.name}) tree({node})"
         after = change.result.get_root()
         # Compare the values of the in-memory expressions output from the rule
         compare_expression_values(before, after)

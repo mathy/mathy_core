@@ -9,7 +9,7 @@ from tqdm.auto import tqdm
 
 def generate_problems(
     file_base: str, number: int, exclude: Optional[Set[str]] = None, eval: bool = False
-):
+) -> None:
     inputs_file_name = f"{file_base}.inputs.txt"
     outputs_file_name = f"{file_base}.outputs.txt"
     if exclude is None:
@@ -46,7 +46,7 @@ def main(
     eval_size: int = 10 * 1000,
     include_eval: bool = True,
     include_generalization: bool = True,
-):
+) -> None:
     current = os.path.dirname(__file__)
     train_file = os.path.join(current, f"{name}.train")
     eval_file = os.path.join(current, f"{name}.eval")

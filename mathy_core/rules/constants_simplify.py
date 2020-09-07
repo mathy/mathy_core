@@ -4,10 +4,11 @@ from ..expressions import (
     AddExpression,
     BinaryExpression,
     ConstantExpression,
+    MathExpression,
     MultiplyExpression,
     VariableExpression,
 )
-from ..rule import BaseRule
+from ..rule import BaseRule, ExpressionChangeRule
 
 
 class ConstantsSimplifyRule(BaseRule):
@@ -15,11 +16,11 @@ class ConstantsSimplifyRule(BaseRule):
     constant expression"""
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "Constant Arithmetic"
 
     @property
-    def code(self):
+    def code(self) -> str:
         return "CA"
 
     POS_SIMPLE: str = "simple"
@@ -31,7 +32,7 @@ class ConstantsSimplifyRule(BaseRule):
     POS_CHAINED_RIGHT_DEEP: str = "chained_right_deep"
 
     def get_type(
-        self, node
+        self, node: MathExpression
     ) -> Optional[Tuple[str, ConstantExpression, ConstantExpression]]:
         """Determine the configuration of the tree for this transformation.
 
@@ -166,24 +167,32 @@ class ConstantsSimplifyRule(BaseRule):
 
         return None
 
-    def can_apply_to(self, node):
+    def can_apply_to(self, node: MathExpression) -> bool:
         return self.get_type(node) is not None
 
-    def apply_to(self, node):
+    def apply_to(self, node: MathExpression) -> ExpressionChangeRule:
         change = super().apply_to(node)
-        arrangement, left_const, right_const = self.get_type(node)
+        type_result = self.get_type(node)
+        assert (
+            type_result is not None
+        ), "make sure can_apply_to returns True before calling apply_to"
+        arrangement, left_const, right_const = type_result
         change.save_parent()
+        result: MathExpression
+        value: MathExpression
         if arrangement == ConstantsSimplifyRule.POS_SIMPLE:
             result = ConstantExpression(node.evaluate())
-        if arrangement == ConstantsSimplifyRule.POS_SIMPLE_VAR_MULT:
+        elif arrangement == ConstantsSimplifyRule.POS_SIMPLE_VAR_MULT:
             assert isinstance(node, MultiplyExpression)
+            assert node.left is not None
             assert isinstance(node.left.right, VariableExpression)
             value = ConstantExpression(
                 MultiplyExpression(left_const, right_const).evaluate()
             )
             result = MultiplyExpression(value, node.left.right)
         elif arrangement == ConstantsSimplifyRule.POS_CHAINED_LEFT_LEFT_RIGHT:
-            assert isinstance(node, MultiplyExpression)
+            assert isinstance(node, MultiplyExpression) and node.left is not None
+            assert node.left.right is not None and node.right is not None
             value = ConstantExpression(
                 MultiplyExpression(left_const, right_const).evaluate()
             )
@@ -195,12 +204,15 @@ class ConstantsSimplifyRule(BaseRule):
             )
 
         elif arrangement == ConstantsSimplifyRule.POS_CHAINED_RIGHT_LEFT:
+            assert node.right is not None and node.left is not None
             value = ConstantExpression(
                 MultiplyExpression(left_const, right_const).evaluate()
             )
             value = MultiplyExpression(value, node.left.right)
             result = MultiplyExpression(value, node.right.right)
         elif arrangement == ConstantsSimplifyRule.POS_CHAINED_RIGHT_LEFT_LEFT:
+            assert node.left is not None and node.right is not None
+            assert node.right.left is not None
             value = ConstantExpression(
                 MultiplyExpression(left_const, right_const).evaluate()
             )
@@ -209,6 +221,7 @@ class ConstantsSimplifyRule(BaseRule):
                 value, MultiplyExpression(node.right.left.right, node.right.right)
             )
         elif arrangement == ConstantsSimplifyRule.POS_CHAINED_RIGHT:
+            assert node.right is not None
             if isinstance(node, AddExpression):
                 value = ConstantExpression(
                     AddExpression(left_const, right_const).evaluate()
@@ -224,6 +237,7 @@ class ConstantsSimplifyRule(BaseRule):
                     f"can't deal with operand of {type(node)} type"
                 )
         elif arrangement == ConstantsSimplifyRule.POS_CHAINED_RIGHT_DEEP:
+            assert node.right is not None and node.right.left is not None
             if isinstance(node, AddExpression):
                 value = ConstantExpression(
                     AddExpression(left_const, right_const).evaluate()
@@ -242,5 +256,8 @@ class ConstantsSimplifyRule(BaseRule):
                 raise NotImplementedError(
                     f"can't deal with operand of {type(node)} type"
                 )
+        else:
+            raise ValueError(f"unknown node arrangement for: {node}")
+        assert result is not None
         result.set_changed()
         return change.done(result)

@@ -1,9 +1,9 @@
-from typing import Dict, List, Optional, Tuple, Type, TypeVar, Union, cast
+from typing import Dict, List, Optional, Tuple, Type, Union, cast
 
 import numpy as np
 from colr import color
 
-from .tree import STOP, BinaryTreeNode
+from .tree import STOP, BinaryTreeNode, NodeType, VisitDataType, VisitStop
 
 OOO_FUNCTION = 4
 OOO_PARENS = 3
@@ -61,7 +61,7 @@ MathTypeKeys = {
 # The maximum value in type keys (for one-hot encoding)
 MathTypeKeysMax = max(MathTypeKeys.values()) + 1
 
-NodeType = TypeVar("NodeType", bound="MathExpression")
+# NodeType = TypeVar("NodeType", bound="MathExpression")
 
 
 class MathExpression(BinaryTreeNode):
@@ -90,7 +90,9 @@ class MathExpression(BinaryTreeNode):
         highlight which nodes have been changed in this tree as a result of
         a transformation."""
 
-        def visit_fn(node, depth, data):
+        def visit_fn(
+            node: MathExpression, depth: int, data: VisitDataType
+        ) -> Optional[VisitStop]:
             node._rendering_change = data
 
         self.visit_inorder(visit_fn, data=True)
@@ -141,21 +143,24 @@ class MathExpression(BinaryTreeNode):
 
         self.visit_inorder(visit_fn)
 
-    def with_color(self, text: str, style="bright") -> str:
+    def with_color(self, text: str, style: str = "bright") -> str:
         """Render a string that is colored if something has changed"""
         if self._rendering_change is True and self._changed is True:
             return color(text, fore=self.color, style=style)
         return text
 
-    def add_class(self, classes) -> "MathExpression":
+    def add_class(self, classes: Union[List[str], str]) -> "MathExpression":
         """Associate a class name with an expression. This class name will be
         attached to nodes when the expression is converted to a capable output
         format.
 
         See #MathExpression.to_math_ml_fragment"""
-        if type(classes) == str:
-            classes = [classes]
-        self.classes = list(set(self.classes).union(classes))
+        class_list: List[str]
+        if isinstance(classes, str):
+            class_list = [classes]
+        else:
+            class_list = classes
+        self.classes = list(set(self.classes).union(class_list))
         return self
 
     def to_list(self, visit: str = "preorder") -> List["MathExpression"]:
@@ -421,6 +426,7 @@ class BinaryExpression(MathExpression):
         with respect to another node, i.e. the other node must be resolved
         first during evaluation because of it's priority.
         """
+        priority = OOO_INVALID
         if isinstance(self, EqualExpression):
             priority = OOO_INVALID
 

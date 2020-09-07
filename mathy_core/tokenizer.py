@@ -1,4 +1,6 @@
-from typing import Dict, List, Optional, Union
+from typing import Callable, Dict, List, Optional, Type, Union
+
+from .expressions import FunctionExpression
 
 # # Tokenizer
 
@@ -49,10 +51,10 @@ class Token:
         self.value = value
         self.type = type
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(self)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'(type={self.type}, value="{self.value}")'
 
 
@@ -80,6 +82,7 @@ class Tokenizer:
     """The Tokenizer produces a list of tokens from an input string."""
 
     exclude_padding: bool
+    functions: Dict[str, Type[FunctionExpression]]
 
     def __init__(self, exclude_padding: bool = True):
         self.exclude_padding = exclude_padding
@@ -87,7 +90,7 @@ class Tokenizer:
 
     # Populate the `@functions` object with all known `FunctionExpression`s
     # in Expressions
-    def find_functions(self):
+    def find_functions(self) -> None:
         self.functions = {}
         # for (key in Expressions) {
         #   val = Expressions[key];
@@ -104,7 +107,6 @@ class Tokenizer:
         #   }
         #   self.functions[`${inst}`] = val;
         # }
-        return self
 
     # ###Token Utilities
 
@@ -116,7 +118,7 @@ class Tokenizer:
         """Is this character a number"""
         return "." == c or ("0" <= c and c <= "9")
 
-    def eat_token(self, context: TokenContext, typeFn):
+    def eat_token(self, context: TokenContext, typeFn: Callable[[str], bool]) -> str:
         """Eat all of the tokens of a given type from the front of the stream
         until a different type is hit, and return the text."""
         res = ""
@@ -127,7 +129,7 @@ class Tokenizer:
 
         return res
 
-    def tokenize(self, buffer: str, terms=False) -> List[Token]:
+    def tokenize(self, buffer: str) -> List[Token]:
         """Return an array of `Token`s from a given string input.
         This throws an exception if an unknown token type is found in the input."""
         context = TokenContext(buffer=buffer, chunk=str(buffer))
