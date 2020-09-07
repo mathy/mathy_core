@@ -105,7 +105,7 @@ def test_expressions_equality_evaluate_error():
     with pytest.raises(ValueError):
         expr.evaluate()
     with pytest.raises(ValueError):
-        expr.operate(one, two)
+        expr.operate(one, two)  # type:ignore
 
 
 def test_expressions_binary_errors():

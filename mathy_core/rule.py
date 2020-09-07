@@ -105,7 +105,7 @@ class ExpressionChangeRule:
     ) -> "ExpressionChangeRule":
         """Note the parent of the node being modified, and set it as the parent of the
         rule output automatically."""
-        if self.node and parent is None:
+        if parent is None and self.node and self.node.parent:
             parent = self.node.parent
 
         self._save_parent = parent

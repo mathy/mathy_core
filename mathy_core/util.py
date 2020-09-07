@@ -1,4 +1,5 @@
 import math
+import random
 from typing import Any, Dict, List, NamedTuple, Optional, Tuple, Union, cast
 
 import numpy as np
@@ -88,9 +89,9 @@ def compare_expression_values(
         )
 
     # Generate random values for each variable, and then evaluate the expressions
-    eval_context: Dict[str, float] = {}
+    eval_context: Dict[str, NumberType] = {}
     for var in vars_from:
-        eval_context[var] = float(np.random.randint(1, 100))
+        eval_context[var] = float(random.randint(1, 100))
 
     value_from = from_expression.evaluate(eval_context)
     value_to = to_expression.evaluate(eval_context)
@@ -138,9 +139,9 @@ def unlink(node: Optional[MathExpression] = None) -> Optional[MathExpression]:
 def factor(value: NumberType) -> Dict[NumberType, NumberType]:
     if value == 0 or math.isnan(value):
         return {}
-    np.seterr(invalid="ignore")
-    sqrt = np.sqrt(value)
-    np.seterr(invalid="warn")
+    np.seterr(invalid="ignore")  # type:ignore
+    sqrt = np.sqrt(value)  # type:ignore
+    np.seterr(invalid="warn")  # type:ignore
     if math.isnan(sqrt):
         return {1: value}
 
@@ -252,6 +253,7 @@ def is_simple_term(node: MathExpression) -> bool:
     sub_terms = get_sub_terms(node)
     if sub_terms is False:
         return False
+    assert isinstance(sub_terms, list)
     seen: set = set()
     co_key = "coefficient"
 

@@ -1,4 +1,5 @@
 import numpy as np
+from typing import List
 import pytest
 
 from mathy_core.tree import STOP, BinaryTreeNode
@@ -70,7 +71,7 @@ def test_tree_node_rotate():
         values.append(i)
         tree.insert(i)
     for i in range(1000):
-        index = np.random.randint(0, len(values))
+        index = np.random.randint(0, len(values))  # type:ignore
         node = tree.find(values[index])
         node.rotate()
     for v in values:
@@ -213,8 +214,10 @@ def test_tree_node_get_side():
     for i in values:
         tree.insert(i)
     node = tree.find(-4)
+    assert node is not None
     assert node.parent.get_side(node) == "left"
     node = tree.find(4)
+    assert node is not None
     assert node.parent.get_side(node) == "right"
     with pytest.raises(ValueError):
         # Raises an error if the child does not belong to this parent
@@ -231,7 +234,7 @@ def test_tree_node_set_side():
     assert tree.right == two
     with pytest.raises(ValueError):
         # error if side name is not known
-        tree.set_side(one, "rihgt")
+        tree.set_side(one, "rihgt")  # type:ignore
 
 
 def test_tree_node_get_children():
@@ -239,11 +242,11 @@ def test_tree_node_get_children():
     tree = BinarySearchTree(0)
     for i in values:
         tree.insert(i)
-    neg = tree.find(-2).get_children()
+    neg: List[BinarySearchTree] = tree.find(-2).get_children()
     assert len(neg) == 2
     assert neg[0].key == -3
     assert neg[1].key == -1
-    one = tree.find(1).get_children()
+    one: List[BinarySearchTree] = tree.find(1).get_children()
     assert len(one) == 1
     assert one[0].key == 2
     two = tree.find(2).get_children()

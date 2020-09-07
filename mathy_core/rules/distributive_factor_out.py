@@ -7,7 +7,7 @@ from ..expressions import (
     SubtractExpression,
 )
 from ..rule import BaseRule, ExpressionChangeRule
-from ..util import TermEx, factor_add_terms_ex, get_term_ex, make_term
+from ..util import FactorResult, TermEx, factor_add_terms_ex, get_term_ex, make_term
 
 
 class DistributiveFactorOutRule(BaseRule):
@@ -191,7 +191,7 @@ class DistributiveFactorOutRule(BaseRule):
         assert left_term is not None
         assert right_term is not None
         factors = factor_add_terms_ex(left_term, right_term)
-        assert factors is not False
+        assert isinstance(factors, FactorResult)
         a = make_term(factors.best, factors.variable, factors.exponent)
         b = make_term(factors.left, factors.leftVariable, factors.leftExponent)
         c = make_term(factors.right, factors.rightVariable, factors.rightExponent)
