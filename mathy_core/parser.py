@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional
 
 from .expressions import (
     AddExpression,
@@ -30,13 +30,16 @@ from .tokenizer import (
     TokenVariable,
     coerce_to_number,
 )
+from .types import NumberType
 
 
 class ParserException(Exception):
-    def __init__(self, message):
+    message: str
+
+    def __init__(self, message: str):
         self.message = message
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.message
 
 
@@ -96,7 +99,8 @@ _IS_EXP: TokenSet = TokenSet(TokenExponent)
 _IS_EQUAL: TokenSet = TokenSet(TokenEqual)
 
 
-# NOTE: This cannot be shared between threads because it stores state in self.current_token and self.tokens
+# NOTE: This cannot be shared between threads because it stores state in
+#       self.current_token and self.tokens
 class ExpressionParser:
     """Parser for converting text into binary trees. Trees encode the order of
     operations for an input, and allow evaluating it to detemrine the expression
@@ -133,21 +137,22 @@ class ExpressionParser:
     (EqualExp)     = (AddExp) { { "=" }? (AddExp) }*
     (start)        = (EqualExp)
     ```
-    """
+    """  # noqa
 
     _parse_cache: Dict[str, MathExpression]
     _tokens_cache: Dict[str, List[Token]]
+    _all_tokens: Optional[List[Token]]
 
     # Initialize the tokenizer.
-    def __init__(self):
+    def __init__(self) -> None:
         self.tokenizer = Tokenizer()
         self.clear_cache()
 
-    def clear_cache(self):
+    def clear_cache(self) -> None:
         self._tokens_cache = {}
         self._parse_cache = {}
 
-    def tokenize(self, input_text: str):
+    def tokenize(self, input_text: str) -> List[Token]:
         if input_text not in self._tokens_cache:
             self._tokens_cache[input_text] = self.tokenizer.tokenize(input_text)
         return self._tokens_cache[input_text][:]
@@ -259,10 +264,11 @@ class ExpressionParser:
                 right = self.parse_mult()
 
             if not expected or right is None:
+                assert self._all_tokens is not None
+                input_str = "".join([str(f.value) for f in self._all_tokens])
                 raise InvalidSyntax(
-                    "Expected an expression after * or / operator, got: {}\nFull input: {}".format(
-                        opValue, [f.value for f in self._all_tokens]
-                    )
+                    f"Expected an expression after * or / operator, got: {opValue}"
+                    f"\nFull input: {input_str}"
                 )
 
             if opType == TokenMultiply:
@@ -294,7 +300,7 @@ class ExpressionParser:
         return exp
 
     def parse_unary(self) -> MathExpression:
-        value: Union[float, int] = 0
+        value: NumberType = 0
         negate = False
         if self.current_token.type == TokenMinus:
             self.eat(TokenMinus)
@@ -323,9 +329,8 @@ class ExpressionParser:
 
         if not expected or exp is None:
             raise InvalidSyntax(
-                "Expected a function, variable or parenthesis after - or + but got : {}".format(
-                    self.current_token.value
-                )
+                "Expected a function/variable/parenthesis after - or + \n"
+                f"Received : {self.current_token.value}"
             )
         if negate:
             return NegateExpression(exp)
@@ -381,7 +386,7 @@ class ExpressionParser:
         return exp
 
     def parse_function(self) -> MathExpression:
-        opFn = self.current_token.value
+        opFn = str(self.current_token.value)
         self.eat(self.current_token.type)
         self.eat(TokenOpenParen)
         exp = self.parse_add()
@@ -404,7 +409,7 @@ class ExpressionParser:
         self.current_token = self.tokens.pop(0)
         return self.current_token.type != TokenEOF
 
-    def eat(self, type) -> bool:
+    def eat(self, type: int) -> bool:
         """Assign the next token in the queue to current_token if its type
         matches that of the specified parameter. If the type does not match,
         raise a syntax exception.
@@ -417,7 +422,7 @@ class ExpressionParser:
 
         return self.next()
 
-    def check(self, tokens) -> bool:
+    def check(self, tokens: TokenSet) -> bool:
         """Check if the `self.current_token` is a member of a set Token types
 
         Args:

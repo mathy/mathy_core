@@ -1,5 +1,5 @@
 import math
-from typing import Any, Dict, List, NamedTuple, Optional, Union, cast
+from typing import Any, Dict, List, NamedTuple, Optional, Tuple, Union, cast
 
 import numpy as np
 from wasabi import TracebackPrinter
@@ -17,8 +17,8 @@ from .expressions import (
     VariableExpression,
 )
 from .parser import ExpressionParser
-from .tree import LEFT
-from .types import Literal
+from .tree import LEFT, VisitDataType, VisitStop
+from .types import Literal, NumberType
 
 
 def is_debug_mode() -> bool:
@@ -28,7 +28,7 @@ def is_debug_mode() -> bool:
 
 def compare_expression_string_values(
     from_expression: str, to_expression: str, history: Optional[List[Any]] = None
-):
+) -> None:
     """Compare and evaluate two expressions strings to verify they have the
     same value"""
     parser = ExpressionParser()
@@ -41,7 +41,7 @@ def raise_with_history(
     title: str,
     description: str,
     history: Optional[List[Any]] = None,
-):
+) -> None:
     import traceback
 
     history_text: List[str] = []
@@ -57,7 +57,7 @@ def compare_expression_values(
     from_expression: MathExpression,
     to_expression: MathExpression,
     history: Optional[List[Any]] = None,
-):
+) -> None:
     """Compare and evaluate two expressions to verify they have the same value"""
     vars_from: set = set()
     vars_to: set = set()
@@ -135,7 +135,7 @@ def unlink(node: Optional[MathExpression] = None) -> Optional[MathExpression]:
 #      result =
 #        1 : 2
 #        2 : 1
-def factor(value) -> Dict[int, int]:
+def factor(value: NumberType) -> Dict[NumberType, NumberType]:
     if value == 0 or math.isnan(value):
         return {}
     np.seterr(invalid="ignore")
@@ -145,7 +145,7 @@ def factor(value) -> Dict[int, int]:
         return {1: value}
 
     sqrt = int(sqrt + 1)
-    factors = {1: value}
+    factors: Dict[NumberType, NumberType] = {1: value}
     factors[value] = 1
 
     for i in range(2, sqrt):
@@ -157,15 +157,26 @@ def factor(value) -> Dict[int, int]:
     return factors
 
 
-def is_add_or_sub(node):
+def is_add_or_sub(node: MathExpression) -> bool:
     return isinstance(node, AddExpression) or isinstance(node, SubtractExpression)
 
 
-def get_sub_terms(node: MathExpression):
+def get_sub_terms(
+    node: MathExpression,
+) -> Union[
+    Literal[False],
+    List[
+        Tuple[
+            Optional[ConstantExpression],
+            Optional[VariableExpression],
+            Optional[PowerExpression],
+        ]
+    ],
+]:
     nodes = node.to_list("inorder")
     terms = []
 
-    def safe_pop():
+    def safe_pop() -> Optional[MathExpression]:
         nonlocal nodes
         if len(nodes) > 0:
             return nodes.pop(0)
@@ -180,7 +191,7 @@ def get_sub_terms(node: MathExpression):
             term_const = current
             current = safe_pop()
             # Cannot have add/sub in sub-terms
-            if is_add_or_sub(current):
+            if current is not None and is_add_or_sub(current):
                 return False
             # It should be one of these operators
             assert current is None or isinstance(
@@ -194,7 +205,7 @@ def get_sub_terms(node: MathExpression):
             term_var = current
             current = safe_pop()
             # cannot have add/sub in sub-terms
-            if is_add_or_sub(current):
+            if current is not None and is_add_or_sub(current):
                 return False
             # It should be one of these operators
             assert current is None or isinstance(
@@ -225,7 +236,7 @@ def get_sub_terms(node: MathExpression):
 
             return False
         terms.append((term_const, term_var, term_exp))
-    return terms
+    return terms  # type: ignore
 
 
 def is_simple_term(node: MathExpression) -> bool:
@@ -343,12 +354,24 @@ def has_like_terms(expression: MathExpression) -> bool:
 
 
 class FactorResult:
-    def __init__(self):
+    best: NumberType
+    left: NumberType
+    right: NumberType
+    all_left: Dict[NumberType, NumberType]
+    all_right: Dict[NumberType, NumberType]
+    variable: Optional[str]
+    exponent: Optional[NumberType]
+    leftExponent: Optional[NumberType]
+    rightExponent: Optional[NumberType]
+    leftVariable: Optional[str]
+    rightVariable: Optional[str]
+
+    def __init__(self) -> None:
         self.best = -1
         self.left = -1
         self.right = -1
-        self.all_left = []
-        self.all_right = []
+        self.all_left = {}
+        self.all_right = {}
         self.variable = None
         self.exponent = None
         self.leftExponent = None
@@ -360,17 +383,21 @@ class FactorResult:
 # Create a term node hierarchy from a given set of
 # term parameters.  This takes into account removing
 # implicit coefficients of 1 where possible.
-def make_term(coefficient, variable, exponent):
+def make_term(
+    coefficient: NumberType = 1,
+    variable: Optional[str] = None,
+    exponent: Optional[NumberType] = None,
+) -> MathExpression:
     constExp = ConstantExpression(coefficient)
-    if not variable and not exponent:
+    if variable is None and exponent is None:
         return constExp
 
     varExp = VariableExpression(variable)
-    if coefficient == 1 and not exponent:
+    if coefficient == 1 and exponent is None:
         return varExp
 
     multExp = MultiplyExpression(constExp, varExp)
-    if not exponent:
+    if exponent is None:
         return multExp
 
     expConstExp = ConstantExpression(exponent)
@@ -381,7 +408,14 @@ def make_term(coefficient, variable, exponent):
 
 
 class TermResult:
-    def __init__(self):
+    coefficients: List[NumberType]
+    variables: List[str]
+    exponent: Optional[NumberType]
+    node_coefficients: List[ConstantExpression]
+    node_variables: List[VariableExpression]
+    node_exponent: Optional[PowerExpression]
+
+    def __init__(self) -> None:
         self.coefficients = []
         self.variables = []
         self.exponent = None
@@ -397,6 +431,7 @@ def get_term(node: MathExpression) -> Union[TermResult, Literal[False]]:
     # Constant with add/sub parent should be OKAY.
     if isinstance(node, ConstantExpression):
         if not node.parent or (node.parent and is_add_or_sub(node.parent)):
+            assert node.value is not None
             result.coefficients = [node.value]
             result.node_coefficients = [node]
             return result
@@ -404,6 +439,7 @@ def get_term(node: MathExpression) -> Union[TermResult, Literal[False]]:
     # Variable with add/sub parent should be OKAY.
     if isinstance(node, VariableExpression):
         if not node.parent or (node.parent and is_add_or_sub(node.parent)):
+            assert node.identifier is not None
             result.variables = [node.identifier]
             result.node_variables = [node]
             return result
@@ -441,11 +477,11 @@ def get_term(node: MathExpression) -> Union[TermResult, Literal[False]]:
 
     variables = node.find_type(VariableExpression)
     if len(variables) > 0:
-        result.variables = [v.identifier for v in variables]
+        result.variables = [v.identifier for v in variables if v.identifier is not None]
         result.variables.sort()
         result.node_variables = variables
 
-    def filter_coefficients(n):
+    def filter_coefficients(n: MathExpression) -> bool:
         if not n.parent or n.parent == node.parent:
             return True
 
@@ -459,10 +495,11 @@ def get_term(node: MathExpression) -> Union[TermResult, Literal[False]]:
     coefficients = [c for c in coefficients if filter_coefficients(c)]
     if len(coefficients) > 0:
 
-        def resolve_coefficients(c):
+        def resolve_coefficients(c: ConstantExpression) -> NumberType:
             value = c.value
+            assert value is not None
             if isinstance(c.parent, NegateExpression):
-                value = value * -1
+                value *= -1
 
             return value
 
@@ -490,9 +527,9 @@ def get_term(node: MathExpression) -> Union[TermResult, Literal[False]]:
 
 
 class TermEx(NamedTuple):
-    coefficient: Optional[Union[int, float]]
+    coefficient: Optional[NumberType]
     variable: Optional[str]
-    exponent: Optional[Union[int, float]]
+    exponent: Optional[NumberType]
 
 
 # fmt: off
@@ -572,7 +609,9 @@ def get_term_ex(node: Optional[MathExpression]) -> Optional[TermEx]:
     return None
 
 
-def factor_add_terms_ex(left_term: TermEx, right_term: TermEx) -> FactorResult:
+def factor_add_terms_ex(
+    left_term: TermEx, right_term: TermEx
+) -> Union[FactorResult, Literal[False]]:
     if not left_term or not right_term:
         raise ValueError("invalid terms for factoring")
 
@@ -652,14 +691,17 @@ def get_terms(expression: MathExpression) -> List[MathExpression]:
     if isinstance(root, MultiplyExpression):
         results.append(root)
 
-    def visit_fn(node, depth, data):
+    def visit_fn(
+        node: MathExpression, depth: int, data: VisitDataType
+    ) -> Optional[VisitStop]:
         nonlocal results
         if not is_add_or_sub(node):
-            return
-        if not is_add_or_sub(node.left):
+            return None
+        if node.left and not is_add_or_sub(node.left):
             results.append(node.left)
-        if not is_add_or_sub(node.right):
+        if node.right and not is_add_or_sub(node.right):
             results.append(node.right)
+        return None
 
     root.visit_inorder(visit_fn)
     return [expression] if len(results) == 0 else results
@@ -727,7 +769,7 @@ def pad_array(in_list: List[Any], max_length: int, value: Any = 0) -> List[Any]:
     return in_list
 
 
-def print_error(error, text, print_error=True):
+def print_error(error: BaseException, text: str, print_error: bool = True) -> None:
     import traceback
 
     caught_error = TracebackPrinter(
@@ -739,7 +781,7 @@ def print_error(error, text, print_error=True):
     )
     caught_at = TracebackPrinter(tb_base=".", tb_range_start=-15, tb_range_end=-1)(
         f"Error: {text}",
-        f"Caught at:",
+        "Caught at:",
         tb=traceback.extract_stack(),
     )
 

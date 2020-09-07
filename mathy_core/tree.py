@@ -33,6 +33,8 @@ class BinaryTreeNode:
     x: Optional[float]
     y: Optional[float]
     offset: Optional[float]
+    level: Optional[int]
+    thread: Optional["BinaryTreeNode"]
 
     left: Optional["BinaryTreeNode"]
     right: Optional["BinaryTreeNode"]

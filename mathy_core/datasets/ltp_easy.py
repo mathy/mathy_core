@@ -1,4 +1,4 @@
-"""Utility for generating question/answer datasets of two terms that are either like or unlike"""
+"""Utility for generating question/answer datasets of two terms that are like or not"""
 import os
 import random
 from pathlib import Path
@@ -18,7 +18,7 @@ def generate_newline_q_a(
     exclude: Optional[Set[str]] = None,
     eval: bool = False,
     max_len: int = 128,
-):
+) -> None:
 
     train_file = f"{file_base}.txt"
     if exclude is None:
@@ -37,7 +37,7 @@ def generate_newline_q_a(
                     skips += 1
                     if skips >= skip_threshold:
                         raise ValueError(
-                            f"Failed to generate more unique problems after {skips} tries!"
+                            f"Failed to generate unique problem after {skips} tries!"
                         )
                     continue
                 # Make sure the dataset is split 50/50 for labels
@@ -98,7 +98,7 @@ def main(
     max_len: int = 32,
     include_eval: bool = True,
     include_generalization: bool = True,
-):
+) -> None:
     current = os.path.dirname(__file__)
     train_file = os.path.join(current, f"{name}.train")
     eval_file = os.path.join(current, f"{name}.eval")

@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 from typing import Callable, Optional, Type
 
+from .expressions import MathExpression
 from .parser import ExpressionParser
 from .rule import BaseRule
 from .util import compare_expression_string_values, compare_expression_values
@@ -45,7 +46,9 @@ def init_rule_for_test(example: dict, rule_class: Type[BaseRule]) -> BaseRule:
 
 
 def run_rule_tests(
-    name, rule_class: Type[BaseRule], callback: Optional[Callable[[dict], None]] = None
+    name: str,
+    rule_class: Type[BaseRule],
+    callback: Optional[Callable[[dict], None]] = None,
 ) -> None:
     """Load and assert about the transformations and validity of rules
     based on given input examples.
@@ -57,6 +60,7 @@ def run_rule_tests(
     """
     tests = get_rule_tests(name)
     parser = ExpressionParser()
+    node: Optional[MathExpression]
     for ex in tests["valid"]:
         # Trigger the debug callback so the user can step over into the useful stuff
         if callback is not None:
@@ -70,10 +74,10 @@ def run_rule_tests(
             nodes = rule.find_nodes(expression)
             targets = [n.raw for n in nodes]
             nodes = [n for n in nodes if n.raw == target]
-            targets = "\n".join(targets)
+            targets_str = "\n".join(targets)
             assert (
                 len(nodes) > 0
-            ), f"could not find target: {target}. targets are:\n{targets}"
+            ), f"could not find target: {target}. targets are:\n{targets_str}"
             node = nodes[0]
         else:
             node = rule.find_node(expression)

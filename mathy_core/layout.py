@@ -11,8 +11,6 @@ algorithm that works with expression trees. It produces beautiful trees like:
 """
 from typing import Optional
 
-from .expressions import MathExpression
-
 from .tree import BinaryTreeNode
 
 
@@ -121,6 +119,7 @@ class TreeLayout:
 
         # Set the root offset, and include it in the accumulated offsets.
         node.offset = (root_separation + 1) / 2
+        assert node.offset is not None
         left_offset_sum -= node.offset
         right_offset_sum += node.offset
 
@@ -130,11 +129,13 @@ class TreeLayout:
         if right_left_level > left_left_level or not node.left:
             extremes.left = right_extremes.left
             if extremes.left:
+                assert extremes.left.offset is not None
                 extremes.left.offset += node.offset
 
         else:
             extremes.left = left_extremes.left
             if extremes.left:
+                assert extremes.left.offset is not None
                 extremes.left.offset -= node.offset
 
         left_right_level = getattr(left_extremes.right, "level", -1)
@@ -142,22 +143,26 @@ class TreeLayout:
         if left_right_level > right_right_level or not node.right:
             extremes.right = left_extremes.right
             if extremes.right:
+                assert extremes.right.offset is not None
                 extremes.right.offset -= node.offset
 
         else:
             extremes.right = right_extremes.right
             if extremes.right:
+                assert extremes.right.offset is not None
                 extremes.right.offset += node.offset
 
         # If the subtrees have uneven heights, check to see if they need to be
         # threaded.  If threading is required, it will affect only one node.
         if left and left != node.left and right_extremes and right_extremes.right:
             right_extremes.right.thread = left
+            assert right_extremes.right.offset is not None
             right_extremes.right.offset = abs(
                 right_extremes.right.offset + node.offset - left_offset_sum
             )
         elif right and right != node.right and left_extremes and left_extremes.left:
             left_extremes.left.thread = right
+            assert left_extremes.left.offset is not None
             left_extremes.left.offset = abs(
                 left_extremes.left.offset - node.offset - right_offset_sum
             )
@@ -209,9 +214,9 @@ class TreeLayout:
 
 class TidierExtreme:
 
-    left: Optional[MathExpression]
-    right: Optional[MathExpression]
-    thread: Optional[MathExpression]
+    left: Optional[BinaryTreeNode]
+    right: Optional[BinaryTreeNode]
+    thread: Optional[BinaryTreeNode]
     offset: float
 
     def __init__(self) -> None:

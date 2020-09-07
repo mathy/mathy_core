@@ -1,8 +1,9 @@
 import numpy as np
 import pytest
 
-from .conftest import BinarySearchTree
 from mathy_core.tree import STOP, BinaryTreeNode
+
+from .conftest import BinarySearchTree
 
 
 def test_tree_node_constructor():

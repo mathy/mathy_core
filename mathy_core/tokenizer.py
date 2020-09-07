@@ -1,10 +1,7 @@
 from typing import Callable, Dict, List, Optional, Type, Union
 
 from .expressions import FunctionExpression
-
-# # Tokenizer
-
-# ##Constants
+from .types import NumberType
 
 # Define the known types of tokens for the Tokenizer.
 TokensMap: Dict[str, int] = {
@@ -138,7 +135,7 @@ class Tokenizer:
             or self.identify_alphas(context)
             or self.identify_operators(context)
         ):
-            context.chunk = context.buffer[context.index :]
+            context.chunk = context.buffer[context.index :]  # noqa
 
         context.tokens.append(Token("", TokenEOF))
         return context.tokens
@@ -200,5 +197,5 @@ class Tokenizer:
         return len(val)
 
 
-def coerce_to_number(value: str) -> Union[int, float]:
+def coerce_to_number(value: str) -> NumberType:
     return float(value) if "e" in value or "." in value else int(value)

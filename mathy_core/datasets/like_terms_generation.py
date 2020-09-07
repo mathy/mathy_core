@@ -28,7 +28,7 @@ def generate_newline_q_a(
     exclude: Optional[Set[str]] = None,
     eval: bool = False,
     max_len: int = 128,
-):
+) -> None:
 
     train_file = f"{file_base}.txt"
     if exclude is None:
@@ -54,7 +54,7 @@ def generate_newline_q_a(
                     skips += 1
                     if skips >= skip_threshold:
                         raise ValueError(
-                            f"Failed to generate more unique problems after {skips} tries!"
+                            f"Failed to generate unique problem after {skips} tries!"
                         )
                     continue
 
@@ -70,8 +70,9 @@ def list_like_terms(input_problem: str, sep: str) -> str:
     expression: MathExpression = parser.parse(input_problem)
     term_nodes: List[MathExpression] = get_terms(expression)
     node_groups: OrderedDict[str, List[MathExpression]] = OrderedDict()
+    ex: Optional[TermEx]
     for term_node in term_nodes:
-        ex: Optional[TermEx] = get_term_ex(term_node)
+        ex = get_term_ex(term_node)
         assert ex is not None, f"invalid expression {term_node}"
         key = mathy_term_string(variable=ex.variable, exponent=ex.exponent)
         if key == "":
@@ -82,7 +83,7 @@ def list_like_terms(input_problem: str, sep: str) -> str:
             node_groups[key].append(term_node)
     out_terms: List[str] = []
     for term_node in term_nodes:
-        ex: Optional[TermEx] = get_term_ex(term_node)
+        ex = get_term_ex(term_node)
         assert ex is not None, f"invalid expression {term_node}"
         key = mathy_term_string(variable=ex.variable, exponent=ex.exponent)
         if key == "":
@@ -104,7 +105,7 @@ def main(
     max_len: int = 128,
     include_eval: bool = True,
     include_generalization: bool = True,
-):
+) -> None:
     current = os.path.dirname(__file__)
     train_file = os.path.join(current, f"{name}.train")
     eval_file = os.path.join(current, f"{name}.eval")

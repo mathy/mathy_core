@@ -21,7 +21,7 @@ def generate_newline_q_a(
     exclude: Optional[Set[str]] = None,
     eval: bool = False,
     max_len: int = 128,
-):
+) -> None:
 
     train_file = f"{file_base}.txt"
     if exclude is None:
@@ -45,7 +45,7 @@ def generate_newline_q_a(
                     skips += 1
                     if skips >= skip_threshold:
                         raise ValueError(
-                            f"Failed to generate more unique problems after {skips} tries!"
+                            f"Failed to generate unique problem after {skips} tries!"
                         )
                     continue
 
@@ -87,7 +87,7 @@ def main(
     include_eval: bool = True,
     include_generalization: bool = True,
     pretty: bool = False,
-):
+) -> None:
 
     use_pretty_numbers(pretty)
 

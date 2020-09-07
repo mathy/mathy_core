@@ -30,7 +30,7 @@ def generate_problems(
                         skips += 1
                         if skips >= skip_threshold:
                             raise ValueError(
-                                f"Failed to generate more unique problems after {skips} tries!"
+                                f"Failed to generate a problem after {skips} tries!"
                             )
                             continue
                     exclude.add(text)

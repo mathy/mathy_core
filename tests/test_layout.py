@@ -1,9 +1,7 @@
-from typing import Any, Optional
-
 from mathy_core.layout import TreeLayout, TreeMeasurement
 from mathy_core.tree import BinaryTreeNode
+
 from .conftest import BinarySearchTree
-from mathy_core.tree import STOP, BinaryTreeNode
 
 
 def test_layout_tidier():

@@ -191,6 +191,7 @@ class DistributiveFactorOutRule(BaseRule):
         assert left_term is not None
         assert right_term is not None
         factors = factor_add_terms_ex(left_term, right_term)
+        assert factors is not False
         a = make_term(factors.best, factors.variable, factors.exponent)
         b = make_term(factors.left, factors.leftVariable, factors.leftExponent)
         c = make_term(factors.right, factors.rightVariable, factors.rightExponent)

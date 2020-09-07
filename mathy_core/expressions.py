@@ -4,6 +4,7 @@ import numpy as np
 from colr import color
 
 from .tree import STOP, BinaryTreeNode, NodeType, VisitDataType, VisitStop
+from .types import NumberType
 
 OOO_FUNCTION = 4
 OOO_PARENS = 3
@@ -103,7 +104,8 @@ class MathExpression(BinaryTreeNode):
 
     @property
     def color(self) -> str:
-        """Color to use for this node when rendering it as changed with `.terminal_text`"""
+        """Color to use for this node when rendering it as changed with
+        `.terminal_text`"""
         return "green"
 
     _rendering_change: bool
@@ -126,9 +128,7 @@ class MathExpression(BinaryTreeNode):
         self.cloned_node = None
         self.cloned_target = ""
 
-    def evaluate(
-        self, context: Dict[str, Union[float, int]] = None
-    ) -> Union[float, int]:
+    def evaluate(self, context: Dict[str, NumberType] = None) -> NumberType:
         """Evaluate the expression, resolving all variables to constant values"""
         raise NotImplementedError("must be implemented in subclass")
 
@@ -347,13 +347,13 @@ class UnaryExpression(MathExpression):
         else:
             return self.right
 
-    def evaluate(self, context: Dict[str, Union[float, int]] = None) -> float:
+    def evaluate(self, context: Dict[str, NumberType] = None) -> float:
         child = self.get_child()
         if child is None:
             raise ValueError("cannot evaluate unary expression without a valid child")
         return self.operate(child.evaluate(context))
 
-    def operate(self, value: Union[float, int]) -> Union[float, int]:
+    def operate(self, value: NumberType) -> NumberType:
         raise NotImplementedError("Must be implemented in subclass")
 
 
@@ -371,7 +371,7 @@ class NegateExpression(UnaryExpression):
     def name(self) -> str:
         return "-"
 
-    def operate(self, value: Union[float, int]) -> Union[float, int]:
+    def operate(self, value: NumberType) -> NumberType:
         return -value
 
     def __str__(self) -> str:
@@ -417,9 +417,7 @@ class BinaryExpression(MathExpression):
     ):
         super().__init__(left=left, right=right)
 
-    def evaluate(
-        self, context: Dict[str, Union[float, int]] = None
-    ) -> Union[float, int]:
+    def evaluate(self, context: Dict[str, NumberType] = None) -> NumberType:
         left, right = self._check()
         return self.operate(left.evaluate(context), right.evaluate(context))
 
@@ -430,9 +428,7 @@ class BinaryExpression(MathExpression):
     def get_ml_name(self) -> str:
         return self.name
 
-    def operate(
-        self, one: Union[float, int], two: Union[float, int]
-    ) -> Union[float, int]:
+    def operate(self, one: NumberType, two: NumberType) -> NumberType:
         raise NotImplementedError("Must be implemented in subclass")
 
     def _check(self) -> Tuple[MathExpression, MathExpression]:
@@ -531,9 +527,7 @@ class EqualExpression(BinaryExpression):
     def name(self) -> str:
         return "="
 
-    def operate(
-        self, one: Union[float, int], two: Union[float, int]
-    ) -> Union[float, int]:
+    def operate(self, one: NumberType, two: NumberType) -> NumberType:
         """This is where assignment of context variables might make sense. But context
         is not present in the expression's `operate` method.
 
@@ -555,9 +549,7 @@ class AddExpression(BinaryExpression):
     def name(self) -> str:
         return "+"
 
-    def operate(
-        self, one: Union[float, int], two: Union[float, int]
-    ) -> Union[float, int]:
+    def operate(self, one: NumberType, two: NumberType) -> NumberType:
         return one + two
 
 
@@ -572,9 +564,7 @@ class SubtractExpression(BinaryExpression):
     def name(self) -> str:
         return "-"
 
-    def operate(
-        self, one: Union[float, int], two: Union[float, int]
-    ) -> Union[float, int]:
+    def operate(self, one: NumberType, two: NumberType) -> NumberType:
         return one - two
 
 
@@ -592,9 +582,7 @@ class MultiplyExpression(BinaryExpression):
     def get_ml_name(self) -> str:
         return "&#183;"
 
-    def operate(
-        self, one: Union[float, int], two: Union[float, int]
-    ) -> Union[float, int]:
+    def operate(self, one: NumberType, two: NumberType) -> NumberType:
         return one * two
 
     def __str__(self) -> str:
@@ -645,9 +633,7 @@ class DivideExpression(BinaryExpression):
         right_ml = right.to_math_ml_fragment()
         return f"<mfrac><mi>{left_ml}</mi><mi>{right_ml}</mi></mfrac>"
 
-    def operate(
-        self, one: Union[float, int], two: Union[float, int]
-    ) -> Union[float, int]:
+    def operate(self, one: NumberType, two: NumberType) -> NumberType:
         if two == 0:
             return float("nan")
         else:
@@ -675,9 +661,7 @@ class PowerExpression(BinaryExpression):
 
         return self.make_ml_tag("msup", "{}{}".format(left_ml, right_ml), self.classes)
 
-    def operate(
-        self, one: Union[float, int], two: Union[float, int]
-    ) -> Union[float, int]:
+    def operate(self, one: NumberType, two: NumberType) -> NumberType:
         return np.power(one, two)
 
     def __str__(self) -> str:
@@ -687,7 +671,7 @@ class PowerExpression(BinaryExpression):
 class ConstantExpression(MathExpression):
     """A Constant value node, where the value is accessible as `node.value`"""
 
-    value: Optional[Union[float, int]]
+    value: Optional[NumberType]
 
     @property
     def name(self) -> str:
@@ -699,7 +683,7 @@ class ConstantExpression(MathExpression):
     def type_id(self) -> int:
         return MathTypeKeys["constant"]
 
-    def __init__(self, value: Optional[Union[float, int]] = None):
+    def __init__(self, value: Optional[NumberType] = None):
         super().__init__()
         self.value = value
 
@@ -708,9 +692,7 @@ class ConstantExpression(MathExpression):
         result.value = self.value
         return result  # type:ignore
 
-    def evaluate(
-        self, context: Dict[str, Union[float, int]] = None
-    ) -> Union[float, int]:
+    def evaluate(self, context: Dict[str, NumberType] = None) -> NumberType:
         assert self.value is not None
         return self.value
 
@@ -754,9 +736,7 @@ class VariableExpression(MathExpression):
         self._check()
         return self.make_ml_tag("mi", str(self.identifier), self.classes)
 
-    def evaluate(
-        self, context: Dict[str, Union[int, float]] = None
-    ) -> Union[int, float]:
+    def evaluate(self, context: Dict[str, NumberType] = None) -> NumberType:
         self._check()
         id = cast(str, self.identifier)
         if context and context.get(id, None) is not None:
@@ -778,7 +758,7 @@ class AbsExpression(FunctionExpression):
     def name(self) -> str:
         return "abs"
 
-    def operate(self, value: Union[float, int]) -> Union[float, int]:
+    def operate(self, value: NumberType) -> NumberType:
         return np.absolute(value)
 
 
@@ -791,7 +771,7 @@ class SgnExpression(FunctionExpression):
     def name(self) -> str:
         return "sgn"
 
-    def operate(self, value: Union[float, int]) -> Union[float, int]:
+    def operate(self, value: NumberType) -> NumberType:
         """Determine the sign of an value.
 
         # Returns
