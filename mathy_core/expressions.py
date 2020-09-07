@@ -94,6 +94,7 @@ class MathExpression(BinaryTreeNode):
             node: MathExpression, depth: int, data: VisitDataType
         ) -> Optional[VisitStop]:
             node._rendering_change = data
+            return None
 
         self.visit_inorder(visit_fn, data=True)
         result = str(self)
@@ -138,8 +139,11 @@ class MathExpression(BinaryTreeNode):
     def all_changed(self) -> None:
         """Mark this node and all of its children as changed"""
 
-        def visit_fn(node, depth, data):
+        def visit_fn(
+            node: MathExpression, depth: int, data: VisitDataType
+        ) -> Optional[VisitStop]:
             node.set_changed()
+            return None
 
         self.visit_inorder(visit_fn)
 
@@ -167,8 +171,12 @@ class MathExpression(BinaryTreeNode):
         """Convert this node hierarchy into a list."""
         results = []
 
-        def visit_fn(node, depth, data):
-            return results.append(node)
+        def visit_fn(
+            node: MathExpression, depth: int, data: VisitDataType
+        ) -> Optional[VisitStop]:
+
+            results.append(node)
+            return None
 
         if visit == "inorder":
             self.visit_inorder(visit_fn)
@@ -183,8 +191,12 @@ class MathExpression(BinaryTreeNode):
     def clear_classes(self) -> None:
         """Clear all the classes currently set on the nodes in this expression."""
 
-        def visit_fn(node, depth, data):
+        def visit_fn(
+            node: MathExpression, depth: int, data: VisitDataType
+        ) -> Optional[VisitStop]:
+
             node.classes = []
+            return None
 
         self.visit_inorder(visit_fn)
 
@@ -197,11 +209,15 @@ class MathExpression(BinaryTreeNode):
 
         Returns the found #MathExpression objects of the given type.
         """
-        results = []
+        results: List[NodeType] = []
 
-        def visit_fn(node, depth, data):
+        def visit_fn(
+            node: MathExpression, depth: int, data: VisitDataType
+        ) -> Optional[VisitStop]:
+
             if isinstance(node, instanceType):
-                return results.append(node)
+                results.append(node)  # type:ignore
+            return None
 
         self.visit_inorder(visit_fn)
         return results
@@ -213,11 +229,15 @@ class MathExpression(BinaryTreeNode):
         """
         result: Optional[MathExpression] = None
 
-        def visit_fn(node, depth, data):
+        def visit_fn(
+            node: MathExpression, depth: int, data: VisitDataType
+        ) -> Optional[VisitStop]:
+
             nonlocal result
             if node.id == id:
                 result = node
                 return STOP
+            return None
 
         self.visit_inorder(visit_fn)
         return result
@@ -256,9 +276,9 @@ class MathExpression(BinaryTreeNode):
     def path_to_root(self) -> str:
         """Generate a namespaced path key to from the current node to the root.
         This key can be used to identify a node inside of a tree."""
-        points = []
+        points: List[str] = []
 
-        def path_mark(node):
+        def path_mark(node: MathExpression) -> None:
             points.append(node.__class__.__name__)
 
         node = self
@@ -294,12 +314,12 @@ class MathExpression(BinaryTreeNode):
         self.cloned_target = None
         return result
 
-    def clone(self) -> "MathExpression":
+    def clone(self) -> "MathExpression":  # type:ignore[override]
         """A specialization of the clone method that can track and report a cloned
         subtree node.
 
         See #MathExpression.clone_from_root for more details."""
-        result = super().clone()
+        result: MathExpression = super().clone()
         if self.cloned_target is not None and self.path_to_root() == self.cloned_target:
             self.cloned_node = result
 
@@ -390,7 +410,11 @@ class FunctionExpression(UnaryExpression):
 class BinaryExpression(MathExpression):
     """An expression that operates on two sub-expressions"""
 
-    def __init__(self, left=None, right=None):
+    def __init__(
+        self,
+        left: Optional[MathExpression] = None,
+        right: Optional[MathExpression] = None,
+    ):
         super().__init__(left=left, right=right)
 
     def evaluate(
@@ -656,35 +680,38 @@ class PowerExpression(BinaryExpression):
     ) -> Union[float, int]:
         return np.power(one, two)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "{}{}{}".format(self.left, self.with_color(self.name), self.right)
 
 
 class ConstantExpression(MathExpression):
     """A Constant value node, where the value is accessible as `node.value`"""
 
-    value: Union[float, int]
+    value: Optional[Union[float, int]]
 
     @property
-    def name(self):
-        if self.value % 1 == 0:
+    def name(self) -> str:
+        if self.value is not None and self.value % 1 == 0:
             return f"{int(self.value)}"
         return np.format_float_positional(self.value, trim="-")
 
     @property
-    def type_id(self):
+    def type_id(self) -> int:
         return MathTypeKeys["constant"]
 
-    def __init__(self, value=None):
+    def __init__(self, value: Optional[Union[float, int]] = None):
         super().__init__()
         self.value = value
 
-    def clone(self):
-        result = super().clone()
+    def clone(self) -> "ConstantExpression":  # type:ignore[override]
+        result = cast(ConstantExpression, super().clone())
         result.value = self.value
-        return result
+        return result  # type:ignore
 
-    def evaluate(self, context: Dict[str, Union[float, int]] = None):
+    def evaluate(
+        self, context: Dict[str, Union[float, int]] = None
+    ) -> Union[float, int]:
+        assert self.value is not None
         return self.value
 
     def __str__(self) -> str:
@@ -710,12 +737,12 @@ class VariableExpression(MathExpression):
         super().__init__()
         self.identifier = identifier
 
-    def clone(self) -> "VariableExpression":
+    def clone(self) -> "VariableExpression":  # type:ignore[override]
         result = cast(VariableExpression, super().clone())
         result.identifier = self.identifier
         return result
 
-    def _check(self):
+    def _check(self) -> None:
         if self.identifier is None:
             raise ValueError("identifier must be a letter")
 
@@ -727,7 +754,9 @@ class VariableExpression(MathExpression):
         self._check()
         return self.make_ml_tag("mi", str(self.identifier), self.classes)
 
-    def evaluate(self, context: Dict[str, Union[int, float]] = None):
+    def evaluate(
+        self, context: Dict[str, Union[int, float]] = None
+    ) -> Union[int, float]:
         self._check()
         id = cast(str, self.identifier)
         if context and context.get(id, None) is not None:
@@ -755,11 +784,11 @@ class AbsExpression(FunctionExpression):
 
 class SgnExpression(FunctionExpression):
     @property
-    def type_id(self):
+    def type_id(self) -> int:
         return MathTypeKeys["sgn"]
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "sgn"
 
     def operate(self, value: Union[float, int]) -> Union[float, int]:
