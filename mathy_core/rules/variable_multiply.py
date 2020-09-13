@@ -11,6 +11,10 @@ from ..expressions import (
 from ..rule import BaseRule, ExpressionChangeRule
 from ..util import TermEx, get_term_ex
 
+_POS_SIMPLE = "simple"
+_POS_CHAINED = "chained"
+_POS_CHAINED_LEFT_RIGHT = "chained_left_right"
+
 
 class VariableMultiplyRule(BaseRule):
     r"""
@@ -29,13 +33,13 @@ class VariableMultiplyRule(BaseRule):
 
     Explicit powers: x^b * x^d = x^(b+d)
 
-            *
-           / \
-          /   \          ^
-         /     \    =   / \
-        ^       ^      x   +
-       / \     / \        / \
-      x   b   x   d      b   d
+              *
+             / \
+            /   \          ^
+           /     \    =   / \
+          ^       ^      x   +
+         / \     / \        / \
+        x   b   x   d      b   d
 
 
     Implicit powers: x * x^d = x^(1 + d)
@@ -49,9 +53,6 @@ class VariableMultiplyRule(BaseRule):
               x   d      1   d
 
     """
-    POS_SIMPLE = "simple"
-    POS_CHAINED = "chained"
-    POS_CHAINED_LEFT_RIGHT = "chained_left_right"
 
     @property
     def name(self) -> str:
@@ -93,7 +94,7 @@ class VariableMultiplyRule(BaseRule):
             if chain_left_term is not None and right_term is not None:
                 if chain_left_term.variable == right_term.variable:
                     return (
-                        VariableMultiplyRule.POS_CHAINED_LEFT_RIGHT,
+                        _POS_CHAINED_LEFT_RIGHT,
                         chain_left_term,
                         right_term,
                     )
@@ -113,8 +114,8 @@ class VariableMultiplyRule(BaseRule):
         if left_term.variable != right_term.variable:
             return None
         if chained is True:
-            return VariableMultiplyRule.POS_CHAINED, left_term, right_term
-        return VariableMultiplyRule.POS_SIMPLE, left_term, right_term
+            return _POS_CHAINED, left_term, right_term
+        return _POS_SIMPLE, left_term, right_term
 
     def can_apply_to(self, node: MathExpression) -> bool:
         if not isinstance(node, MultiplyExpression):
@@ -165,7 +166,7 @@ class VariableMultiplyRule(BaseRule):
                 coefficient_term = ConstantExpression(const_value)
 
         # Check for chained results to keep from adding unnecessary parens
-        if tree_position == VariableMultiplyRule.POS_CHAINED:
+        if tree_position == _POS_CHAINED:
             assert node.right is not None
             keep_child = node.right.right
             # Start at the right and work up in the tree
@@ -181,7 +182,7 @@ class VariableMultiplyRule(BaseRule):
                     result = MultiplyExpression(coefficient_term.left, result)
                 else:
                     result = MultiplyExpression(coefficient_term, result)
-        elif tree_position == VariableMultiplyRule.POS_CHAINED_LEFT_RIGHT:
+        elif tree_position == _POS_CHAINED_LEFT_RIGHT:
             assert (
                 node.left is not None
             ), "invalid left node should have been rejected by can_apply"

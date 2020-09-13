@@ -6,7 +6,7 @@
 [![Pypi version](https://badgen.net/pypi/v/mathy-core)](https://pypi.org/project/mathy-core/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
-Mathy core is a python package (_with type annotations_) for working with math problems. It has a tokenizer for converting plain text into tokens, a parser for converting tokens into expression trees, and a rule-based system for manipulating the trees.
+Mathy core is a python package (_with type annotations_) for working with math problems. It has a tokenizer for converting plain text into tokens, a parser for converting tokens into expression trees, a rule-based system for manipulating the trees, a layout system for visualizing trees, and a set of problem generation functions that can be used to generate datasets for ML training.
 
 ## 🚀 Quickstart
 
@@ -18,7 +18,11 @@ pip install mathy_core
 
 ## Examples
 
+Consider a few examples to get a feel for what Mathy core does.
+
 ### Evaluate an expression
+
+Arithmetic is a snap.
 
 ```python
 from mathy_core import ExpressionParser
@@ -29,6 +33,8 @@ assert expression.evaluate() == 6
 
 ### Evaluate with variables
 
+Variable values can be specified when evaluating an expression.
+
 ```python
 from mathy import ExpressionParser, MathExpression
 
@@ -37,6 +43,8 @@ assert expression.evaluate({"x": 2, "y": 5}) == 18
 ```
 
 ### Transform an expression
+
+Expressions can be changed using rules based on the properties of numbers.
 
 ```python
 from mathy import DistributiveFactorOutRule, ExpressionParser
@@ -56,6 +64,9 @@ assert str(change.result) == output
 ctx = {"x": 3}
 assert input_exp.evaluate(ctx) == output_exp.evaluate(ctx)
 ```
+
+<!-- ### Visualize a Tree -- needs mathy plugin in docs.sh -->
+<!-- ### Generate Problems -- needs example snippet -->
 
 ## Semantic Versioning
 
@@ -483,91 +494,11 @@ visited, the current depth in the tree, and a user specified data parameter.
 
 ## NodeType
 
-Type variable.
-
-Usage::
-
-T = TypeVar('T') # Can be anything
-A = TypeVar('A', str, bytes) # Must be str or bytes
-
-Type variables exist primarily for the benefit of static type
-checkers. They serve as the parameters for generic types as well
-as for generic function definitions. See class Generic for more
-information on generic types. Generic functions work as follows:
-
-def repeat(x: T, n: int) -> List[T]:
-'''Return a list containing n references to x.'''
-return [x]\*n
-
-def longest(x: A, y: A) -> A:
-'''Return the longest of two strings.'''
-return x if len(x) >= len(y) else y
-
-The latter example's signature is essentially the overloading
-of (str, str) -> str and (bytes, bytes) -> bytes. Also note
-that if the arguments are instances of some subclass of str,
-the return type is still plain str.
-
-At runtime, isinstance(x, T) and issubclass(C, T) will raise TypeError.
-
-Type variables defined with covariant=True or contravariant=True
-can be used to declare covariant or contravariant generic types.
-See PEP 484 for more details. By default generic types are invariant
-in all type variables.
-
-Type variables can be introspected. e.g.:
-
-T.**name** == 'T'
-T.**constraints** == ()
-T.**covariant** == False
-T.**contravariant** = False
-A.**constraints** == (str, bytes)
-
-Note that only type variables defined in global scope can be pickled.
+Template type that inherits from BinaryTreeNode
 
 ## VisitDataType
 
-Type variable.
-
-Usage::
-
-T = TypeVar('T') # Can be anything
-A = TypeVar('A', str, bytes) # Must be str or bytes
-
-Type variables exist primarily for the benefit of static type
-checkers. They serve as the parameters for generic types as well
-as for generic function definitions. See class Generic for more
-information on generic types. Generic functions work as follows:
-
-def repeat(x: T, n: int) -> List[T]:
-'''Return a list containing n references to x.'''
-return [x]\*n
-
-def longest(x: A, y: A) -> A:
-'''Return the longest of two strings.'''
-return x if len(x) >= len(y) else y
-
-The latter example's signature is essentially the overloading
-of (str, str) -> str and (bytes, bytes) -> bytes. Also note
-that if the arguments are instances of some subclass of str,
-the return type is still plain str.
-
-At runtime, isinstance(x, T) and issubclass(C, T) will raise TypeError.
-
-Type variables defined with covariant=True or contravariant=True
-can be used to declare covariant or contravariant generic types.
-See PEP 484 for more details. By default generic types are invariant
-in all type variables.
-
-Type variables can be introspected. e.g.:
-
-T.**name** == 'T'
-T.**constraints** == ()
-T.**covariant** == False
-T.**contravariant** = False
-A.**constraints** == (str, bytes)
-
-Note that only type variables defined in global scope can be pickled.
+Templte type of user data passed to visit functions
 
 # mathy_core.expressions
 
@@ -1078,97 +1009,6 @@ Structure:
 - Chained Right Deep
   - node(add),node.left(const),node.right(add),node.right.left(const)
 
-### POS_CHAINED_LEFT_LEFT_RIGHT
-
-str(object='') -> str
-str(bytes_or_buffer[, encoding[, errors]]) -> str
-
-Create a new string object from the given object. If encoding or
-errors is specified, then the object must expose a data buffer
-that will be decoded using the given encoding and error handler.
-Otherwise, returns the result of object.**str**() (if defined)
-or repr(object).
-encoding defaults to sys.getdefaultencoding().
-errors defaults to 'strict'.
-
-### POS_CHAINED_RIGHT
-
-str(object='') -> str
-str(bytes_or_buffer[, encoding[, errors]]) -> str
-
-Create a new string object from the given object. If encoding or
-errors is specified, then the object must expose a data buffer
-that will be decoded using the given encoding and error handler.
-Otherwise, returns the result of object.**str**() (if defined)
-or repr(object).
-encoding defaults to sys.getdefaultencoding().
-errors defaults to 'strict'.
-
-### POS_CHAINED_RIGHT_DEEP
-
-str(object='') -> str
-str(bytes_or_buffer[, encoding[, errors]]) -> str
-
-Create a new string object from the given object. If encoding or
-errors is specified, then the object must expose a data buffer
-that will be decoded using the given encoding and error handler.
-Otherwise, returns the result of object.**str**() (if defined)
-or repr(object).
-encoding defaults to sys.getdefaultencoding().
-errors defaults to 'strict'.
-
-### POS_CHAINED_RIGHT_LEFT
-
-str(object='') -> str
-str(bytes_or_buffer[, encoding[, errors]]) -> str
-
-Create a new string object from the given object. If encoding or
-errors is specified, then the object must expose a data buffer
-that will be decoded using the given encoding and error handler.
-Otherwise, returns the result of object.**str**() (if defined)
-or repr(object).
-encoding defaults to sys.getdefaultencoding().
-errors defaults to 'strict'.
-
-### POS_CHAINED_RIGHT_LEFT_LEFT
-
-str(object='') -> str
-str(bytes_or_buffer[, encoding[, errors]]) -> str
-
-Create a new string object from the given object. If encoding or
-errors is specified, then the object must expose a data buffer
-that will be decoded using the given encoding and error handler.
-Otherwise, returns the result of object.**str**() (if defined)
-or repr(object).
-encoding defaults to sys.getdefaultencoding().
-errors defaults to 'strict'.
-
-### POS_SIMPLE
-
-str(object='') -> str
-str(bytes_or_buffer[, encoding[, errors]]) -> str
-
-Create a new string object from the given object. If encoding or
-errors is specified, then the object must expose a data buffer
-that will be decoded using the given encoding and error handler.
-Otherwise, returns the result of object.**str**() (if defined)
-or repr(object).
-encoding defaults to sys.getdefaultencoding().
-errors defaults to 'strict'.
-
-### POS_SIMPLE_VAR_MULT
-
-str(object='') -> str
-str(bytes_or_buffer[, encoding[, errors]]) -> str
-
-Create a new string object from the given object. If encoding or
-errors is specified, then the object must expose a data buffer
-that will be decoded using the given encoding and error handler.
-Otherwise, returns the result of object.**str**() (if defined)
-or repr(object).
-encoding defaults to sys.getdefaultencoding().
-errors defaults to 'strict'.
-
 # mathy_core.rules.distributive_factor_out
 
 ## DistributiveFactorOutRule <kbd>class</kbd>
@@ -1228,84 +1068,6 @@ Structure:
 - Chained Right
   - node(add),node.right(term),node.left(add),node.left.right(term)
 
-### POS_CHAINED_BOTH
-
-str(object='') -> str
-str(bytes_or_buffer[, encoding[, errors]]) -> str
-
-Create a new string object from the given object. If encoding or
-errors is specified, then the object must expose a data buffer
-that will be decoded using the given encoding and error handler.
-Otherwise, returns the result of object.**str**() (if defined)
-or repr(object).
-encoding defaults to sys.getdefaultencoding().
-errors defaults to 'strict'.
-
-### POS_CHAINED_LEFT
-
-str(object='') -> str
-str(bytes_or_buffer[, encoding[, errors]]) -> str
-
-Create a new string object from the given object. If encoding or
-errors is specified, then the object must expose a data buffer
-that will be decoded using the given encoding and error handler.
-Otherwise, returns the result of object.**str**() (if defined)
-or repr(object).
-encoding defaults to sys.getdefaultencoding().
-errors defaults to 'strict'.
-
-### POS_CHAINED_LEFT_RIGHT
-
-str(object='') -> str
-str(bytes_or_buffer[, encoding[, errors]]) -> str
-
-Create a new string object from the given object. If encoding or
-errors is specified, then the object must expose a data buffer
-that will be decoded using the given encoding and error handler.
-Otherwise, returns the result of object.**str**() (if defined)
-or repr(object).
-encoding defaults to sys.getdefaultencoding().
-errors defaults to 'strict'.
-
-### POS_CHAINED_RIGHT
-
-str(object='') -> str
-str(bytes_or_buffer[, encoding[, errors]]) -> str
-
-Create a new string object from the given object. If encoding or
-errors is specified, then the object must expose a data buffer
-that will be decoded using the given encoding and error handler.
-Otherwise, returns the result of object.**str**() (if defined)
-or repr(object).
-encoding defaults to sys.getdefaultencoding().
-errors defaults to 'strict'.
-
-### POS_CHAINED_RIGHT_LEFT
-
-str(object='') -> str
-str(bytes_or_buffer[, encoding[, errors]]) -> str
-
-Create a new string object from the given object. If encoding or
-errors is specified, then the object must expose a data buffer
-that will be decoded using the given encoding and error handler.
-Otherwise, returns the result of object.**str**() (if defined)
-or repr(object).
-encoding defaults to sys.getdefaultencoding().
-errors defaults to 'strict'.
-
-### POS_SIMPLE
-
-str(object='') -> str
-str(bytes_or_buffer[, encoding[, errors]]) -> str
-
-Create a new string object from the given object. If encoding or
-errors is specified, then the object must expose a data buffer
-that will be decoded using the given encoding and error handler.
-Otherwise, returns the result of object.**str**() (if defined)
-or repr(object).
-encoding defaults to sys.getdefaultencoding().
-errors defaults to 'strict'.
-
 # mathy_core.rules.distributive_multiply_across
 
 ## DistributiveMultiplyRule <kbd>class</kbd>
@@ -1361,14 +1123,13 @@ transformations are all valid:
 
 Explicit powers: x^b \* x^d = x^(b+d)
 
-        *
-       / \
-      /   \          ^
-     /     \    =   / \
-    ^       ^      x   +
-
-/ \ / \ / \
- x b x d b d
+          *
+         / \
+        /   \          ^
+       /     \    =   / \
+      ^       ^      x   +
+     / \     / \        / \
+    x   b   x   d      b   d
 
 Implicit powers: x \* x^d = x^(1 + d)
 
@@ -1405,52 +1166,13 @@ Structure:
 - Simple node(mult),node.left(term),node.right(term)
 - Chained node(mult),node.left(term),node.right(mult),node.right.left(term)
 
-### POS_CHAINED
-
-str(object='') -> str
-str(bytes_or_buffer[, encoding[, errors]]) -> str
-
-Create a new string object from the given object. If encoding or
-errors is specified, then the object must expose a data buffer
-that will be decoded using the given encoding and error handler.
-Otherwise, returns the result of object.**str**() (if defined)
-or repr(object).
-encoding defaults to sys.getdefaultencoding().
-errors defaults to 'strict'.
-
-### POS_CHAINED_LEFT_RIGHT
-
-str(object='') -> str
-str(bytes_or_buffer[, encoding[, errors]]) -> str
-
-Create a new string object from the given object. If encoding or
-errors is specified, then the object must expose a data buffer
-that will be decoded using the given encoding and error handler.
-Otherwise, returns the result of object.**str**() (if defined)
-or repr(object).
-encoding defaults to sys.getdefaultencoding().
-errors defaults to 'strict'.
-
-### POS_SIMPLE
-
-str(object='') -> str
-str(bytes_or_buffer[, encoding[, errors]]) -> str
-
-Create a new string object from the given object. If encoding or
-errors is specified, then the object must expose a data buffer
-that will be decoded using the given encoding and error handler.
-Otherwise, returns the result of object.**str**() (if defined)
-or repr(object).
-encoding defaults to sys.getdefaultencoding().
-errors defaults to 'strict'.
-
 # mathy_core.layout
 
 ## Tree Layout
 
 In order to help visualize, understand, and debug math trees and transformations to
 them, Mathy implements a
-[Reingold-Tilford](https://reingold.co/tidier-drawings.pdf){target=\_blank} layout
+[Reingold-Tilford](https://reingold.co/tidier-drawings.pdf) layout
 algorithm that works with expression trees. It produces beautiful trees like:
 
 `mathy:(2x^3 + y)(14 + 2.3y)`
@@ -1512,47 +1234,7 @@ Utility functions for helping generate input problems.
 
 ## DefaultType
 
-Type variable.
-
-Usage::
-
-T = TypeVar('T') # Can be anything
-A = TypeVar('A', str, bytes) # Must be str or bytes
-
-Type variables exist primarily for the benefit of static type
-checkers. They serve as the parameters for generic types as well
-as for generic function definitions. See class Generic for more
-information on generic types. Generic functions work as follows:
-
-def repeat(x: T, n: int) -> List[T]:
-'''Return a list containing n references to x.'''
-return [x]\*n
-
-def longest(x: A, y: A) -> A:
-'''Return the longest of two strings.'''
-return x if len(x) >= len(y) else y
-
-The latter example's signature is essentially the overloading
-of (str, str) -> str and (bytes, bytes) -> bytes. Also note
-that if the arguments are instances of some subclass of str,
-the return type is still plain str.
-
-At runtime, isinstance(x, T) and issubclass(C, T) will raise TypeError.
-
-Type variables defined with covariant=True or contravariant=True
-can be used to declare covariant or contravariant generic types.
-See PEP 484 for more details. By default generic types are invariant
-in all type variables.
-
-Type variables can be introspected. e.g.:
-
-T.**name** == 'T'
-T.**constraints** == ()
-T.**covariant** == False
-T.**contravariant** = False
-A.**constraints** == (str, bytes)
-
-Note that only type variables defined in global scope can be pickled.
+Template type for a default return value
 
 ## gen_binomial_times_binomial <kbd>function</kbd>
 
