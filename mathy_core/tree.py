@@ -17,7 +17,7 @@ RIGHT: Literal["right"] = "right"
 SideType = Union[Literal["left"], Literal["right"]]
 VisitStop = Literal["stop"]
 VisitDataType = TypeVar("VisitDataType", bound=Any)
-VisitDataType.__doc__ = "Templte type of user data passed to visit functions"  # noqa
+VisitDataType.__doc__ = "Template type of user data passed to visit functions"  # noqa
 VisitFunction = Callable[[NodeType, int, VisitDataType], Optional[VisitStop]]
 
 
