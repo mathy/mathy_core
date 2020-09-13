@@ -1172,7 +1172,7 @@ Structure:
 
 In order to help visualize, understand, and debug math trees and transformations to
 them, Mathy implements a
-[Reingold-Tilford](https://reingold.co/tidier-drawings.pdf){target=\_blank} layout
+[Reingold-Tilford](https://reingold.co/tidier-drawings.pdf) layout
 algorithm that works with expression trees. It produces beautiful trees like:
 
 `mathy:(2x^3 + y)(14 + 2.3y)`

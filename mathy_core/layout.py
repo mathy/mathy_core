@@ -3,7 +3,7 @@
 
 In order to help visualize, understand, and debug math trees and transformations to
 them, Mathy implements a
-[Reingold-Tilford](https://reingold.co/tidier-drawings.pdf){target=_blank} layout
+[Reingold-Tilford](https://reingold.co/tidier-drawings.pdf) layout
 algorithm that works with expression trees. It produces beautiful trees like:
 
 `mathy:(2x^3 + y)(14 + 2.3y)`
@@ -184,9 +184,10 @@ class TreeLayout:
             measure = TreeMeasurement()
         if not node:
             return measure
-        assert node.x is not None and node.y is not None and node.offset is not None
         node.x = x * unit_x_multiplier
+        assert node.y is not None
         node.y *= unit_y_multiplier
+        assert node.x is not None and node.offset is not None
         self.transform(
             node.left, x - node.offset, unit_x_multiplier, unit_y_multiplier, measure
         )
