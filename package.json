@@ -87,7 +87,7 @@
     }
   },
   "lint-staged": {
-    "pathy/*.py": [
+    "mathy_core/**/*.py": [
       "sh tools/docs.sh",
       "git add README.md"
     ]

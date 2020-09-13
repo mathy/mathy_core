@@ -494,11 +494,11 @@ visited, the current depth in the tree, and a user specified data parameter.
 
 ## NodeType
 
-Template type that inherits from BinaryTreeNode
+Template type that inherits from BinaryTreeNode.
 
 ## VisitDataType
 
-Templte type of user data passed to visit functions
+Template type of user data passed to visit functions.
 
 # mathy_core.expressions
 
@@ -1172,7 +1172,7 @@ Structure:
 
 In order to help visualize, understand, and debug math trees and transformations to
 them, Mathy implements a
-[Reingold-Tilford](https://reingold.co/tidier-drawings.pdf) layout
+[Reingold-Tilford](https://reingold.co/tidier-drawings.pdf){target=\_blank} layout
 algorithm that works with expression trees. It produces beautiful trees like:
 
 `mathy:(2x^3 + y)(14 + 2.3y)`
