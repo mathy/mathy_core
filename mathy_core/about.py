@@ -1,5 +1,5 @@
 __title__ = "mathy_core"
-__version__ = "0.7.21"
+__version__ = "0.8.0"
 __summary__ = "Computer Algebra System for working with math expressions"
 __uri__ = "https://mathy.ai"
 __author__ = "Justin DuJardin"
