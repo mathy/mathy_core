@@ -9,6 +9,8 @@ algorithm that works with expression trees. It produces beautiful trees like:
 `mathy:(2x^3 + y)(14 + 2.3y)`
 
 """
+from typing import Optional
+
 from .tree import BinaryTreeNode
 
 
@@ -29,7 +31,10 @@ class TreeLayout:
         return self.transform(node, 0, unit_x_multiplier, unit_y_multiplier)
 
     def measure(
-        self, node: BinaryTreeNode = None, level=0, extremes: "TidierExtreme" = None,
+        self,
+        node: BinaryTreeNode = None,
+        level: int = 0,
+        extremes: Optional["TidierExtreme"] = None,
     ) -> "TreeLayout":
         if extremes is None:
             extremes = TidierExtreme()
@@ -114,6 +119,7 @@ class TreeLayout:
 
         # Set the root offset, and include it in the accumulated offsets.
         node.offset = (root_separation + 1) / 2
+        assert node.offset is not None
         left_offset_sum -= node.offset
         right_offset_sum += node.offset
 
@@ -123,11 +129,13 @@ class TreeLayout:
         if right_left_level > left_left_level or not node.left:
             extremes.left = right_extremes.left
             if extremes.left:
+                assert extremes.left.offset is not None
                 extremes.left.offset += node.offset
 
         else:
             extremes.left = left_extremes.left
             if extremes.left:
+                assert extremes.left.offset is not None
                 extremes.left.offset -= node.offset
 
         left_right_level = getattr(left_extremes.right, "level", -1)
@@ -135,22 +143,26 @@ class TreeLayout:
         if left_right_level > right_right_level or not node.right:
             extremes.right = left_extremes.right
             if extremes.right:
+                assert extremes.right.offset is not None
                 extremes.right.offset -= node.offset
 
         else:
             extremes.right = right_extremes.right
             if extremes.right:
+                assert extremes.right.offset is not None
                 extremes.right.offset += node.offset
 
         # If the subtrees have uneven heights, check to see if they need to be
         # threaded.  If threading is required, it will affect only one node.
         if left and left != node.left and right_extremes and right_extremes.right:
             right_extremes.right.thread = left
+            assert right_extremes.right.offset is not None
             right_extremes.right.offset = abs(
                 right_extremes.right.offset + node.offset - left_offset_sum
             )
         elif right and right != node.right and left_extremes and left_extremes.left:
             left_extremes.left.thread = right
+            assert left_extremes.left.offset is not None
             left_extremes.left.offset = abs(
                 left_extremes.left.offset - node.offset - right_offset_sum
             )
@@ -160,10 +172,10 @@ class TreeLayout:
     def transform(
         self,
         node: BinaryTreeNode = None,
-        x=0,
-        unit_x_multiplier=1,
-        unit_y_multiplier=1,
-        measure=None,
+        x: float = 0,
+        unit_x_multiplier: float = 1,
+        unit_y_multiplier: float = 1,
+        measure: Optional["TreeMeasurement"] = None,
     ) -> "TreeMeasurement":
         """Transform relative to absolute coordinates, and measure the bounds of the tree.
 
@@ -172,7 +184,7 @@ class TreeLayout:
             measure = TreeMeasurement()
         if not node:
             return measure
-
+        assert node.x is not None and node.y is not None and node.offset is not None
         node.x = x * unit_x_multiplier
         node.y *= unit_y_multiplier
         self.transform(
@@ -201,7 +213,13 @@ class TreeLayout:
 
 
 class TidierExtreme:
-    def __init__(self):
+
+    left: Optional[BinaryTreeNode]
+    right: Optional[BinaryTreeNode]
+    thread: Optional[BinaryTreeNode]
+    offset: float
+
+    def __init__(self) -> None:
         self.left = None
         self.right = None
         self.thread = None
@@ -211,7 +229,16 @@ class TidierExtreme:
 class TreeMeasurement:
     """Summary of the rendered tree"""
 
-    def __init__(self):
+    minX: float
+    maxX: float
+    minY: float
+    maxY: float
+    width: float
+    height: float
+    centerX: float
+    centerY: float
+
+    def __init__(self) -> None:
         self.minX = 10000
         self.maxX = 0
         self.minY = 10000
@@ -220,4 +247,3 @@ class TreeMeasurement:
         self.height = 0
         self.centerX = 0
         self.centerY = 0
-

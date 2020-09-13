@@ -1,10 +1,10 @@
-import math
-from typing import Dict, List, Optional, Tuple, Type, Union, cast, TypeVar
+from typing import Dict, List, Optional, Tuple, Type, Union, cast
 
 import numpy as np
 from colr import color
 
-from .tree import STOP, BinaryTreeNode
+from .tree import STOP, BinaryTreeNode, NodeType, VisitDataType, VisitStop
+from .types import NumberType
 
 OOO_FUNCTION = 4
 OOO_PARENS = 3
@@ -62,12 +62,12 @@ MathTypeKeys = {
 # The maximum value in type keys (for one-hot encoding)
 MathTypeKeysMax = max(MathTypeKeys.values()) + 1
 
-NodeType = TypeVar("NodeType", bound="MathExpression")
+# NodeType = TypeVar("NodeType", bound="MathExpression")
 
 
 class MathExpression(BinaryTreeNode):
     """Math tree node with helpers for manipulating expressions.
-    
+
     `mathy:x+y=z`
     """
 
@@ -91,8 +91,11 @@ class MathExpression(BinaryTreeNode):
         highlight which nodes have been changed in this tree as a result of
         a transformation."""
 
-        def visit_fn(node, depth, data):
+        def visit_fn(
+            node: MathExpression, depth: int, data: VisitDataType
+        ) -> Optional[VisitStop]:
             node._rendering_change = data
+            return None
 
         self.visit_inorder(visit_fn, data=True)
         result = str(self)
@@ -101,7 +104,8 @@ class MathExpression(BinaryTreeNode):
 
     @property
     def color(self) -> str:
-        """Color to use for this node when rendering it as changed with `.terminal_text`"""
+        """Color to use for this node when rendering it as changed with
+        `.terminal_text`"""
         return "green"
 
     _rendering_change: bool
@@ -124,9 +128,7 @@ class MathExpression(BinaryTreeNode):
         self.cloned_node = None
         self.cloned_target = ""
 
-    def evaluate(
-        self, context: Dict[str, Union[float, int]] = None
-    ) -> Union[float, int]:
+    def evaluate(self, context: Dict[str, NumberType] = None) -> NumberType:
         """Evaluate the expression, resolving all variables to constant values"""
         raise NotImplementedError("must be implemented in subclass")
 
@@ -137,34 +139,44 @@ class MathExpression(BinaryTreeNode):
     def all_changed(self) -> None:
         """Mark this node and all of its children as changed"""
 
-        def visit_fn(node, depth, data):
+        def visit_fn(
+            node: MathExpression, depth: int, data: VisitDataType
+        ) -> Optional[VisitStop]:
             node.set_changed()
+            return None
 
         self.visit_inorder(visit_fn)
 
-    def with_color(self, text: str, style="bright") -> str:
+    def with_color(self, text: str, style: str = "bright") -> str:
         """Render a string that is colored if something has changed"""
         if self._rendering_change is True and self._changed is True:
             return color(text, fore=self.color, style=style)
         return text
 
-    def add_class(self, classes) -> "MathExpression":
+    def add_class(self, classes: Union[List[str], str]) -> "MathExpression":
         """Associate a class name with an expression. This class name will be
         attached to nodes when the expression is converted to a capable output
-        format.  
+        format.
 
         See #MathExpression.to_math_ml_fragment"""
-        if type(classes) == str:
-            classes = [classes]
-        self.classes = list(set(self.classes).union(classes))
+        class_list: List[str]
+        if isinstance(classes, str):
+            class_list = [classes]
+        else:
+            class_list = classes
+        self.classes = list(set(self.classes).union(class_list))
         return self
 
     def to_list(self, visit: str = "preorder") -> List["MathExpression"]:
         """Convert this node hierarchy into a list."""
         results = []
 
-        def visit_fn(node, depth, data):
-            return results.append(node)
+        def visit_fn(
+            node: MathExpression, depth: int, data: VisitDataType
+        ) -> Optional[VisitStop]:
+
+            results.append(node)
+            return None
 
         if visit == "inorder":
             self.visit_inorder(visit_fn)
@@ -179,25 +191,31 @@ class MathExpression(BinaryTreeNode):
     def clear_classes(self) -> None:
         """Clear all the classes currently set on the nodes in this expression."""
 
-        def visit_fn(node, depth, data):
+        def visit_fn(
+            node: MathExpression, depth: int, data: VisitDataType
+        ) -> Optional[VisitStop]:
+
             node.classes = []
+            return None
 
         self.visit_inorder(visit_fn)
 
-    def find_type(
-        self, instanceType: Union[Type[NodeType], Tuple[Type[NodeType], ...]]
-    ) -> List[NodeType]:
+    def find_type(self, instanceType: Type[NodeType]) -> List[NodeType]:
         """Find an expression in this tree by type.
 
         - instanceType: The type to check for instances of
-        
+
         Returns the found #MathExpression objects of the given type.
         """
-        results = []
+        results: List[NodeType] = []
 
-        def visit_fn(node, depth, data):
+        def visit_fn(
+            node: MathExpression, depth: int, data: VisitDataType
+        ) -> Optional[VisitStop]:
+
             if isinstance(node, instanceType):
-                return results.append(node)
+                results.append(node)  # type:ignore
+            return None
 
         self.visit_inorder(visit_fn)
         return results
@@ -209,11 +227,15 @@ class MathExpression(BinaryTreeNode):
         """
         result: Optional[MathExpression] = None
 
-        def visit_fn(node, depth, data):
+        def visit_fn(
+            node: MathExpression, depth: int, data: VisitDataType
+        ) -> Optional[VisitStop]:
+
             nonlocal result
             if node.id == id:
                 result = node
                 return STOP
+            return None
 
         self.visit_inorder(visit_fn)
         return result
@@ -252,9 +274,9 @@ class MathExpression(BinaryTreeNode):
     def path_to_root(self) -> str:
         """Generate a namespaced path key to from the current node to the root.
         This key can be used to identify a node inside of a tree."""
-        points = []
+        points: List[str] = []
 
-        def path_mark(node):
+        def path_mark(node: MathExpression) -> None:
             points.append(node.__class__.__name__)
 
         node = self
@@ -290,12 +312,12 @@ class MathExpression(BinaryTreeNode):
         self.cloned_target = None
         return result
 
-    def clone(self) -> "MathExpression":
+    def clone(self) -> "MathExpression":  # type:ignore[override]
         """A specialization of the clone method that can track and report a cloned
-        subtree node. 
-        
+        subtree node.
+
         See #MathExpression.clone_from_root for more details."""
-        result = super().clone()
+        result: MathExpression = super().clone()
         if self.cloned_target is not None and self.path_to_root() == self.cloned_target:
             self.cloned_node = result
 
@@ -323,13 +345,13 @@ class UnaryExpression(MathExpression):
         else:
             return self.right
 
-    def evaluate(self, context: Dict[str, Union[float, int]] = None) -> float:
+    def evaluate(self, context: Dict[str, NumberType] = None) -> float:
         child = self.get_child()
         if child is None:
             raise ValueError("cannot evaluate unary expression without a valid child")
         return self.operate(child.evaluate(context))
 
-    def operate(self, value: Union[float, int]) -> Union[float, int]:
+    def operate(self, value: NumberType) -> NumberType:
         raise NotImplementedError("Must be implemented in subclass")
 
 
@@ -347,7 +369,7 @@ class NegateExpression(UnaryExpression):
     def name(self) -> str:
         return "-"
 
-    def operate(self, value: Union[float, int]) -> Union[float, int]:
+    def operate(self, value: NumberType) -> NumberType:
         return -value
 
     def __str__(self) -> str:
@@ -386,12 +408,14 @@ class FunctionExpression(UnaryExpression):
 class BinaryExpression(MathExpression):
     """An expression that operates on two sub-expressions"""
 
-    def __init__(self, left=None, right=None):
+    def __init__(
+        self,
+        left: Optional[MathExpression] = None,
+        right: Optional[MathExpression] = None,
+    ):
         super().__init__(left=left, right=right)
 
-    def evaluate(
-        self, context: Dict[str, Union[float, int]] = None
-    ) -> Union[float, int]:
+    def evaluate(self, context: Dict[str, NumberType] = None) -> NumberType:
         left, right = self._check()
         return self.operate(left.evaluate(context), right.evaluate(context))
 
@@ -402,9 +426,7 @@ class BinaryExpression(MathExpression):
     def get_ml_name(self) -> str:
         return self.name
 
-    def operate(
-        self, one: Union[float, int], two: Union[float, int]
-    ) -> Union[float, int]:
+    def operate(self, one: NumberType, two: NumberType) -> NumberType:
         raise NotImplementedError("Must be implemented in subclass")
 
     def _check(self) -> Tuple[MathExpression, MathExpression]:
@@ -422,6 +444,7 @@ class BinaryExpression(MathExpression):
         with respect to another node, i.e. the other node must be resolved
         first during evaluation because of it's priority.
         """
+        priority = OOO_INVALID
         if isinstance(self, EqualExpression):
             priority = OOO_INVALID
 
@@ -502,9 +525,7 @@ class EqualExpression(BinaryExpression):
     def name(self) -> str:
         return "="
 
-    def operate(
-        self, one: Union[float, int], two: Union[float, int]
-    ) -> Union[float, int]:
+    def operate(self, one: NumberType, two: NumberType) -> NumberType:
         """This is where assignment of context variables might make sense. But context
         is not present in the expression's `operate` method.
 
@@ -526,9 +547,7 @@ class AddExpression(BinaryExpression):
     def name(self) -> str:
         return "+"
 
-    def operate(
-        self, one: Union[float, int], two: Union[float, int]
-    ) -> Union[float, int]:
+    def operate(self, one: NumberType, two: NumberType) -> NumberType:
         return one + two
 
 
@@ -543,9 +562,7 @@ class SubtractExpression(BinaryExpression):
     def name(self) -> str:
         return "-"
 
-    def operate(
-        self, one: Union[float, int], two: Union[float, int]
-    ) -> Union[float, int]:
+    def operate(self, one: NumberType, two: NumberType) -> NumberType:
         return one - two
 
 
@@ -563,9 +580,7 @@ class MultiplyExpression(BinaryExpression):
     def get_ml_name(self) -> str:
         return "&#183;"
 
-    def operate(
-        self, one: Union[float, int], two: Union[float, int]
-    ) -> Union[float, int]:
+    def operate(self, one: NumberType, two: NumberType) -> NumberType:
         return one * two
 
     def __str__(self) -> str:
@@ -616,9 +631,7 @@ class DivideExpression(BinaryExpression):
         right_ml = right.to_math_ml_fragment()
         return f"<mfrac><mi>{left_ml}</mi><mi>{right_ml}</mi></mfrac>"
 
-    def operate(
-        self, one: Union[float, int], two: Union[float, int]
-    ) -> Union[float, int]:
+    def operate(self, one: NumberType, two: NumberType) -> NumberType:
         if two == 0:
             return float("nan")
         else:
@@ -646,40 +659,39 @@ class PowerExpression(BinaryExpression):
 
         return self.make_ml_tag("msup", "{}{}".format(left_ml, right_ml), self.classes)
 
-    def operate(
-        self, one: Union[float, int], two: Union[float, int]
-    ) -> Union[float, int]:
+    def operate(self, one: NumberType, two: NumberType) -> NumberType:
         return np.power(one, two)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "{}{}{}".format(self.left, self.with_color(self.name), self.right)
 
 
 class ConstantExpression(MathExpression):
     """A Constant value node, where the value is accessible as `node.value`"""
 
-    value: Union[float, int]
+    value: Optional[NumberType]
 
     @property
-    def name(self):
-        if self.value % 1 == 0:
+    def name(self) -> str:
+        if self.value is not None and self.value % 1 == 0:
             return f"{int(self.value)}"
         return np.format_float_positional(self.value, trim="-")
 
     @property
-    def type_id(self):
+    def type_id(self) -> int:
         return MathTypeKeys["constant"]
 
-    def __init__(self, value=None):
+    def __init__(self, value: Optional[NumberType] = None):
         super().__init__()
         self.value = value
 
-    def clone(self):
-        result = super().clone()
+    def clone(self) -> "ConstantExpression":  # type:ignore[override]
+        result = cast(ConstantExpression, super().clone())
         result.value = self.value
-        return result
+        return result  # type:ignore
 
-    def evaluate(self, context: Dict[str, Union[float, int]] = None):
+    def evaluate(self, context: Dict[str, NumberType] = None) -> NumberType:
+        assert self.value is not None
         return self.value
 
     def __str__(self) -> str:
@@ -705,12 +717,12 @@ class VariableExpression(MathExpression):
         super().__init__()
         self.identifier = identifier
 
-    def clone(self) -> "VariableExpression":
+    def clone(self) -> "VariableExpression":  # type:ignore[override]
         result = cast(VariableExpression, super().clone())
         result.identifier = self.identifier
         return result
 
-    def _check(self):
+    def _check(self) -> None:
         if self.identifier is None:
             raise ValueError("identifier must be a letter")
 
@@ -722,7 +734,7 @@ class VariableExpression(MathExpression):
         self._check()
         return self.make_ml_tag("mi", str(self.identifier), self.classes)
 
-    def evaluate(self, context: Dict[str, Union[int, float]] = None):
+    def evaluate(self, context: Dict[str, NumberType] = None) -> NumberType:
         self._check()
         id = cast(str, self.identifier)
         if context and context.get(id, None) is not None:
@@ -744,20 +756,20 @@ class AbsExpression(FunctionExpression):
     def name(self) -> str:
         return "abs"
 
-    def operate(self, value: Union[float, int]) -> Union[float, int]:
+    def operate(self, value: NumberType) -> NumberType:
         return np.absolute(value)
 
 
 class SgnExpression(FunctionExpression):
     @property
-    def type_id(self):
+    def type_id(self) -> int:
         return MathTypeKeys["sgn"]
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "sgn"
 
-    def operate(self, value: Union[float, int]) -> Union[float, int]:
+    def operate(self, value: NumberType) -> NumberType:
         """Determine the sign of an value.
 
         # Returns

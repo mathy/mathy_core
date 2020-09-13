@@ -27,6 +27,7 @@ def test_get_sub_terms():
         if output is False:
             assert text == text and sub_terms == output
         else:
+            assert isinstance(sub_terms, list)
             assert text == text and len(sub_terms) == output
 
 

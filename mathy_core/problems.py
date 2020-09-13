@@ -4,8 +4,13 @@
 Utility functions for helping generate input problems.
 """
 import random
-from typing import Tuple, Optional, Union, List
+from typing import Any, List, Optional, Set, Tuple, TypeVar, Union
+
 from pydantic import BaseModel, Field
+
+from .types import NumberType
+
+DefaultType = TypeVar("DefaultType", bound=Any)
 
 operators = list("+*")
 common_variables = list("xyz")
@@ -20,12 +25,14 @@ class MathyTermTemplate(BaseModel):
 
     def make(self) -> str:
         return mathy_term_string(
-            coefficient=maybe_number(), exponent=self.exponent, variable=self.variable
+            coefficient=maybe_number(or_else=None),
+            exponent=self.exponent,
+            variable=self.variable,
         )
 
 
 class MathyProblemTerm(MathyTermTemplate):
-    coefficient: Optional[Union[float, int]] = None
+    coefficient: Optional[NumberType] = None
 
 
 MathyExcludedTermTemplates = Optional[List[MathyTermTemplate]]
@@ -33,8 +40,8 @@ MathyExcludedTermTemplates = Optional[List[MathyTermTemplate]]
 
 def mathy_term_string(
     *,
-    coefficient: Optional[Union[int, float]] = None,
-    exponent: Optional[Union[int, float]] = None,
+    coefficient: Optional[NumberType] = None,
+    exponent: Optional[NumberType] = None,
     variable: Optional[str] = None,
 ) -> str:
     pieces = []
@@ -50,8 +57,8 @@ def mathy_term_string(
 def get_rand_term_templates(
     num_templates: int,
     exclude_like: MathyExcludedTermTemplates = None,
-    common_variables=False,
-    exponent_probability=0.5,
+    common_variables: bool = False,
+    exponent_probability: float = 0.5,
 ) -> List[MathyTermTemplate]:
     result: List[MathyTermTemplate] = []
 
@@ -69,7 +76,7 @@ def get_rand_term_templates(
                 f"failed to generate a random term after {failures} tries!"
             )
         variable = rand_var(common_variables)
-        exponent = maybe_number(exponent_probability * 100, None)
+        exponent: Optional[NumberType] = maybe_number(exponent_probability * 100, None)
         # Don't generate x^1
         if exponent == 1:
             exponent = 2
@@ -83,35 +90,43 @@ def get_rand_term_templates(
     return result
 
 
-def rand_bool(percent_chance=None):
-    if percent_chance is None:
-        percent_chance = 50
+def rand_bool(percent_chance: NumberType = 50) -> bool:
     return bool(random.randrange(100) < percent_chance)
 
 
-def rand_var(common=False):
+def rand_var(common: bool = False) -> str:
     if common is True:
         return common_variables[random.randint(0, len(common_variables) - 1)]
     return variables[random.randint(0, len(variables) - 1)]
 
 
-def maybe_var(percent_chance=80, common_var=False, or_else=""):
+def maybe_var(
+    percent_chance: NumberType = 80,
+    common_var: bool = False,
+    or_else: DefaultType = "",  # type:ignore
+) -> Union[DefaultType, str]:
     return rand_var(common_var) if rand_bool(percent_chance) else or_else
 
 
-def maybe_number(percent_chance=80, or_else=""):
+def maybe_number(
+    percent_chance: NumberType = 80, or_else: DefaultType = ""  # type:ignore
+) -> Union[int, float, DefaultType]:
     return rand_number() if rand_bool(percent_chance) else or_else
 
 
-def maybe_power(percent_chance=80, max_power=4, or_else=""):
+def maybe_power(
+    percent_chance: NumberType = 80,
+    max_power: int = 4,
+    or_else: DefaultType = "",  # type:ignore
+) -> Union[str, DefaultType]:
     if rand_bool(percent_chance):
         return "^{}".format(random.randint(2, max_power))
     else:
         return or_else
 
 
-def use_pretty_numbers(enabled: bool = True):
-    """Determine if problems should include only pretty numbers or 
+def use_pretty_numbers(enabled: bool = True) -> None:
+    """Determine if problems should include only pretty numbers or
     a whole range of integers and floats. Using pretty numbers will
     restrict the numbers that are generated to integers between 1 and
     12. When not using pretty numbers, floats and large integers will
@@ -120,8 +135,9 @@ def use_pretty_numbers(enabled: bool = True):
     _pretty_numbers = enabled
 
 
-def rand_number():
+def rand_number() -> NumberType:
     global _pretty_numbers
+    result: NumberType
     if _pretty_numbers:
         min_value = 1
         max_value = 12
@@ -146,19 +162,25 @@ def rand_number():
     return result
 
 
-def truncate(value, max_decimals=3):
+def truncate(value: NumberType, max_decimals: int = 3) -> NumberType:
     return float(f"%.{max_decimals}f" % (float(value)))
 
 
-def rand_op():
+def rand_op() -> str:
     return operators[random.randint(0, len(operators) - 1)]
 
 
-def get_rand_vars(num_vars, exclude_vars=[], common_variables=False):
+def get_rand_vars(
+    num_vars: int,
+    exclude_vars: Optional[List[str]] = None,
+    common_variables: bool = False,
+) -> List[str]:
     """Get a list of random variables, excluding the given list of hold-out variables"""
+    if exclude_vars is None:
+        exclude_vars = []
     if num_vars > 25:
         raise ValueError("out of range: there are only twenty-six variables")
-    rand_vars = set()
+    rand_vars: Set[str] = set()
     iters = 0
     while len(rand_vars) < num_vars:
         _rand = rand_var(common_variables)
@@ -176,12 +198,12 @@ def get_rand_vars(num_vars, exclude_vars=[], common_variables=False):
 
 def gen_binomial_times_binomial(
     *,
-    op="+",
-    min_vars=1,
-    max_vars=2,
-    simple_variables=True,
-    powers_probability=0.33,
-    like_variables_probability=1.0,
+    op: str = "+",
+    min_vars: int = 1,
+    max_vars: int = 2,
+    simple_variables: bool = True,
+    powers_probability: float = 0.33,
+    like_variables_probability: float = 1.0,
 ) -> Tuple[str, int]:
     """Generate a binomial multiplied by another binomial.
 
@@ -232,12 +254,12 @@ def gen_binomial_times_binomial(
 
 def gen_binomial_times_monomial(
     *,
-    op="+",
-    min_vars=1,
-    max_vars=2,
-    simple_variables=True,
-    powers_probability=0.33,
-    like_variables_probability=1.0,
+    op: str = "+",
+    min_vars: int = 1,
+    max_vars: int = 2,
+    simple_variables: bool = True,
+    powers_probability: float = 0.33,
+    like_variables_probability: float = 1.0,
 ) -> Tuple[str, int]:
     """Generate a binomial multiplied by a monomial.
 
@@ -363,11 +385,11 @@ def gen_simplify_multiple_terms(
         # that have to be matched to the right side of expression. This is
         # so that the model cannot use its existing knowledge about distributive
         # factoring on smaller problems to solve this problem.
-        right_num, left_num = split_in_two_random(num_noise_terms)
-        for i in range(left_num):
+        lr_terms: Tuple[int, int] = split_in_two_random(num_noise_terms)
+        for i in range(lr_terms[0]):
             current = noise_vars.pop()
             term_templates.insert(0, f"{current}{maybe_power(power_prob_percent)}")
-        for i in range(right_num):
+        for i in range(lr_terms[1]):
             current = noise_vars.pop()
             term_templates.append(f"{current}{maybe_power(power_prob_percent)}")
 
@@ -407,19 +429,21 @@ def gen_simplify_multiple_terms(
     return result, complexity
 
 
-def split_in_two_random(value: int):
+def split_in_two_random(value: int) -> Tuple[int, int]:
     """Split a given number into two smaller numbers that sum to it.
     Returns: a tuple of (lower, higher) numbers that sum to the input
     """
     factor = random.uniform(0, 1)
     left = int(factor * value)
     right = value - left
-    # always return lower/higher
-    return min(left, right), max(left, right)
+    lower = min(left, right)
+    higher = max(left, right)
+    assert lower + higher == value, "did not split evenly in two"
+    return lower, higher
 
 
 def gen_combine_terms_in_place(
-    min_terms=16, max_terms=26, easy=True, powers=False
+    min_terms: int = 16, max_terms: int = 26, easy: bool = True, powers: bool = False
 ) -> Tuple[str, int]:
     """Generate a problem that puts one pair of like terms next to each other
     somewhere inside a large tree of unlike terms.
@@ -473,8 +497,12 @@ def gen_combine_terms_in_place(
 
 
 def gen_commute_haystack(
-    min_terms=5, max_terms=8, commute_blockers=1, easy=True, powers=False
-):
+    min_terms: int = 5,
+    max_terms: int = 8,
+    commute_blockers: int = 1,
+    easy: bool = True,
+    powers: bool = False,
+) -> Tuple[str, int]:
     """A problem with a bunch of terms that have no matches, and a single
     set of two terms that do match, but are separated by one other term.
     The challenge is to commute the terms to each other in one move.
@@ -529,10 +557,12 @@ def gen_commute_haystack(
     return problem, complexity
 
 
-def get_blocker(num_blockers=1, exclude_vars=[]):
+def get_blocker(num_blockers: int = 1, exclude_vars: Optional[List[str]] = None) -> str:
     """Get a string of terms to place between target simplification terms
     in order to challenge the agent's ability to use commutative/associative
     rules to move terms around."""
+    if exclude_vars is None:
+        exclude_vars = []
     vars = get_rand_vars(num_blockers, exclude_vars)
     out_terms = []
     for i in range(num_blockers):
@@ -540,7 +570,9 @@ def get_blocker(num_blockers=1, exclude_vars=[]):
     return " + ".join(out_terms)
 
 
-def gen_move_around_blockers_one(number_blockers: int, powers_probability: float = 0.5):
+def gen_move_around_blockers_one(
+    number_blockers: int, powers_probability: float = 0.5
+) -> Tuple[str, int]:
     """Two like terms separated by (n) blocker terms.
 
     # Example
@@ -561,7 +593,9 @@ def gen_move_around_blockers_one(number_blockers: int, powers_probability: float
     return problem, complexity
 
 
-def gen_move_around_blockers_two(number_blockers: int, powers_probability: float = 0.5):
+def gen_move_around_blockers_two(
+    number_blockers: int, powers_probability: float = 0.5
+) -> Tuple[str, int]:
     """Two like terms with three blockers.
 
     # Example

@@ -8,7 +8,7 @@ from ..expressions import (
     PowerExpression,
     VariableExpression,
 )
-from ..rule import BaseRule
+from ..rule import BaseRule, ExpressionChangeRule
 from ..util import TermEx, get_term_ex
 
 
@@ -54,11 +54,11 @@ class VariableMultiplyRule(BaseRule):
     POS_CHAINED_LEFT_RIGHT = "chained_left_right"
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "Variable Multiplication"
 
     @property
-    def code(self):
+    def code(self) -> str:
         return "VM"
 
     def get_type(self, node: MathExpression) -> Optional[Tuple[str, TermEx, TermEx]]:
@@ -116,7 +116,7 @@ class VariableMultiplyRule(BaseRule):
             return VariableMultiplyRule.POS_CHAINED, left_term, right_term
         return VariableMultiplyRule.POS_SIMPLE, left_term, right_term
 
-    def can_apply_to(self, node: MathExpression):
+    def can_apply_to(self, node: MathExpression) -> bool:
         if not isinstance(node, MultiplyExpression):
             return False
         type_tuple = self.get_type(node)
@@ -124,7 +124,7 @@ class VariableMultiplyRule(BaseRule):
             return False
         return True
 
-    def apply_to(self, node: MathExpression):
+    def apply_to(self, node: MathExpression) -> ExpressionChangeRule:
         change = super().apply_to(node).save_parent()
         type_tuple = self.get_type(node)
         assert type_tuple is not None
@@ -166,6 +166,7 @@ class VariableMultiplyRule(BaseRule):
 
         # Check for chained results to keep from adding unnecessary parens
         if tree_position == VariableMultiplyRule.POS_CHAINED:
+            assert node.right is not None
             keep_child = node.right.right
             # Start at the right and work up in the tree
             #

@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple
+from typing import Optional, Tuple
 
 from ..expressions import (
     AddExpression,
@@ -6,16 +6,8 @@ from ..expressions import (
     MultiplyExpression,
     SubtractExpression,
 )
-from ..rule import BaseRule
-from ..util import (
-    TermEx,
-    factor_add_terms_ex,
-    get_term_ex,
-    is_add_or_sub,
-    make_term,
-    terms_are_like,
-    unlink,
-)
+from ..rule import BaseRule, ExpressionChangeRule
+from ..util import FactorResult, TermEx, factor_add_terms_ex, get_term_ex, make_term
 
 
 class DistributiveFactorOutRule(BaseRule):
@@ -41,7 +33,7 @@ class DistributiveFactorOutRule(BaseRule):
     """
     constants: bool
 
-    def __init__(self, constants=False):
+    def __init__(self, constants: bool = False):
         # If true, will factor common numbers out of a const+const expression
         self.constants = constants
 
@@ -53,14 +45,14 @@ class DistributiveFactorOutRule(BaseRule):
     POS_CHAINED_RIGHT = "chained_right"
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "Distributive Factoring"
 
     @property
-    def code(self):
+    def code(self) -> str:
         return "DF"
 
-    def get_type(self, node) -> Optional[Tuple[str, TermEx, TermEx]]:
+    def get_type(self, node: MathExpression) -> Optional[Tuple[str, TermEx, TermEx]]:
         """Determine the configuration of the tree for this transformation.
 
         Support the three types of tree configurations:
@@ -167,7 +159,7 @@ class DistributiveFactorOutRule(BaseRule):
 
         return None
 
-    def can_apply_to(self, node):
+    def can_apply_to(self, node: MathExpression) -> bool:
         type_tuple = self.get_type(node)
         if type_tuple is None:
             return False
@@ -189,12 +181,17 @@ class DistributiveFactorOutRule(BaseRule):
 
         return True
 
-    def apply_to(self, node):
+    def apply_to(self, node: MathExpression) -> ExpressionChangeRule:
         change = super().apply_to(node).save_parent()
-        tree_position, left_term, right_term = self.get_type(node)
+        type_result = self.get_type(node)
+        assert (
+            type_result is not None
+        ), "make sure can_apply_to returns True before calling apply_to"
+        tree_position, left_term, right_term = type_result
         assert left_term is not None
         assert right_term is not None
         factors = factor_add_terms_ex(left_term, right_term)
+        assert isinstance(factors, FactorResult)
         a = make_term(factors.best, factors.variable, factors.exponent)
         b = make_term(factors.left, factors.leftVariable, factors.leftExponent)
         c = make_term(factors.right, factors.rightVariable, factors.rightExponent)
@@ -207,7 +204,7 @@ class DistributiveFactorOutRule(BaseRule):
         #       common factor and what remains to prefer
         #       ordering that can be expressed without an
         #       explicit multiplication symbol.
-        result = MultiplyExpression(inside, a)
+        result: MathExpression = MultiplyExpression(inside, a)
         result.all_changed()
 
         # Fix the links to existing nodes on the left side of the result
@@ -216,6 +213,7 @@ class DistributiveFactorOutRule(BaseRule):
             DistributiveFactorOutRule.POS_CHAINED_BOTH,
         ]
         if tree_position in left_positions:
+            assert node.left is not None
             # Because in the chained mode we extract node.left.right, the other
             # child is the remainder we want to be sure to preserve.
             # e.g. "(4 + p) + p" we need to keep "4"
@@ -224,11 +222,13 @@ class DistributiveFactorOutRule(BaseRule):
 
         # Fix the links to existing nodes on the left-right side of the result
         if tree_position == DistributiveFactorOutRule.POS_CHAINED_LEFT_RIGHT:
+            assert node.left is not None and node.left.right is not None
             keep_child = AddExpression(node.left.left, node.left.right.left)
             result = AddExpression(keep_child, result)
 
         # Fix the links to existing nodes on the right-left side of the result
         if tree_position == DistributiveFactorOutRule.POS_CHAINED_RIGHT_LEFT:
+            assert node.right is not None and node.right.left is not None
             keep_child = AddExpression(node.right.left.right, node.right.right)
             result = AddExpression(result, keep_child)
 
@@ -238,6 +238,7 @@ class DistributiveFactorOutRule(BaseRule):
             DistributiveFactorOutRule.POS_CHAINED_BOTH,
         ]
         if tree_position in right_positions:
+            assert node.right is not None
             # Because in the chained mode we extract node.right.left, the other
             # child is the remainder we want to be sure to preserve.
             # e.g. "p + (p + 2x)" we need to keep 2x

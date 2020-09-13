@@ -1,6 +1,7 @@
-from typing import Optional, List
+from typing import List, Optional
+
 from .expressions import MathExpression
-from .tree import STOP
+from .tree import STOP, SideType, VisitDataType, VisitStop
 from .util import is_debug_mode
 
 
@@ -8,7 +9,7 @@ class BaseRule:
     """Basic rule class that visits a tree with a specified visit order."""
 
     @property
-    def name(self):
+    def name(self) -> str:
         """Readable rule name used for debug rendering and description outputs"""
         return "Abstract Base Rule"
 
@@ -21,13 +22,16 @@ class BaseRule:
         """Find the first node that can have this rule applied to it."""
         result = None
 
-        def visit_fn(node, depth, data):
+        def visit_fn(
+            node: MathExpression, depth: int, data: VisitDataType
+        ) -> Optional[VisitStop]:
             nonlocal result
             if self.can_apply_to(node):
                 result = node
 
             if result is not None:
                 return STOP
+            return None
 
         expression.visit_inorder(visit_fn)
         return result
@@ -40,7 +44,9 @@ class BaseRule:
         nodes = []
         index = 0
 
-        def visit_fn(node, depth, data):
+        def visit_fn(
+            node: MathExpression, depth: int, data: VisitDataType
+        ) -> Optional[VisitStop]:
             nonlocal nodes, index
             add = None
             node.r_index = index
@@ -49,7 +55,8 @@ class BaseRule:
 
             index += 1
             if add:
-                return nodes.append(add)
+                nodes.append(add)
+            return None
 
         expression.visit_inorder(visit_fn)
         return nodes
@@ -85,28 +92,31 @@ class ExpressionChangeRule:
     node: Optional[MathExpression]
     result: Optional[MathExpression]
     _save_parent: Optional[MathExpression]
+    _save_side: SideType
 
-    def __init__(self, rule, node: MathExpression = None):
+    def __init__(self, rule: BaseRule, node: MathExpression = None):
         self.rule = rule
         self.node = node
         self.result = None
         self._save_parent = None
 
     def save_parent(
-        self, parent: MathExpression = None, side: Optional[str] = None
+        self, parent: MathExpression = None, side: Optional[SideType] = None
     ) -> "ExpressionChangeRule":
         """Note the parent of the node being modified, and set it as the parent of the
         rule output automatically."""
-        if self.node and parent is None:
+        if parent is None and self.node and self.node.parent:
             parent = self.node.parent
 
         self._save_parent = parent
-        if parent:
-            self._save_side = side or parent.get_side(self.node)
+        if side:
+            self._save_side = side
+        elif parent and self.node:
+            self._save_side = parent.get_side(self.node)
 
         return self
 
-    def done(self, node) -> "ExpressionChangeRule":
+    def done(self, node: MathExpression) -> "ExpressionChangeRule":
         """Set the result of a change to the given node. Restore the parent
         if `save_parent` was called."""
         if self._save_parent:

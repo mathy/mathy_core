@@ -1,33 +1,24 @@
 import json
 from pathlib import Path
-from typing import Type
+from typing import Callable, Optional, Type
 
+from .expressions import MathExpression
 from .parser import ExpressionParser
 from .rule import BaseRule
 from .util import compare_expression_string_values, compare_expression_values
-from .rules import (
-    AssociativeSwapRule,
-    CommutativeSwapRule,
-    ConstantsSimplifyRule,
-    DistributiveFactorOutRule,
-    DistributiveMultiplyRule,
-    VariableMultiplyRule,
-)
 
 
-def get_rule_tests(name):
+def get_rule_tests(name: str) -> dict:
     """Load a set of JSON rule test assertions.
 
     # Arguments
     name (str): The name of the test JSON file to open, e.g. "commutative_property"
 
     # Returns
-    (dict): A dictionary with "valid" and "invalid" keys that contain pairs of 
+    (dict): A dictionary with "valid" and "invalid" keys that contain pairs of
     expected inputs and outputs.
     """
-    rule_file = (
-        Path(__file__).parent / "tests" / "rules" / "{}.json".format(name)
-    )
+    rule_file = Path(__file__).parent / "tests" / "rules" / "{}.json".format(name)
     if not rule_file.is_file() is True:
         raise ValueError(f"does not exist: {rule_file}")
     with open(rule_file, "r") as file:
@@ -42,7 +33,7 @@ def init_rule_for_test(example: dict, rule_class: Type[BaseRule]) -> BaseRule:
 
     # Arguments:
     example (dict): The example assertion loaded from a call to `get_rule_tests`
-    rule_class (Type[BaseRule]): The 
+    rule_class (Type[BaseRule]): The
 
     # Returns
     (BaseRule): The rule instance.
@@ -54,7 +45,11 @@ def init_rule_for_test(example: dict, rule_class: Type[BaseRule]) -> BaseRule:
     return rule
 
 
-def run_rule_tests(name, rule_class, callback=None):
+def run_rule_tests(
+    name: str,
+    rule_class: Type[BaseRule],
+    callback: Optional[Callable[[dict], None]] = None,
+) -> None:
     """Load and assert about the transformations and validity of rules
     based on given input examples.
 
@@ -65,6 +60,7 @@ def run_rule_tests(name, rule_class, callback=None):
     """
     tests = get_rule_tests(name)
     parser = ExpressionParser()
+    node: Optional[MathExpression]
     for ex in tests["valid"]:
         # Trigger the debug callback so the user can step over into the useful stuff
         if callback is not None:
@@ -77,16 +73,21 @@ def run_rule_tests(name, rule_class, callback=None):
             target = ex["target"]
             nodes = rule.find_nodes(expression)
             targets = [n.raw for n in nodes]
-            node = [n for n in nodes if n.raw == target]
-            targets = "\n".join(targets)
-            assert len(node) > 0, f"could not find target: {target}. targets are:\n{targets}"
-            node = node[0]
+            nodes = [n for n in nodes if n.raw == target]
+            targets_str = "\n".join(targets)
+            assert (
+                len(nodes) > 0
+            ), f"could not find target: {target}. targets are:\n{targets_str}"
+            node = nodes[0]
         else:
             node = rule.find_node(expression)
 
         if node is None:
-            assert "expected to find node but did not for" == str(expression)
+            assert node is not None, f"expected to find node but did not: {expression}"
         change = rule.apply_to(node)
+        assert (
+            change.result is not None
+        ), f"none result from rule({rule.name}) tree({node})"
         after = change.result.get_root()
         # Compare the values of the in-memory expressions output from the rule
         compare_expression_values(before, after)

@@ -1,11 +1,12 @@
 from ..expressions import (
     AddExpression,
-    MultiplyExpression,
     ConstantExpression,
-    VariableExpression,
+    MathExpression,
+    MultiplyExpression,
     PowerExpression,
+    VariableExpression,
 )
-from ..rule import BaseRule
+from ..rule import BaseRule, ExpressionChangeRule
 from ..util import unlink
 
 
@@ -37,38 +38,50 @@ class DistributiveMultiplyRule(BaseRule):
     """
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "Distributive Multiply"
 
     @property
-    def code(self):
+    def code(self) -> str:
         return "DM"
 
-    def can_apply_to(self, expression):
-        if isinstance(expression, MultiplyExpression):
-            if expression.right and isinstance(expression.left, AddExpression):
+    def can_apply_to(self, node: MathExpression) -> bool:
+        if isinstance(node, MultiplyExpression):
+            if node.right and isinstance(node.left, AddExpression):
                 return True
 
-            if expression.left and isinstance(expression.right, AddExpression):
+            if node.left and isinstance(node.right, AddExpression):
                 return True
 
             return False
 
         return False
 
-    def apply_to(self, node):
+    def apply_to(self, node: MathExpression) -> ExpressionChangeRule:
         change = super().apply_to(node).save_parent()
 
+        a: MathExpression
+        b: MathExpression
+        c: MathExpression
+        ab: MathExpression
+        ac: MathExpression
+
+        assert node.left is not None
+        assert node.right is not None
         if isinstance(node.left, AddExpression):
+            assert node.left.right is not None and node.left.left is not None
             a = node.right
             b = node.left.left
             c = node.left.right
         else:
+            assert node.right.right is not None and node.right.left is not None
             a = node.left
             b = node.right.left
             c = node.right.right
 
-        a = unlink(a)
+        unlinked = unlink(a)
+        assert unlinked is not None
+        a = unlinked
 
         # If the operands for either multiplication can be expressed
         # in a "natural" order, do so like a human would.
@@ -91,7 +104,8 @@ class DistributiveMultiplyRule(BaseRule):
             ac = MultiplyExpression(a.clone(), c.clone())
         result = AddExpression(ab, ac)
 
-        [n.set_changed() for n in [node, a, ab, ac, result]]
+        for n in [node, a, ab, ac, result]:
+            n.set_changed()
 
         change.done(result)
         return change
