@@ -11,6 +11,10 @@ from pydantic import BaseModel, Field
 from .types import NumberType
 
 DefaultType = TypeVar("DefaultType", bound=Any)
+try:
+    DefaultType.__doc__ = "Template type for a default return value"  # noqa
+except AttributeError:
+    ...  # Boo!
 
 operators = list("+*")
 common_variables = list("xyz")

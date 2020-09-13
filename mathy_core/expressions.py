@@ -62,8 +62,6 @@ MathTypeKeys = {
 # The maximum value in type keys (for one-hot encoding)
 MathTypeKeysMax = max(MathTypeKeys.values()) + 1
 
-# NodeType = TypeVar("NodeType", bound="MathExpression")
-
 
 class MathExpression(BinaryTreeNode):
     """Math tree node with helpers for manipulating expressions.

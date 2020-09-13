@@ -9,6 +9,13 @@ from ..expressions import (
 from ..rule import BaseRule, ExpressionChangeRule
 from ..util import FactorResult, TermEx, factor_add_terms_ex, get_term_ex, make_term
 
+_POS_SIMPLE = "simple"
+_POS_CHAINED_BOTH = "chained_both"
+_POS_CHAINED_LEFT = "chained_left"
+_POS_CHAINED_LEFT_RIGHT = "chained_left_right"
+_POS_CHAINED_RIGHT_LEFT = "chained_right_left"
+_POS_CHAINED_RIGHT = "chained_right"
+
 
 class DistributiveFactorOutRule(BaseRule):
     r"""Distributive Property
@@ -36,13 +43,6 @@ class DistributiveFactorOutRule(BaseRule):
     def __init__(self, constants: bool = False):
         # If true, will factor common numbers out of a const+const expression
         self.constants = constants
-
-    POS_SIMPLE = "simple"
-    POS_CHAINED_BOTH = "chained_both"
-    POS_CHAINED_LEFT = "chained_left"
-    POS_CHAINED_LEFT_RIGHT = "chained_left_right"
-    POS_CHAINED_RIGHT_LEFT = "chained_right_left"
-    POS_CHAINED_RIGHT = "chained_right"
 
     @property
     def name(self) -> str:
@@ -95,11 +95,11 @@ class DistributiveFactorOutRule(BaseRule):
                 left_term = get_term_ex(node.left.right)
             if left_term is None or left_term.variable is None:
                 return None
-            return DistributiveFactorOutRule.POS_CHAINED_BOTH, left_term, right_term
+            return _POS_CHAINED_BOTH, left_term, right_term
 
         # Simplest case of each child being a term exactly.
         if left_term is not None and right_term is not None:
-            return DistributiveFactorOutRule.POS_SIMPLE, left_term, right_term
+            return _POS_SIMPLE, left_term, right_term
 
         # Left child is a term
         if left_term is not None:
@@ -113,7 +113,7 @@ class DistributiveFactorOutRule(BaseRule):
                 if right_term.variable is None:
                     return None
                 return (
-                    DistributiveFactorOutRule.POS_CHAINED_RIGHT,
+                    _POS_CHAINED_RIGHT,
                     left_term,
                     right_term,
                 )
@@ -126,7 +126,7 @@ class DistributiveFactorOutRule(BaseRule):
             if right_term is None or right_term.variable is None:
                 return None
             return (
-                DistributiveFactorOutRule.POS_CHAINED_RIGHT_LEFT,
+                _POS_CHAINED_RIGHT_LEFT,
                 left_term,
                 right_term,
             )
@@ -142,7 +142,7 @@ class DistributiveFactorOutRule(BaseRule):
             if left_term is not None:
                 if left_term.variable is None:
                     return None
-                return DistributiveFactorOutRule.POS_CHAINED_LEFT, left_term, right_term
+                return _POS_CHAINED_LEFT, left_term, right_term
 
             # check inside another group
             if isinstance(node.left, AddExpression) and isinstance(
@@ -152,7 +152,7 @@ class DistributiveFactorOutRule(BaseRule):
             if left_term is None or left_term.variable is None:
                 return None
             return (
-                DistributiveFactorOutRule.POS_CHAINED_LEFT_RIGHT,
+                _POS_CHAINED_LEFT_RIGHT,
                 left_term,
                 right_term,
             )
@@ -209,8 +209,8 @@ class DistributiveFactorOutRule(BaseRule):
 
         # Fix the links to existing nodes on the left side of the result
         left_positions = [
-            DistributiveFactorOutRule.POS_CHAINED_LEFT,
-            DistributiveFactorOutRule.POS_CHAINED_BOTH,
+            _POS_CHAINED_LEFT,
+            _POS_CHAINED_BOTH,
         ]
         if tree_position in left_positions:
             assert node.left is not None
@@ -221,21 +221,21 @@ class DistributiveFactorOutRule(BaseRule):
             result = AddExpression(keep_child, result)
 
         # Fix the links to existing nodes on the left-right side of the result
-        if tree_position == DistributiveFactorOutRule.POS_CHAINED_LEFT_RIGHT:
+        if tree_position == _POS_CHAINED_LEFT_RIGHT:
             assert node.left is not None and node.left.right is not None
             keep_child = AddExpression(node.left.left, node.left.right.left)
             result = AddExpression(keep_child, result)
 
         # Fix the links to existing nodes on the right-left side of the result
-        if tree_position == DistributiveFactorOutRule.POS_CHAINED_RIGHT_LEFT:
+        if tree_position == _POS_CHAINED_RIGHT_LEFT:
             assert node.right is not None and node.right.left is not None
             keep_child = AddExpression(node.right.left.right, node.right.right)
             result = AddExpression(result, keep_child)
 
         # Fix the links to existing nodes on the right side of the result
         right_positions = [
-            DistributiveFactorOutRule.POS_CHAINED_RIGHT,
-            DistributiveFactorOutRule.POS_CHAINED_BOTH,
+            _POS_CHAINED_RIGHT,
+            _POS_CHAINED_BOTH,
         ]
         if tree_position in right_positions:
             assert node.right is not None
