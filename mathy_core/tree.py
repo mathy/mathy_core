@@ -3,7 +3,10 @@ from typing import Any, Callable, List, Optional, TypeVar, Union
 from .types import Literal
 
 NodeType = TypeVar("NodeType", bound="BinaryTreeNode")
-NodeType.__doc__ = "Template type that inherits from BinaryTreeNode."  # noqa
+try:
+    NodeType.__doc__ = "Template type that inherits from BinaryTreeNode."
+except AttributeError:
+    ...  # Boo!
 
 # ## Constants
 
@@ -14,10 +17,14 @@ LEFT: Literal["left"] = "left"
 # The constant representing the right child side of a node.
 RIGHT: Literal["right"] = "right"
 
+
 SideType = Union[Literal["left"], Literal["right"]]
 VisitStop = Literal["stop"]
 VisitDataType = TypeVar("VisitDataType", bound=Any)
-VisitDataType.__doc__ = "Template type of user data passed to visit functions."  # noqa
+try:
+    VisitDataType.__doc__ = "Template type of user data passed to visit functions."
+except AttributeError:
+    ...  # Boo!
 VisitFunction = Callable[[NodeType, int, VisitDataType], Optional[VisitStop]]
 
 
