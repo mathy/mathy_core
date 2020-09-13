@@ -1,0 +1,19 @@
+name: Types
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - "*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup Packages
+        run: sh tools/setup.sh
+      - name: Check for Type Errors
+        run: sh tools/lint.sh
