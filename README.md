@@ -36,7 +36,7 @@ assert expression.evaluate() == 6
 Variable values can be specified when evaluating an expression.
 
 ```python
-from mathy import ExpressionParser, MathExpression
+from mathy_core import ExpressionParser, MathExpression
 
 expression: MathExpression = ExpressionParser().parse("4x + 2y")
 assert expression.evaluate({"x": 2, "y": 5}) == 18
@@ -47,7 +47,8 @@ assert expression.evaluate({"x": 2, "y": 5}) == 18
 Expressions can be changed using rules based on the properties of numbers.
 
 ```python
-from mathy import DistributiveFactorOutRule, ExpressionParser
+from mathy_core import ExpressionParser
+from mathy_core.rules import DistributiveFactorOutRule
 
 input = "4x + 2x"
 output = "(4 + 2) * x"
