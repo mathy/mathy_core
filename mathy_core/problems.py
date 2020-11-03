@@ -16,7 +16,7 @@ try:
 except AttributeError:
     ...  # Boo!
 
-operators = list("+*")
+operators = list("+-*")
 common_variables = list("xyz")
 variables = list("abcdfghjklmnopqrstuvwxyz")
 max_const = 12
@@ -314,7 +314,7 @@ def gen_binomial_times_monomial(
 def gen_simplify_multiple_terms(
     num_terms: int,
     optional_var: bool = False,
-    op: Union[List[str], str] = "+",
+    op: Union[List[str], str] = None,
     common_variables: bool = True,
     inner_terms_scaling: float = 0.3,
     powers_probability: float = 0.33,
