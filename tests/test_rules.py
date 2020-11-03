@@ -5,6 +5,7 @@ from mathy_core.rules import (
     ConstantsSimplifyRule,
     DistributiveFactorOutRule,
     DistributiveMultiplyRule,
+    RestateSubtractionRule,
     VariableMultiplyRule,
 )
 from mathy_core.testing import run_rule_tests
@@ -44,6 +45,13 @@ def test_rules_distributive_multiply_across():
         pass
 
     run_rule_tests("distributive_multiply_across", DistributiveMultiplyRule, debug)
+
+
+def test_rules_restate_subtraction():
+    def debug(ex):
+        pass
+
+    run_rule_tests("restate_subtraction", RestateSubtractionRule, debug)
 
 
 def test_rules_variable_multiply():
