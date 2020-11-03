@@ -54,6 +54,7 @@ def test_layout_tidier_aesthetic_two():
         if node.parent is None:
             return
         side = node.parent.get_side(node)
+        assert node.x is not None and node.parent.x is not None
         if side == "left":
             # left child should be to the left of the parent (-x)
             assert node.x < node.parent.x
@@ -82,6 +83,7 @@ def test_layout_tidier_aesthetic_three():
         left = children[0].x
         right = children[1].x
 
+        assert left is not None and right is not None
         expected = left + abs(left - right) / 2
         # Parent node position matches expectation
         assert expected == node.x
@@ -104,6 +106,8 @@ def test_layout_tidier_aesthetic_four_reflections():
     for i in range(6):
         left = tree.find(-i)
         right = tree.find(i)
+        assert left is not None and right is not None
+        assert left.x is not None and tree.x is not None
         left_dist = abs(left.x - tree.x)
         right_dist = abs(right.x - tree.x)
         assert left_dist == right_dist

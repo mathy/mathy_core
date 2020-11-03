@@ -24,6 +24,7 @@ class BinarySearchTree(BinaryTreeNode):
         """Insert a node in the tree with the specified key."""
         node: BinarySearchTree = self.get_root()
         while node:
+            assert node.key is not None
             if key > node.key:
                 if not node.right:
                     node.set_right(BinarySearchTree(key))
@@ -44,6 +45,7 @@ class BinarySearchTree(BinaryTreeNode):
         is not found in the tree."""
         node = self.get_root()
         while node:
+            assert node.key is not None
             if key > node.key:
                 if not node.right:
                     return None

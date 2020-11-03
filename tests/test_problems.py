@@ -39,7 +39,7 @@ def test_problems_variable_sharing_like_terms() -> None:
     """
     parser = ExpressionParser()
     problem, _ = gen_simplify_multiple_terms(
-        3, share_var_probability=1.0, noise_probability=0.0
+        3, share_var_probability=1.0, noise_probability=0.0, op="+"
     )
     expression: MathExpression = parser.parse(problem)
     term_nodes: List[MathExpression] = get_terms(expression)
@@ -65,7 +65,7 @@ def test_problems_variable_sharing_unlike_terms() -> None:
     """
     parser = ExpressionParser()
     problem, _ = gen_simplify_multiple_terms(
-        2, share_var_probability=1.0, noise_probability=0.0
+        2, share_var_probability=1.0, noise_probability=0.0, op="+"
     )
     expression: MathExpression = parser.parse(problem)
     term_nodes: List[MathExpression] = get_terms(expression)
