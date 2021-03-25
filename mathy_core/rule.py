@@ -1,7 +1,8 @@
 from typing import Any, List, Optional
 
 from .expressions import MathExpression
-from .tree import STOP, SideType, VisitStop
+from .tree import STOP, VisitStop
+from .types import Literal
 from .util import is_debug_mode
 
 
@@ -88,7 +89,7 @@ class ExpressionChangeRule:
     node: Optional[MathExpression]
     result: Optional[MathExpression]
     _save_parent: Optional[MathExpression]
-    _save_side: SideType
+    _save_side: Literal["left", "right"]
 
     def __init__(self, rule: BaseRule, node: Optional[MathExpression] = None):
         self.rule = rule
@@ -97,7 +98,9 @@ class ExpressionChangeRule:
         self._save_parent = None
 
     def save_parent(
-        self, parent: Optional[MathExpression] = None, side: Optional[SideType] = None
+        self,
+        parent: Optional[MathExpression] = None,
+        side: Optional[Literal["left", "right"]] = None,
     ) -> "ExpressionChangeRule":
         """Note the parent of the node being modified, and set it as the parent of the
         rule output automatically."""

@@ -18,7 +18,6 @@ LEFT: Literal["left"] = "left"
 RIGHT: Literal["right"] = "right"
 
 
-SideType = Literal["left", "right"]
 VisitStop = Literal["stop"]
 VisitDataType = TypeVar("VisitDataType", bound=Any)
 try:
@@ -209,7 +208,7 @@ class BinaryTreeNode:
 
         return cast(NodeType, result)
 
-    def get_root_side(self: "BinaryTreeNode") -> SideType:
+    def get_root_side(self: "BinaryTreeNode") -> Literal["left", "right"]:
         """Return the side of the tree that this node lives on"""
         result = self
         last_child = None
@@ -256,7 +255,7 @@ class BinaryTreeNode:
 
         return self
 
-    def get_side(self, child: Optional["BinaryTreeNode"]) -> SideType:
+    def get_side(self, child: Optional["BinaryTreeNode"]) -> Literal["left", "right"]:
         """Determine whether the given `child` is the left or right child of this
         node"""
         if child == self.left:
@@ -269,7 +268,7 @@ class BinaryTreeNode:
             f"BinaryTreeNode.get_side: '{child}' is not a child of this node"
         )
 
-    def set_side(self, child: NodeType, side: SideType) -> NodeType:
+    def set_side(self, child: NodeType, side: Literal["left", "right"]) -> NodeType:
         """Set a new `child` on the given `side`"""
         if side == LEFT:
             return self.set_left(child)  # type:ignore

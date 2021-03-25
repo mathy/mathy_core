@@ -10,7 +10,8 @@ from ..expressions import (
     SubtractExpression,
 )
 from ..rule import BaseRule, ExpressionChangeRule
-from ..tree import LEFT, RIGHT, SideType
+from ..tree import LEFT, RIGHT
+from ..types import Literal
 from ..util import get_term_ex, unlink
 
 _TYPE_ADDITION = "TYPE_ADDITION"
@@ -101,7 +102,9 @@ class BalancedMoveRule(BaseRule):
             node_clone = node.clone()
             grandparent = node.parent.parent
             grandparent_side = grandparent.get_side(node.parent)
-            update_side: SideType = LEFT if node.get_root_side() == RIGHT else RIGHT
+            update_side: Literal["left", "right"] = (
+                LEFT if node.get_root_side() == RIGHT else RIGHT
+            )
             grandparent.set_side(save_sibling, grandparent_side)
             new_sub = SubtractExpression(
                 root.left if update_side == LEFT else root.right, node_clone
