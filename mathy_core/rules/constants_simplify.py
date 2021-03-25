@@ -6,11 +6,13 @@ from ..expressions import (
     ConstantExpression,
     MathExpression,
     MultiplyExpression,
+    NegateExpression,
     VariableExpression,
 )
 from ..rule import BaseRule, ExpressionChangeRule
 
 _POS_SIMPLE: str = "simple"
+_POS_NEGATION_SIMPLE: str = "negation_simple"
 _POS_SIMPLE_VAR_MULT: str = "simple_var_multiply"
 _POS_CHAINED_RIGHT: str = "chained_right"
 _POS_CHAINED_RIGHT_LEFT: str = "chained_right_left"
@@ -51,6 +53,18 @@ class ConstantsSimplifyRule(BaseRule):
          - Chained Right Deep
             * node(add),node.left(const),node.right(add),node.right.left(const)
         """
+        # Check for a negation wrapping a simple binary op with constants
+        # -(3 + 2)
+        if isinstance(node, NegateExpression):
+            child = node.get_child()
+            if (
+                child is not None
+                and isinstance(child, BinaryExpression)
+                and isinstance(child.left, ConstantExpression)
+                and isinstance(child.right, ConstantExpression)
+            ):
+                return _POS_NEGATION_SIMPLE, child.left, child.right
+
         # Check simple case of left/right child binary op with constants
         # (4 * 2) + 3
         if (
@@ -181,6 +195,9 @@ class ConstantsSimplifyRule(BaseRule):
         result: MathExpression
         value: MathExpression
         if arrangement == _POS_SIMPLE:
+            result = ConstantExpression(node.evaluate())
+        elif arrangement == _POS_NEGATION_SIMPLE:
+            # If a negation parent exists, flip the result
             result = ConstantExpression(node.evaluate())
         elif arrangement == _POS_SIMPLE_VAR_MULT:
             assert isinstance(node, MultiplyExpression)

@@ -1,6 +1,15 @@
 {
   "valid": [
     {
+      "input": "2x = 6x - 8",
+      "target": "2x = 6x - 8",
+      "output": "6x - 8 = 2x",
+      "why": "can swap equations",
+      "eval_context": {
+        "x": 2
+      }
+    },
+    {
       "input": "2x + 1y^3 + 7j + -2q + 93m + 6x",
       "target": "2x + 1y^3 + 7j + -2q + 93m + 6x",
       "output": "2x + 1y^3 + 7j + -2q + 6x + 93m",
@@ -65,7 +74,7 @@
       "input": "2530z + 1m + 3.5x + 2z + 8.9c",
       "target": "2530z + 1m + 3.5x",
       "output": "2530z + 3.5x + 1m + 2z + 8.9c",
-      "why": "swapping middle children shouldn't introduce paren nesting"
+      "why": "swapping middle children shouldn't introduce parenthesis nesting"
     },
     {
       "input": "(5 + 12) * a",
@@ -87,6 +96,14 @@
     {
       "input": "4x",
       "output": "x * 4"
+    },
+    {
+      "input": "2^4 * 8",
+      "output": "8 * 2^4",
+      "args": {
+        "preferred": false
+      },
+      "why": "commute into preferred order with exponent and variable"
     },
     {
       "input": "(7 + x) + 2",

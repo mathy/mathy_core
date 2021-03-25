@@ -8,7 +8,7 @@ class BinarySearchTree(BinaryTreeNode):
     right: Optional["BinarySearchTree"]
     parent: Optional["BinarySearchTree"]
 
-    def __init__(self, key: int = None, **kwargs: Any):
+    def __init__(self, key: Optional[int] = None, **kwargs: Any):
         super(BinarySearchTree, self).__init__(**kwargs)
         self.key = key
         self.x = 0
@@ -40,10 +40,10 @@ class BinarySearchTree(BinaryTreeNode):
                 break
         return self
 
-    def find(self, key: int) -> Optional[BinaryTreeNode]:
+    def find(self: "BinarySearchTree", key: int) -> Optional["BinarySearchTree"]:
         """Find a node in the tree by its key and return it.  Return None if the key
         is not found in the tree."""
-        node = self.get_root()
+        node: BinarySearchTree = self.get_root()
         while node:
             assert node.key is not None
             if key > node.key:

@@ -18,7 +18,7 @@ def get_rule_tests(name: str) -> dict:
     (dict): A dictionary with "valid" and "invalid" keys that contain pairs of
     expected inputs and outputs.
     """
-    rule_file = Path(__file__).parent / "tests" / "rules" / "{}.json".format(name)
+    rule_file = Path(__file__).parent / "rules" / f"{name}.test.json"
     if not rule_file.is_file() is True:
         raise ValueError(f"does not exist: {rule_file}")
     with open(rule_file, "r") as file:

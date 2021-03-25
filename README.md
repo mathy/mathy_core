@@ -97,6 +97,282 @@ mathy_core>=0.1.37,<0.2.0
 
 # mathy_core.tokenizer
 
+## TOKEN_TYPES <kbd>class</kbd>
+
+```python
+TOKEN_TYPES(self, args, kwargs)
+```
+
+### CloseParen
+
+int([x]) -> integer
+int(x, base=10) -> integer
+
+Convert a number or string to an integer, or return 0 if no arguments
+are given. If x is a number, return x.**int**(). For floating point
+numbers, this truncates towards zero.
+
+If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base. The literal can be preceded by '+' or '-' and be surrounded
+by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer literal.
+
+> > > int('0b100', base=0)
+> > > 4
+
+### Constant
+
+int([x]) -> integer
+int(x, base=10) -> integer
+
+Convert a number or string to an integer, or return 0 if no arguments
+are given. If x is a number, return x.**int**(). For floating point
+numbers, this truncates towards zero.
+
+If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base. The literal can be preceded by '+' or '-' and be surrounded
+by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer literal.
+
+> > > int('0b100', base=0)
+> > > 4
+
+### Divide
+
+int([x]) -> integer
+int(x, base=10) -> integer
+
+Convert a number or string to an integer, or return 0 if no arguments
+are given. If x is a number, return x.**int**(). For floating point
+numbers, this truncates towards zero.
+
+If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base. The literal can be preceded by '+' or '-' and be surrounded
+by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer literal.
+
+> > > int('0b100', base=0)
+> > > 4
+
+### EOF
+
+int([x]) -> integer
+int(x, base=10) -> integer
+
+Convert a number or string to an integer, or return 0 if no arguments
+are given. If x is a number, return x.**int**(). For floating point
+numbers, this truncates towards zero.
+
+If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base. The literal can be preceded by '+' or '-' and be surrounded
+by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer literal.
+
+> > > int('0b100', base=0)
+> > > 4
+
+### Equal
+
+int([x]) -> integer
+int(x, base=10) -> integer
+
+Convert a number or string to an integer, or return 0 if no arguments
+are given. If x is a number, return x.**int**(). For floating point
+numbers, this truncates towards zero.
+
+If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base. The literal can be preceded by '+' or '-' and be surrounded
+by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer literal.
+
+> > > int('0b100', base=0)
+> > > 4
+
+### Exponent
+
+int([x]) -> integer
+int(x, base=10) -> integer
+
+Convert a number or string to an integer, or return 0 if no arguments
+are given. If x is a number, return x.**int**(). For floating point
+numbers, this truncates towards zero.
+
+If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base. The literal can be preceded by '+' or '-' and be surrounded
+by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer literal.
+
+> > > int('0b100', base=0)
+> > > 4
+
+### Factorial
+
+int([x]) -> integer
+int(x, base=10) -> integer
+
+Convert a number or string to an integer, or return 0 if no arguments
+are given. If x is a number, return x.**int**(). For floating point
+numbers, this truncates towards zero.
+
+If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base. The literal can be preceded by '+' or '-' and be surrounded
+by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer literal.
+
+> > > int('0b100', base=0)
+> > > 4
+
+### Function
+
+int([x]) -> integer
+int(x, base=10) -> integer
+
+Convert a number or string to an integer, or return 0 if no arguments
+are given. If x is a number, return x.**int**(). For floating point
+numbers, this truncates towards zero.
+
+If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base. The literal can be preceded by '+' or '-' and be surrounded
+by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer literal.
+
+> > > int('0b100', base=0)
+> > > 4
+
+### Invalid
+
+int([x]) -> integer
+int(x, base=10) -> integer
+
+Convert a number or string to an integer, or return 0 if no arguments
+are given. If x is a number, return x.**int**(). For floating point
+numbers, this truncates towards zero.
+
+If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base. The literal can be preceded by '+' or '-' and be surrounded
+by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer literal.
+
+> > > int('0b100', base=0)
+> > > 4
+
+### Minus
+
+int([x]) -> integer
+int(x, base=10) -> integer
+
+Convert a number or string to an integer, or return 0 if no arguments
+are given. If x is a number, return x.**int**(). For floating point
+numbers, this truncates towards zero.
+
+If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base. The literal can be preceded by '+' or '-' and be surrounded
+by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer literal.
+
+> > > int('0b100', base=0)
+> > > 4
+
+### Multiply
+
+int([x]) -> integer
+int(x, base=10) -> integer
+
+Convert a number or string to an integer, or return 0 if no arguments
+are given. If x is a number, return x.**int**(). For floating point
+numbers, this truncates towards zero.
+
+If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base. The literal can be preceded by '+' or '-' and be surrounded
+by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer literal.
+
+> > > int('0b100', base=0)
+> > > 4
+
+### OpenParen
+
+int([x]) -> integer
+int(x, base=10) -> integer
+
+Convert a number or string to an integer, or return 0 if no arguments
+are given. If x is a number, return x.**int**(). For floating point
+numbers, this truncates towards zero.
+
+If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base. The literal can be preceded by '+' or '-' and be surrounded
+by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer literal.
+
+> > > int('0b100', base=0)
+> > > 4
+
+### Pad
+
+int([x]) -> integer
+int(x, base=10) -> integer
+
+Convert a number or string to an integer, or return 0 if no arguments
+are given. If x is a number, return x.**int**(). For floating point
+numbers, this truncates towards zero.
+
+If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base. The literal can be preceded by '+' or '-' and be surrounded
+by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer literal.
+
+> > > int('0b100', base=0)
+> > > 4
+
+### Plus
+
+int([x]) -> integer
+int(x, base=10) -> integer
+
+Convert a number or string to an integer, or return 0 if no arguments
+are given. If x is a number, return x.**int**(). For floating point
+numbers, this truncates towards zero.
+
+If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base. The literal can be preceded by '+' or '-' and be surrounded
+by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer literal.
+
+> > > int('0b100', base=0)
+> > > 4
+
+### Variable
+
+int([x]) -> integer
+int(x, base=10) -> integer
+
+Convert a number or string to an integer, or return 0 if no arguments
+are given. If x is a number, return x.**int**(). For floating point
+numbers, this truncates towards zero.
+
+If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base. The literal can be preceded by '+' or '-' and be surrounded
+by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer literal.
+
+> > > int('0b100', base=0)
+> > > 4
+
 ## Tokenizer <kbd>class</kbd>
 
 ```python
@@ -226,7 +502,11 @@ Rules:
 ### check <kbd>method</kbd>
 
 ```python
-ExpressionParser.check(self, tokens: mathy_core.parser.TokenSet) -> bool
+ExpressionParser.check(
+    self,
+    tokens: mathy_core.parser.TokenSet,
+    do_assert: bool = False,
+) -> bool
 ```
 
 Check if the `self.current_token` is a member of a set Token types
@@ -306,9 +586,9 @@ Returns true if the given type is part of this set
 ```python
 BinaryTreeNode(
     self,
-    left: 'BinaryTreeNode' = None,
-    right: 'BinaryTreeNode' = None,
-    parent: 'BinaryTreeNode' = None,
+    left: Optional[BinaryTreeNode] = None,
+    right: Optional[BinaryTreeNode] = None,
+    parent: Optional[BinaryTreeNode] = None,
     id: Optional[str] = None,
 )
 ```
@@ -321,7 +601,7 @@ children, and a parent.
 ### clone <kbd>method</kbd>
 
 ```python
-BinaryTreeNode.clone(self) -> ~NodeType
+BinaryTreeNode.clone(self: ~NodeType) -> ~NodeType
 ```
 
 Create a clone of this tree
@@ -329,7 +609,7 @@ Create a clone of this tree
 ### get_children <kbd>method</kbd>
 
 ```python
-BinaryTreeNode.get_children(self) -> List[~NodeType]
+BinaryTreeNode.get_children(self: ~NodeType) -> List[~NodeType]
 ```
 
 Get children as an array. If there are two children, the first object will
@@ -342,6 +622,16 @@ BinaryTreeNode.get_root(self: ~NodeType) -> ~NodeType
 ```
 
 Return the root element of this tree
+
+### get_root_side <kbd>method</kbd>
+
+```python
+BinaryTreeNode.get_root_side(
+    self: 'BinaryTreeNode',
+) -> typing_extensions.Literal['left', 'right']
+```
+
+Return the side of the tree that this node lives on
 
 ### get_sibling <kbd>method</kbd>
 
@@ -357,8 +647,8 @@ has no sibling, the return value will be None.
 ```python
 BinaryTreeNode.get_side(
     self,
-    child: ~NodeType,
-) -> Union[typing_extensions.Literal['left'], typing_extensions.Literal['right']]
+    child: Optional[BinaryTreeNode],
+) -> typing_extensions.Literal['left', 'right']
 ```
 
 Determine whether the given `child` is the left or right child of this
@@ -371,10 +661,6 @@ BinaryTreeNode.is_leaf(self) -> bool
 ```
 
 Is this node a leaf? A node is a leaf if it has no children.
-
-### name
-
-Human readable name for this node.
 
 ### rotate <kbd>method</kbd>
 
@@ -415,7 +701,7 @@ Set the right node to the passed `child`
 BinaryTreeNode.set_side(
     self,
     child: ~NodeType,
-    side: Union[typing_extensions.Literal['left'], typing_extensions.Literal['right']],
+    side: typing_extensions.Literal['left', 'right'],
 ) -> ~NodeType
 ```
 
@@ -425,10 +711,10 @@ Set a new `child` on the given `side`
 
 ```python
 BinaryTreeNode.visit_inorder(
-    self: ~NodeType,
-    visit_fn: Callable[[~NodeType, int, ~VisitDataType], Optional[typing_extensions.Literal['stop']]],
+    self,
+    visit_fn: Callable[[Any, int, Optional[Any]], Optional[typing_extensions.Literal['stop']]],
     depth: int = 0,
-    data: Optional[~VisitDataType] = None,
+    data: Optional[Any] = None,
 ) -> Optional[typing_extensions.Literal['stop']]
 ```
 
@@ -449,10 +735,10 @@ visited, the current depth in the tree, and a user specified data parameter.
 
 ```python
 BinaryTreeNode.visit_postorder(
-    self: ~NodeType,
-    visit_fn: Callable[[~NodeType, int, ~VisitDataType], Optional[typing_extensions.Literal['stop']]],
+    self,
+    visit_fn: Callable[[Any, int, Optional[Any]], Optional[typing_extensions.Literal['stop']]],
     depth: int = 0,
-    data: Optional[~VisitDataType] = None,
+    data: Optional[Any] = None,
 ) -> Optional[typing_extensions.Literal['stop']]
 ```
 
@@ -473,10 +759,10 @@ visited, the current depth in the tree, and a user specified data parameter.
 
 ```python
 BinaryTreeNode.visit_preorder(
-    self: ~NodeType,
-    visit_fn: Callable[[~NodeType, int, ~VisitDataType], Optional[typing_extensions.Literal['stop']]],
+    self,
+    visit_fn: Callable[[Any, int, Optional[Any]], Optional[typing_extensions.Literal['stop']]],
     depth: int = 0,
-    data: Optional[~VisitDataType] = None,
+    data: Optional[Any] = None,
 ) -> Optional[typing_extensions.Literal['stop']]
 ```
 
@@ -508,8 +794,8 @@ Template type of user data passed to visit functions.
 ```python
 AbsExpression(
     self,
-    child: mathy_core.expressions.MathExpression = None,
-    child_on_left: bool = True,
+    child: Optional[mathy_core.expressions.MathExpression] = None,
+    child_on_left: bool = False,
 )
 ```
 
@@ -600,20 +886,29 @@ EqualExpression.operate(
 ) -> Union[float, int]
 ```
 
-This is where assignment of context variables might make sense. But context
-is not present in the expression's `operate` method.
+Return the value of the equation if one == two.
 
-!!! warning
+Raise ValueError if both sides of the equation don't agree.
 
-    TODO: Investigate this thoroughly.
+## FactorialExpression <kbd>class</kbd>
+
+```python
+FactorialExpression(
+    self,
+    child: Optional[mathy_core.expressions.MathExpression] = None,
+    child_on_left: bool = False,
+)
+```
+
+Factorial of a constant, e.g. `5` evaluates to `120`
 
 ## FunctionExpression <kbd>class</kbd>
 
 ```python
 FunctionExpression(
     self,
-    child: mathy_core.expressions.MathExpression = None,
-    child_on_left: bool = True,
+    child: Optional[mathy_core.expressions.MathExpression] = None,
+    child_on_left: bool = False,
 )
 ```
 
@@ -626,10 +921,10 @@ class.
 ```python
 MathExpression(
     self,
-    id: str = None,
-    left: 'MathExpression' = None,
-    right: 'MathExpression' = None,
-    parent: 'MathExpression' = None,
+    id: Optional[str] = None,
+    left: Optional[MathExpression] = None,
+    right: Optional[MathExpression] = None,
+    parent: Optional[MathExpression] = None,
 )
 ```
 
@@ -684,7 +979,7 @@ See `MathExpression.clone_from_root` for more details.
 ```python
 MathExpression.clone_from_root(
     self,
-    node: 'MathExpression' = None,
+    node: Optional[MathExpression] = None,
 ) -> 'MathExpression'
 ```
 
@@ -710,7 +1005,7 @@ Color to use for this node when rendering it as changed with
 ```python
 MathExpression.evaluate(
     self,
-    context: Dict[str, Union[float, int]] = None,
+    context: Union[Dict[str, Optional[float, int]]] = None,
 ) -> Union[float, int]
 ```
 
@@ -844,8 +1139,8 @@ Multiply one and two
 ```python
 NegateExpression(
     self,
-    child: mathy_core.expressions.MathExpression = None,
-    child_on_left: bool = True,
+    child: Optional[mathy_core.expressions.MathExpression] = None,
+    child_on_left: bool = False,
 )
 ```
 
@@ -876,8 +1171,8 @@ Raise one to the power of two
 ```python
 SgnExpression(
     self,
-    child: mathy_core.expressions.MathExpression = None,
-    child_on_left: bool = True,
+    child: Optional[mathy_core.expressions.MathExpression] = None,
+    child_on_left: bool = False,
 )
 ```
 
@@ -910,14 +1205,14 @@ Subtract one from two
 ```python
 UnaryExpression(
     self,
-    child: mathy_core.expressions.MathExpression = None,
-    child_on_left: bool = True,
+    child: Optional[mathy_core.expressions.MathExpression] = None,
+    child_on_left: bool = False,
 )
 ```
 
 An expression that operates on one sub-expression
 
-# mathy_core.rules.associative_property
+# mathy_core.rules.associative_swap
 
 ## AssociativeSwapRule <kbd>class</kbd>
 
@@ -946,7 +1241,7 @@ Multiplication: `(ab)c = a(bc)`
         /   \              /   \
        a     b            b     c
 
-# mathy_core.rules.commutative_property
+# mathy_core.rules.commutative_swap
 
 ## CommutativeSwapRule <kbd>class</kbd>
 
@@ -1168,15 +1463,6 @@ Structure:
 - Chained node(mult),node.left(term),node.right(mult),node.right.left(term)
 
 # mathy_core.layout
-
-## Tree Layout
-
-In order to help visualize, understand, and debug math trees and transformations to
-them, Mathy implements a
-[Reingold-Tilford](https://reingold.co/tidier-drawings.pdf) layout
-algorithm that works with expression trees. It produces beautiful trees like:
-
-`mathy:(2x^3 + y)(14 + 2.3y)`
 
 ## TreeLayout <kbd>class</kbd>
 

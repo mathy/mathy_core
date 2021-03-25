@@ -1,7 +1,7 @@
-from typing import List, Optional
+from typing import Any, List, Optional
 
 from .expressions import MathExpression
-from .tree import STOP, SideType, VisitDataType, VisitStop
+from .tree import STOP, SideType, VisitStop
 from .util import is_debug_mode
 
 
@@ -23,7 +23,7 @@ class BaseRule:
         result = None
 
         def visit_fn(
-            node: MathExpression, depth: int, data: VisitDataType
+            node: MathExpression, depth: int, data: Any
         ) -> Optional[VisitStop]:
             nonlocal result
             if self.can_apply_to(node):
@@ -45,17 +45,13 @@ class BaseRule:
         index = 0
 
         def visit_fn(
-            node: MathExpression, depth: int, data: VisitDataType
+            node: MathExpression, depth: int, data: Any
         ) -> Optional[VisitStop]:
             nonlocal nodes, index
-            add = None
             node.r_index = index
             if self.can_apply_to(node):
-                add = node
-
+                nodes.append(node)
             index += 1
-            if add:
-                nodes.append(add)
             return None
 
         expression.visit_inorder(visit_fn)
@@ -94,14 +90,14 @@ class ExpressionChangeRule:
     _save_parent: Optional[MathExpression]
     _save_side: SideType
 
-    def __init__(self, rule: BaseRule, node: MathExpression = None):
+    def __init__(self, rule: BaseRule, node: Optional[MathExpression] = None):
         self.rule = rule
         self.node = node
         self.result = None
         self._save_parent = None
 
     def save_parent(
-        self, parent: MathExpression = None, side: Optional[SideType] = None
+        self, parent: Optional[MathExpression] = None, side: Optional[SideType] = None
     ) -> "ExpressionChangeRule":
         """Note the parent of the node being modified, and set it as the parent of the
         rule output automatically."""
@@ -119,7 +115,7 @@ class ExpressionChangeRule:
     def done(self, node: MathExpression) -> "ExpressionChangeRule":
         """Set the result of a change to the given node. Restore the parent
         if `save_parent` was called."""
-        if self._save_parent:
+        if self._save_parent and self._save_side:
             self._save_parent.set_side(node, self._save_side)
         self.result = node
         return self

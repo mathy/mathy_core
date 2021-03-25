@@ -3,6 +3,7 @@ from typing import Optional
 from ..expressions import (
     AddExpression,
     ConstantExpression,
+    EqualExpression,
     MathExpression,
     MultiplyExpression,
     PowerExpression,
@@ -45,7 +46,7 @@ class CommutativeSwapRule(BaseRule):
 
     def can_apply_to(self, node: MathExpression) -> bool:
         # Must be an add/multiply
-        if isinstance(node, AddExpression):
+        if isinstance(node, (AddExpression, EqualExpression)):
             return True
         if not isinstance(node, MultiplyExpression):
             return False
@@ -86,8 +87,13 @@ class CommutativeSwapRule(BaseRule):
         mul_chain = isinstance(a, MultiplyExpression) and isinstance(
             node, MultiplyExpression
         )
+
+        # An equation can always be flipped
+        if isinstance(node, EqualExpression):
+            node.set_right(a)
+            node.set_left(b)
         # The left node is not another sibling add
-        if not add_chain and not mul_chain:
+        elif not add_chain and not mul_chain:
             node.set_right(a)
             node.set_left(b)
         else:
