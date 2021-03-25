@@ -1,6 +1,7 @@
 from mathy_core.parser import ExpressionParser
 from mathy_core.rules import (
     AssociativeSwapRule,
+    BalancedMoveRule,
     CommutativeSwapRule,
     ConstantsSimplifyRule,
     DistributiveFactorOutRule,
@@ -58,6 +59,13 @@ def test_rules_variable_multiply():
         pass
 
     run_rule_tests("variable_multiply", VariableMultiplyRule, debug)
+
+
+def test_rules_balanced_move():
+    def debug(ex):
+        pass
+
+    run_rule_tests("balanced_move", BalancedMoveRule, debug)
 
 
 def test_rules_rule_can_apply_to():
