@@ -1,6 +1,6 @@
 import math
 import random
-from typing import Any, Dict, List, NamedTuple, Optional, Tuple, Union, cast
+from typing import Any, Dict, List, NamedTuple, Optional, Set, Tuple, Union, cast
 
 import numpy as np
 from wasabi import TracebackPrinter
@@ -18,7 +18,7 @@ from .expressions import (
     VariableExpression,
 )
 from .parser import ExpressionParser
-from .tree import LEFT, VisitDataType, VisitStop
+from .tree import LEFT, VisitStop
 from .types import Literal, NumberType
 
 
@@ -60,12 +60,16 @@ def compare_expression_values(
     history: Optional[List[Any]] = None,
 ) -> None:
     """Compare and evaluate two expressions to verify they have the same value"""
-    vars_from: set = set()
-    vars_to: set = set()
-    for v in from_expression.find_type(VariableExpression):
-        vars_from.add(v.identifier)
-    for v in to_expression.find_type(VariableExpression):
-        vars_to.add(v.identifier)
+    vars_from: Set[str] = set(
+        v.identifier
+        for v in from_expression.find_type(VariableExpression)
+        if v.identifier
+    )
+    vars_to: Set[str] = set(
+        v.identifier
+        for v in to_expression.find_type(VariableExpression)
+        if v.identifier
+    )
     # If there are not the same unique vars in the two expressions, something
     # bad happened, and the two expressions can only coincidentally be equal
     # in value.
@@ -108,6 +112,19 @@ def compare_expression_values(
         raise_with_history("Expression value changed", changed, history)
 
 
+def compare_equation_values(
+    from_expression: MathExpression,
+    to_expression: MathExpression,
+    eval_context: Dict[str, NumberType],
+) -> None:
+    """Evaluate two equations with some context.
+
+    Raises ValueError if the equations do not hold when evaluated with the given
+    context."""
+    from_expression.evaluate(eval_context)
+    to_expression.evaluate(eval_context)
+
+
 def unlink(node: Optional[MathExpression] = None) -> Optional[MathExpression]:
     """Unlink an expression from it's parent.
 
@@ -128,19 +145,21 @@ def unlink(node: Optional[MathExpression] = None) -> Optional[MathExpression]:
     return node
 
 
-# Build a verbose factor dictionary.
-#
-# This builds a dictionary of factors for a given value that
-# contains both arrangements of terms so that all factors are
-# accessible by key.  That is, factoring 2 would return
-#      result =
-#        1 : 2
-#        2 : 1
 def factor(value: NumberType) -> Dict[NumberType, NumberType]:
+    """Build a verbose factor dictionary.
+
+    This builds a dictionary of factors for a given value that
+    contains both arrangements of terms so that all factors are
+    accessible by key.  That is, factoring 2 would return
+        result = {
+            1 : 2
+            2 : 1
+        }
+    """
     if value == 0 or math.isnan(value):
         return {}
     np.seterr(invalid="ignore")  # type:ignore
-    sqrt = np.sqrt(value)  # type:ignore
+    sqrt: float = np.sqrt(value)  # type:ignore
     np.seterr(invalid="warn")  # type:ignore
     if math.isnan(sqrt):
         return {1: value}
@@ -159,6 +178,7 @@ def factor(value: NumberType) -> Dict[NumberType, NumberType]:
 
 
 def is_add_or_sub(node: MathExpression) -> bool:
+    """Return True if a node is an Add or Subtract expression"""
     return isinstance(node, AddExpression) or isinstance(node, SubtractExpression)
 
 
@@ -187,6 +207,12 @@ def get_sub_terms(
 
     while current is not None:
         term_const = term_var = term_exp = None
+
+        # If there's a negation, pop it off.
+        if isinstance(current, NegateExpression):
+            current = safe_pop()
+            continue
+
         # If there's a coefficient, note it
         if isinstance(current, ConstantExpression):
             term_const = current
@@ -211,7 +237,7 @@ def get_sub_terms(
             # It should be one of these operators
             assert current is None or isinstance(
                 current, (MultiplyExpression, DivideExpression, PowerExpression)
-            )
+            ), f"get_sub_terms({node}) Expected Mul/Div/Power. Found: {type(current)}"
             if not isinstance(current, PowerExpression):
                 current = safe_pop()
 
@@ -254,7 +280,7 @@ def is_simple_term(node: MathExpression) -> bool:
     if sub_terms is False:
         return False
     assert isinstance(sub_terms, list)
-    seen: set = set()
+    seen: Set[str] = set()
     co_key = "coefficient"
 
     for coefficient, variable, exponent in sub_terms:
@@ -315,7 +341,7 @@ def is_preferred_term_form(expression: MathExpression) -> bool:
     # examples:
     #  - `b * (44b^2)`
     #  - `z * (1274z^2)`
-    for key, value in seen_vars.items():
+    for value in seen_vars.values():
         if value > 1:
             return False
     return True
@@ -332,7 +358,7 @@ def has_like_terms(expression: MathExpression) -> bool:
     - `x^2 + 4x^3 + 2y` = `True`
     """
 
-    seen: set = set()
+    seen: Set[Any] = set()
     term_nodes = get_terms(expression)
     for node in term_nodes:
         term = get_term(node)
@@ -693,9 +719,7 @@ def get_terms(expression: MathExpression) -> List[MathExpression]:
     if isinstance(root, MultiplyExpression):
         results.append(root)
 
-    def visit_fn(
-        node: MathExpression, depth: int, data: VisitDataType
-    ) -> Optional[VisitStop]:
+    def visit_fn(node: MathExpression, depth: int, data: Any) -> Optional[VisitStop]:
         nonlocal results
         if not is_add_or_sub(node):
             return None

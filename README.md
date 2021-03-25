@@ -95,19 +95,17 @@ mathy_core>=0.1.37,<0.2.0
 <!-- NOTE: The below code is auto-generated. Update source files to change API documentation. -->
 <!-- AUTO_DOCZ_START -->
 
-# mathy_core.tokenizer
+# Tokenizer <kbd>class</kbd>
 
-## Tokenizer <kbd>class</kbd>
-
-```python
+```python (doc)
 Tokenizer(self, exclude_padding: bool = True)
 ```
 
 The Tokenizer produces a list of tokens from an input string.
 
-### eat_token <kbd>method</kbd>
+## eat_token <kbd>method</kbd>
 
-```python
+```python (doc)
 Tokenizer.eat_token(
     self,
     context: mathy_core.tokenizer.TokenContext,
@@ -118,9 +116,9 @@ Tokenizer.eat_token(
 Eat all of the tokens of a given type from the front of the stream
 until a different type is hit, and return the text.
 
-### identify_alphas <kbd>method</kbd>
+## identify_alphas <kbd>method</kbd>
 
-```python
+```python (doc)
 Tokenizer.identify_alphas(
     self,
     context: mathy_core.tokenizer.TokenContext,
@@ -129,9 +127,9 @@ Tokenizer.identify_alphas(
 
 Identify and tokenize functions and variables.
 
-### identify_constants <kbd>method</kbd>
+## identify_constants <kbd>method</kbd>
 
-```python
+```python (doc)
 Tokenizer.identify_constants(
     self,
     context: mathy_core.tokenizer.TokenContext,
@@ -140,9 +138,9 @@ Tokenizer.identify_constants(
 
 Identify and tokenize a constant number.
 
-### identify_operators <kbd>method</kbd>
+## identify_operators <kbd>method</kbd>
 
-```python
+```python (doc)
 Tokenizer.identify_operators(
     self,
     context: mathy_core.tokenizer.TokenContext,
@@ -151,25 +149,25 @@ Tokenizer.identify_operators(
 
 Identify and tokenize operators.
 
-### is_alpha <kbd>method</kbd>
+## is_alpha <kbd>method</kbd>
 
-```python
+```python (doc)
 Tokenizer.is_alpha(self, c: str) -> bool
 ```
 
 Is this character a letter
 
-### is_number <kbd>method</kbd>
+## is_number <kbd>method</kbd>
 
-```python
+```python (doc)
 Tokenizer.is_number(self, c: str) -> bool
 ```
 
 Is this character a number
 
-### tokenize <kbd>method</kbd>
+## tokenize <kbd>method</kbd>
 
-```python
+```python (doc)
 Tokenizer.tokenize(self, buffer: str) -> List[mathy_core.tokenizer.Token]
 ```
 
@@ -180,7 +178,7 @@ This throws an exception if an unknown token type is found in the input.
 
 ## ExpressionParser <kbd>class</kbd>
 
-```python
+```python (doc)
 ExpressionParser(self) -> None
 ```
 
@@ -225,8 +223,12 @@ Rules:
 
 ### check <kbd>method</kbd>
 
-```python
-ExpressionParser.check(self, tokens: mathy_core.parser.TokenSet) -> bool
+```python (doc)
+ExpressionParser.check(
+    self,
+    tokens: mathy_core.parser.TokenSet,
+    do_assert: bool = False,
+) -> bool
 ```
 
 Check if the `self.current_token` is a member of a set Token types
@@ -237,7 +239,7 @@ Args: - `tokens` The set of Token types to check against
 
 ### eat <kbd>method</kbd>
 
-```python
+```python (doc)
 ExpressionParser.eat(self, type: int) -> bool
 ```
 
@@ -249,7 +251,7 @@ Args: - `type` The type that your syntax expects @current_token to be
 
 ### next <kbd>method</kbd>
 
-```python
+```python (doc)
 ExpressionParser.next(self) -> bool
 ```
 
@@ -260,7 +262,7 @@ are no more tokens to look at.
 
 ### parse <kbd>method</kbd>
 
-```python
+```python (doc)
 ExpressionParser.parse(
     self,
     input_text: str,
@@ -274,7 +276,7 @@ Returns : The evaluatable expression tree.
 
 ## TokenSet <kbd>class</kbd>
 
-```python
+```python (doc)
 TokenSet(self, source: int)
 ```
 
@@ -283,7 +285,7 @@ if a token is part of a valid set.
 
 ### add <kbd>method</kbd>
 
-```python
+```python (doc)
 TokenSet.add(self, addTokens: int) -> 'TokenSet'
 ```
 
@@ -293,7 +295,7 @@ of `TokenSet`
 
 ### contains <kbd>method</kbd>
 
-```python
+```python (doc)
 TokenSet.contains(self, type: int) -> bool
 ```
 
@@ -303,12 +305,12 @@ Returns true if the given type is part of this set
 
 ## BinaryTreeNode <kbd>class</kbd>
 
-```python
+```python (doc)
 BinaryTreeNode(
     self,
-    left: 'BinaryTreeNode' = None,
-    right: 'BinaryTreeNode' = None,
-    parent: 'BinaryTreeNode' = None,
+    left: Optional[BinaryTreeNode] = None,
+    right: Optional[BinaryTreeNode] = None,
+    parent: Optional[BinaryTreeNode] = None,
     id: Optional[str] = None,
 )
 ```
@@ -320,16 +322,16 @@ children, and a parent.
 
 ### clone <kbd>method</kbd>
 
-```python
-BinaryTreeNode.clone(self) -> ~NodeType
+```python (doc)
+BinaryTreeNode.clone(self: ~NodeType) -> ~NodeType
 ```
 
 Create a clone of this tree
 
 ### get_children <kbd>method</kbd>
 
-```python
-BinaryTreeNode.get_children(self) -> List[~NodeType]
+```python (doc)
+BinaryTreeNode.get_children(self: ~NodeType) -> List[~NodeType]
 ```
 
 Get children as an array. If there are two children, the first object will
@@ -337,15 +339,25 @@ always represent the left child, and the second will represent the right.
 
 ### get_root <kbd>method</kbd>
 
-```python
+```python (doc)
 BinaryTreeNode.get_root(self: ~NodeType) -> ~NodeType
 ```
 
 Return the root element of this tree
 
+### get_root_side <kbd>method</kbd>
+
+```python (doc)
+BinaryTreeNode.get_root_side(
+    self: 'BinaryTreeNode',
+) -> typing_extensions.Literal['left', 'right']
+```
+
+Return the side of the tree that this node lives on
+
 ### get_sibling <kbd>method</kbd>
 
-```python
+```python (doc)
 BinaryTreeNode.get_sibling(self: ~NodeType) -> Optional[~NodeType]
 ```
 
@@ -354,11 +366,11 @@ has no sibling, the return value will be None.
 
 ### get_side <kbd>method</kbd>
 
-```python
+```python (doc)
 BinaryTreeNode.get_side(
     self,
-    child: ~NodeType,
-) -> Union[typing_extensions.Literal['left'], typing_extensions.Literal['right']]
+    child: Optional[BinaryTreeNode],
+) -> typing_extensions.Literal['left', 'right']
 ```
 
 Determine whether the given `child` is the left or right child of this
@@ -366,19 +378,15 @@ node
 
 ### is_leaf <kbd>method</kbd>
 
-```python
+```python (doc)
 BinaryTreeNode.is_leaf(self) -> bool
 ```
 
 Is this node a leaf? A node is a leaf if it has no children.
 
-### name
-
-Human readable name for this node.
-
 ### rotate <kbd>method</kbd>
 
-```python
+```python (doc)
 BinaryTreeNode.rotate(self: ~NodeType) -> ~NodeType
 ```
 
@@ -387,7 +395,7 @@ the order of the nodes in the tree.
 
 ### set_left <kbd>method</kbd>
 
-```python
+```python (doc)
 BinaryTreeNode.set_left(
     self: ~NodeType,
     child: Optional[BinaryTreeNode] = None,
@@ -399,7 +407,7 @@ Set the left node to the passed `child`
 
 ### set_right <kbd>method</kbd>
 
-```python
+```python (doc)
 BinaryTreeNode.set_right(
     self: ~NodeType,
     child: Optional[BinaryTreeNode] = None,
@@ -411,11 +419,11 @@ Set the right node to the passed `child`
 
 ### set_side <kbd>method</kbd>
 
-```python
+```python (doc)
 BinaryTreeNode.set_side(
     self,
     child: ~NodeType,
-    side: Union[typing_extensions.Literal['left'], typing_extensions.Literal['right']],
+    side: typing_extensions.Literal['left', 'right'],
 ) -> ~NodeType
 ```
 
@@ -423,12 +431,12 @@ Set a new `child` on the given `side`
 
 ### visit_inorder <kbd>method</kbd>
 
-```python
+```python (doc)
 BinaryTreeNode.visit_inorder(
-    self: ~NodeType,
-    visit_fn: Callable[[~NodeType, int, ~VisitDataType], Optional[typing_extensions.Literal['stop']]],
+    self,
+    visit_fn: Callable[[Any, int, Optional[Any]], Optional[typing_extensions.Literal['stop']]],
     depth: int = 0,
-    data: Optional[~VisitDataType] = None,
+    data: Optional[Any] = None,
 ) -> Optional[typing_extensions.Literal['stop']]
 ```
 
@@ -447,12 +455,12 @@ visited, the current depth in the tree, and a user specified data parameter.
 
 ### visit_postorder <kbd>method</kbd>
 
-```python
+```python (doc)
 BinaryTreeNode.visit_postorder(
-    self: ~NodeType,
-    visit_fn: Callable[[~NodeType, int, ~VisitDataType], Optional[typing_extensions.Literal['stop']]],
+    self,
+    visit_fn: Callable[[Any, int, Optional[Any]], Optional[typing_extensions.Literal['stop']]],
     depth: int = 0,
-    data: Optional[~VisitDataType] = None,
+    data: Optional[Any] = None,
 ) -> Optional[typing_extensions.Literal['stop']]
 ```
 
@@ -471,12 +479,12 @@ visited, the current depth in the tree, and a user specified data parameter.
 
 ### visit_preorder <kbd>method</kbd>
 
-```python
+```python (doc)
 BinaryTreeNode.visit_preorder(
-    self: ~NodeType,
-    visit_fn: Callable[[~NodeType, int, ~VisitDataType], Optional[typing_extensions.Literal['stop']]],
+    self,
+    visit_fn: Callable[[Any, int, Optional[Any]], Optional[typing_extensions.Literal['stop']]],
     depth: int = 0,
-    data: Optional[~VisitDataType] = None,
+    data: Optional[Any] = None,
 ) -> Optional[typing_extensions.Literal['stop']]
 ```
 
@@ -505,11 +513,11 @@ Template type of user data passed to visit functions.
 
 ## AbsExpression <kbd>class</kbd>
 
-```python
+```python (doc)
 AbsExpression(
     self,
-    child: mathy_core.expressions.MathExpression = None,
-    child_on_left: bool = True,
+    child: Optional[mathy_core.expressions.MathExpression] = None,
+    child_on_left: bool = False,
 )
 ```
 
@@ -517,7 +525,7 @@ Evaluates the absolute value of an expression.
 
 ## AddExpression <kbd>class</kbd>
 
-```python
+```python (doc)
 AddExpression(
     self,
     left: Optional[mathy_core.expressions.MathExpression] = None,
@@ -529,7 +537,7 @@ Add one and two
 
 ## BinaryExpression <kbd>class</kbd>
 
-```python
+```python (doc)
 BinaryExpression(
     self,
     left: Optional[mathy_core.expressions.MathExpression] = None,
@@ -541,7 +549,7 @@ An expression that operates on two sub-expressions
 
 ### get_priority <kbd>method</kbd>
 
-```python
+```python (doc)
 BinaryExpression.get_priority(self) -> int
 ```
 
@@ -552,7 +560,7 @@ first during evaluation because of it's priority.
 
 ### to_math_ml_fragment <kbd>method</kbd>
 
-```python
+```python (doc)
 BinaryExpression.to_math_ml_fragment(self) -> str
 ```
 
@@ -560,7 +568,7 @@ Render this node as a MathML element fragment
 
 ## ConstantExpression <kbd>class</kbd>
 
-```python
+```python (doc)
 ConstantExpression(self, value: Optional[int, float] = None)
 ```
 
@@ -568,7 +576,7 @@ A Constant value node, where the value is accessible as `node.value`
 
 ## DivideExpression <kbd>class</kbd>
 
-```python
+```python (doc)
 DivideExpression(
     self,
     left: Optional[mathy_core.expressions.MathExpression] = None,
@@ -580,7 +588,7 @@ Divide one by two
 
 ## EqualExpression <kbd>class</kbd>
 
-```python
+```python (doc)
 EqualExpression(
     self,
     left: Optional[mathy_core.expressions.MathExpression] = None,
@@ -592,7 +600,7 @@ Evaluate equality of two expressions
 
 ### operate <kbd>method</kbd>
 
-```python
+```python (doc)
 EqualExpression.operate(
     self,
     one: Union[float, int],
@@ -600,20 +608,29 @@ EqualExpression.operate(
 ) -> Union[float, int]
 ```
 
-This is where assignment of context variables might make sense. But context
-is not present in the expression's `operate` method.
+Return the value of the equation if one == two.
 
-!!! warning
+Raise ValueError if both sides of the equation don't agree.
 
-    TODO: Investigate this thoroughly.
+## FactorialExpression <kbd>class</kbd>
+
+```python (doc)
+FactorialExpression(
+    self,
+    child: Optional[mathy_core.expressions.MathExpression] = None,
+    child_on_left: bool = False,
+)
+```
+
+Factorial of a constant, e.g. `5` evaluates to `120`
 
 ## FunctionExpression <kbd>class</kbd>
 
-```python
+```python (doc)
 FunctionExpression(
     self,
-    child: mathy_core.expressions.MathExpression = None,
-    child_on_left: bool = True,
+    child: Optional[mathy_core.expressions.MathExpression] = None,
+    child_on_left: bool = False,
 )
 ```
 
@@ -623,13 +640,13 @@ class.
 
 ## MathExpression <kbd>class</kbd>
 
-```python
+```python (doc)
 MathExpression(
     self,
-    id: str = None,
-    left: 'MathExpression' = None,
-    right: 'MathExpression' = None,
-    parent: 'MathExpression' = None,
+    id: Optional[str] = None,
+    left: Optional[MathExpression] = None,
+    right: Optional[MathExpression] = None,
+    parent: Optional[MathExpression] = None,
 )
 ```
 
@@ -639,7 +656,7 @@ Math tree node with helpers for manipulating expressions.
 
 ### add_class <kbd>method</kbd>
 
-```python
+```python (doc)
 MathExpression.add_class(
     self,
     classes: Union[List[str], str],
@@ -654,7 +671,7 @@ See `MathExpression.to_math_ml_fragment`
 
 ### all_changed <kbd>method</kbd>
 
-```python
+```python (doc)
 MathExpression.all_changed(self) -> None
 ```
 
@@ -662,7 +679,7 @@ Mark this node and all of its children as changed
 
 ### clear_classes <kbd>method</kbd>
 
-```python
+```python (doc)
 MathExpression.clear_classes(self) -> None
 ```
 
@@ -670,7 +687,7 @@ Clear all the classes currently set on the nodes in this expression.
 
 ### clone <kbd>method</kbd>
 
-```python
+```python (doc)
 MathExpression.clone(self) -> 'MathExpression'
 ```
 
@@ -681,10 +698,10 @@ See `MathExpression.clone_from_root` for more details.
 
 ### clone_from_root <kbd>method</kbd>
 
-```python
+```python (doc)
 MathExpression.clone_from_root(
     self,
-    node: 'MathExpression' = None,
+    node: Optional[MathExpression] = None,
 ) -> 'MathExpression'
 ```
 
@@ -707,10 +724,10 @@ Color to use for this node when rendering it as changed with
 
 ### evaluate <kbd>method</kbd>
 
-```python
+```python (doc)
 MathExpression.evaluate(
     self,
-    context: Dict[str, Union[float, int]] = None,
+    context: Union[Dict[str, Optional[float, int]]] = None,
 ) -> Union[float, int]
 ```
 
@@ -718,7 +735,7 @@ Evaluate the expression, resolving all variables to constant values
 
 ### find_id <kbd>method</kbd>
 
-```python
+```python (doc)
 MathExpression.find_id(
     self,
     id: str,
@@ -731,7 +748,7 @@ Returns: The found `MathExpression` or `None`
 
 ### find_type <kbd>method</kbd>
 
-```python
+```python (doc)
 MathExpression.find_type(self, instanceType: Type[~NodeType]) -> List[~NodeType]
 ```
 
@@ -743,7 +760,7 @@ Returns the found `MathExpression` objects of the given type.
 
 ### make_ml_tag <kbd>method</kbd>
 
-```python
+```python (doc)
 MathExpression.make_ml_tag(
     self,
     tag: str,
@@ -767,7 +784,7 @@ classes.
 
 ### path_to_root <kbd>method</kbd>
 
-```python
+```python (doc)
 MathExpression.path_to_root(self) -> str
 ```
 
@@ -780,7 +797,7 @@ raw text representation of the expression.
 
 ### set_changed <kbd>method</kbd>
 
-```python
+```python (doc)
 MathExpression.set_changed(self) -> None
 ```
 
@@ -794,7 +811,7 @@ a transformation.
 
 ### to_list <kbd>method</kbd>
 
-```python
+```python (doc)
 MathExpression.to_list(
     self,
     visit: str = 'preorder',
@@ -805,7 +822,7 @@ Convert this node hierarchy into a list.
 
 ### to_math_ml <kbd>method</kbd>
 
-```python
+```python (doc)
 MathExpression.to_math_ml(self) -> str
 ```
 
@@ -813,7 +830,7 @@ Convert this expression into a MathML container.
 
 ### to_math_ml_fragment <kbd>method</kbd>
 
-```python
+```python (doc)
 MathExpression.to_math_ml_fragment(self) -> str
 ```
 
@@ -821,7 +838,7 @@ Convert this single node into MathML.
 
 ### with_color <kbd>method</kbd>
 
-```python
+```python (doc)
 MathExpression.with_color(self, text: str, style: str = 'bright') -> str
 ```
 
@@ -829,7 +846,7 @@ Render a string that is colored if something has changed
 
 ## MultiplyExpression <kbd>class</kbd>
 
-```python
+```python (doc)
 MultiplyExpression(
     self,
     left: Optional[mathy_core.expressions.MathExpression] = None,
@@ -841,11 +858,11 @@ Multiply one and two
 
 ## NegateExpression <kbd>class</kbd>
 
-```python
+```python (doc)
 NegateExpression(
     self,
-    child: mathy_core.expressions.MathExpression = None,
-    child_on_left: bool = True,
+    child: Optional[mathy_core.expressions.MathExpression] = None,
+    child_on_left: bool = False,
 )
 ```
 
@@ -853,7 +870,7 @@ Negate an expression, e.g. `4` becomes `-4`
 
 ### to_math_ml_fragment <kbd>method</kbd>
 
-```python
+```python (doc)
 NegateExpression.to_math_ml_fragment(self) -> str
 ```
 
@@ -861,7 +878,7 @@ Convert this single node into MathML.
 
 ## PowerExpression <kbd>class</kbd>
 
-```python
+```python (doc)
 PowerExpression(
     self,
     left: Optional[mathy_core.expressions.MathExpression] = None,
@@ -873,17 +890,17 @@ Raise one to the power of two
 
 ## SgnExpression <kbd>class</kbd>
 
-```python
+```python (doc)
 SgnExpression(
     self,
-    child: mathy_core.expressions.MathExpression = None,
-    child_on_left: bool = True,
+    child: Optional[mathy_core.expressions.MathExpression] = None,
+    child_on_left: bool = False,
 )
 ```
 
 ### operate <kbd>method</kbd>
 
-```python
+```python (doc)
 SgnExpression.operate(self, value: Union[float, int]) -> Union[float, int]
 ```
 
@@ -895,7 +912,7 @@ Determine the sign of an value.
 
 ## SubtractExpression <kbd>class</kbd>
 
-```python
+```python (doc)
 SubtractExpression(
     self,
     left: Optional[mathy_core.expressions.MathExpression] = None,
@@ -907,21 +924,21 @@ Subtract one from two
 
 ## UnaryExpression <kbd>class</kbd>
 
-```python
+```python (doc)
 UnaryExpression(
     self,
-    child: mathy_core.expressions.MathExpression = None,
-    child_on_left: bool = True,
+    child: Optional[mathy_core.expressions.MathExpression] = None,
+    child_on_left: bool = False,
 )
 ```
 
 An expression that operates on one sub-expression
 
-# mathy_core.rules.associative_property
+# mathy_core.rules.associative_swap
 
 ## AssociativeSwapRule <kbd>class</kbd>
 
-```python
+```python (doc)
 AssociativeSwapRule(self, args, kwargs)
 ```
 
@@ -946,11 +963,44 @@ Multiplication: `(ab)c = a(bc)`
         /   \              /   \
        a     b            b     c
 
-# mathy_core.rules.commutative_property
+# mathy_core.rules.balanced_move
+
+## BalancedMoveRule <kbd>class</kbd>
+
+```python (doc)
+BalancedMoveRule(self, args, kwargs)
+```
+
+Balanced rewrite rule moves nodes from one side of an equation
+to the other by performing the same operation on both sides.
+
+Addition: `a + 2 = 3` -> `a + 2 = 3 - 2`
+Multiplication: `3a = 3` -> `3a / 3 = 3 / 3`
+
+### get_type <kbd>method</kbd>
+
+```python (doc)
+BalancedMoveRule.get_type(
+    self,
+    node: mathy_core.expressions.MathExpression,
+) -> Optional[str]
+```
+
+Determine the configuration of the tree for this transformation.
+
+Supports the following configurations:
+
+- Addition is a term connected by an addition to the side of an equation
+  or inequality. It generates two subtractions to move from one side to the
+  other.
+- Multiply is a coefficient of a term that must be divided on both sides of
+  the equation or inequality.
+
+# mathy_core.rules.commutative_swap
 
 ## CommutativeSwapRule <kbd>class</kbd>
 
-```python
+```python (doc)
 CommutativeSwapRule(self, preferred: bool = True)
 ```
 
@@ -975,7 +1025,7 @@ For Multiplication: `a * b = b * a`
 
 ## ConstantsSimplifyRule <kbd>class</kbd>
 
-```python
+```python (doc)
 ConstantsSimplifyRule(self, args, kwargs)
 ```
 
@@ -984,7 +1034,7 @@ constant expression
 
 ### get_type <kbd>method</kbd>
 
-```python
+```python (doc)
 ConstantsSimplifyRule.get_type(
     self,
     node: mathy_core.expressions.MathExpression,
@@ -1014,7 +1064,7 @@ Structure:
 
 ## DistributiveFactorOutRule <kbd>class</kbd>
 
-```python
+```python (doc)
 DistributiveFactorOutRule(self, constants: bool = False)
 ```
 
@@ -1040,7 +1090,7 @@ factors out a common term from the given two addition operands.
 
 ### get_type <kbd>method</kbd>
 
-```python
+```python (doc)
 DistributiveFactorOutRule.get_type(
     self,
     node: mathy_core.expressions.MathExpression,
@@ -1073,7 +1123,7 @@ Structure:
 
 ## DistributiveMultiplyRule <kbd>class</kbd>
 
-```python
+```python (doc)
 DistributiveMultiplyRule(self, args, kwargs)
 ```
 
@@ -1105,7 +1155,7 @@ combined for further expression simplification._
 
 ## VariableMultiplyRule <kbd>class</kbd>
 
-```python
+```python (doc)
 VariableMultiplyRule(self, args, kwargs)
 ```
 
@@ -1144,7 +1194,7 @@ Implicit powers: x \* x^d = x^(1 + d)
 
 ### get_type <kbd>method</kbd>
 
-```python
+```python (doc)
 VariableMultiplyRule.get_type(
     self,
     node: mathy_core.expressions.MathExpression,
@@ -1169,18 +1219,9 @@ Structure:
 
 # mathy_core.layout
 
-## Tree Layout
-
-In order to help visualize, understand, and debug math trees and transformations to
-them, Mathy implements a
-[Reingold-Tilford](https://reingold.co/tidier-drawings.pdf) layout
-algorithm that works with expression trees. It produces beautiful trees like:
-
-`mathy:(2x^3 + y)(14 + 2.3y)`
-
 ## TreeLayout <kbd>class</kbd>
 
-```python
+```python (doc)
 TreeLayout(self, args, kwargs)
 ```
 
@@ -1188,7 +1229,7 @@ Calculate a visual layout for input trees.
 
 ### layout <kbd>method</kbd>
 
-```python
+```python (doc)
 TreeLayout.layout(
     self,
     node: mathy_core.tree.BinaryTreeNode,
@@ -1204,7 +1245,7 @@ Returns a TreeMeasurement object that describes the bounds of the tree
 
 ### transform <kbd>method</kbd>
 
-```python
+```python (doc)
 TreeLayout.transform(
     self,
     node: mathy_core.tree.BinaryTreeNode = None,
@@ -1221,7 +1262,7 @@ Return a measurement of the tree in output units.
 
 ## TreeMeasurement <kbd>class</kbd>
 
-```python
+```python (doc)
 TreeMeasurement(self) -> None
 ```
 
@@ -1239,7 +1280,7 @@ Template type for a default return value
 
 ## gen_binomial_times_binomial <kbd>function</kbd>
 
-```python
+```python (doc)
 gen_binomial_times_binomial(
     op: str = '+',
     min_vars: int = 1,
@@ -1262,7 +1303,7 @@ Generate a binomial multiplied by another binomial.
 
 ## gen_binomial_times_monomial <kbd>function</kbd>
 
-```python
+```python (doc)
 gen_binomial_times_monomial(
     op: str = '+',
     min_vars: int = 1,
@@ -1285,7 +1326,7 @@ Generate a binomial multiplied by a monomial.
 
 ## gen_combine_terms_in_place <kbd>function</kbd>
 
-```python
+```python (doc)
 gen_combine_terms_in_place(
     min_terms: int = 16,
     max_terms: int = 26,
@@ -1315,7 +1356,7 @@ invariant of the sequence length.
 
 ## gen_commute_haystack <kbd>function</kbd>
 
-```python
+```python (doc)
 gen_commute_haystack(
     min_terms: int = 5,
     max_terms: int = 8,
@@ -1340,7 +1381,7 @@ The challenge is to commute the terms to each other in one move.
 
 ## gen_move_around_blockers_one <kbd>function</kbd>
 
-```python
+```python (doc)
 gen_move_around_blockers_one(
     number_blockers: int,
     powers_probability: float = 0.5,
@@ -1359,7 +1400,7 @@ Two like terms separated by (n) blocker terms.
 
 ## gen_move_around_blockers_two <kbd>function</kbd>
 
-```python
+```python (doc)
 gen_move_around_blockers_two(
     number_blockers: int,
     powers_probability: float = 0.5,
@@ -1378,7 +1419,7 @@ Two like terms with three blockers.
 
 ## gen_simplify_multiple_terms <kbd>function</kbd>
 
-```python
+```python (doc)
 gen_simplify_multiple_terms(
     num_terms: int,
     optional_var: bool = False,
@@ -1408,7 +1449,7 @@ simplified.
 
 ## get_blocker <kbd>function</kbd>
 
-```python
+```python (doc)
 get_blocker(
     num_blockers: int = 1,
     exclude_vars: Optional[List[str]] = None,
@@ -1421,7 +1462,7 @@ rules to move terms around.
 
 ## get_rand_vars <kbd>function</kbd>
 
-```python
+```python (doc)
 get_rand_vars(
     num_vars: int,
     exclude_vars: Optional[List[str]] = None,
@@ -1433,7 +1474,7 @@ Get a list of random variables, excluding the given list of hold-out variables
 
 ## split_in_two_random <kbd>function</kbd>
 
-```python
+```python (doc)
 split_in_two_random(value: int) -> Tuple[int, int]
 ```
 
@@ -1442,7 +1483,7 @@ Returns: a tuple of (lower, higher) numbers that sum to the input
 
 ## use_pretty_numbers <kbd>function</kbd>
 
-```python
+```python (doc)
 use_pretty_numbers(enabled: bool = True) -> None
 ```
 

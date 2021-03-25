@@ -1,11 +1,11 @@
-from typing import Any, Callable, List, Optional, TypeVar, Union
+from typing import Any, Callable, List, Optional, TypeVar, Union, cast
 
 from .types import Literal
 
 NodeType = TypeVar("NodeType", bound="BinaryTreeNode")
 try:
     NodeType.__doc__ = "Template type that inherits from BinaryTreeNode."
-except AttributeError:
+except AttributeError:  # pragma: nocover
     ...  # Boo!
 
 # ## Constants
@@ -18,14 +18,15 @@ LEFT: Literal["left"] = "left"
 RIGHT: Literal["right"] = "right"
 
 
-SideType = Union[Literal["left"], Literal["right"]]
 VisitStop = Literal["stop"]
 VisitDataType = TypeVar("VisitDataType", bound=Any)
 try:
     VisitDataType.__doc__ = "Template type of user data passed to visit functions."
-except AttributeError:
+except AttributeError:  # pragma: nocover
     ...  # Boo!
-VisitFunction = Callable[[NodeType, int, VisitDataType], Optional[VisitStop]]
+VisitFunction = Callable[
+    [NodeType, int, Optional[VisitDataType]], Union[Optional[VisitStop], None]
+]
 
 
 class BinaryTreeNode:
@@ -52,9 +53,9 @@ class BinaryTreeNode:
     #  Allow specifying children in the constructor
     def __init__(
         self,
-        left: "BinaryTreeNode" = None,
-        right: "BinaryTreeNode" = None,
-        parent: "BinaryTreeNode" = None,
+        left: Optional["BinaryTreeNode"] = None,
+        right: Optional["BinaryTreeNode"] = None,
+        parent: Optional["BinaryTreeNode"] = None,
         id: Optional[str] = None,
     ):
         if id is None:
@@ -67,9 +68,9 @@ class BinaryTreeNode:
         self.set_right(right)
         self.parent = parent
 
-    def clone(self) -> NodeType:
+    def clone(self: NodeType) -> NodeType:
         """Create a clone of this tree"""
-        result: NodeType = self.__class__()  # type:ignore
+        result = self.__class__()  # type:ignore
         result.id = self.id
         if self.left:
             result.set_left(self.left.clone())  # type:ignore
@@ -81,15 +82,6 @@ class BinaryTreeNode:
     def is_leaf(self) -> bool:
         """Is this node a leaf?  A node is a leaf if it has no children."""
         return not self.left and not self.right
-
-    def __str__(self) -> str:
-        """Serialize the node as a str"""
-        return "{} {}".format(self.left, self.right)
-
-    @property
-    def name(self) -> str:
-        """Human readable name for this node."""
-        return "BinaryTreeNode"
 
     def rotate(self: NodeType) -> NodeType:
         """
@@ -122,10 +114,10 @@ class BinaryTreeNode:
         return self
 
     def visit_preorder(
-        self: NodeType,
-        visit_fn: VisitFunction,
+        self,
+        visit_fn: VisitFunction[Any, Any],
         depth: int = 0,
-        data: Optional[VisitDataType] = None,
+        data: Optional[Any] = None,
     ) -> Optional[VisitStop]:
         """Visit the tree preorder, which visits the current node, then its left
         child, and then its right child.
@@ -140,7 +132,7 @@ class BinaryTreeNode:
 
             Traversals may be canceled by returning `STOP` from any visit function.
         """
-        if visit_fn and visit_fn(self, depth, data) == STOP:
+        if visit_fn and visit_fn(self, depth, data) == STOP:  # type:ignore
             return STOP
 
         if self.left and self.left.visit_preorder(visit_fn, depth + 1, data) == STOP:
@@ -151,10 +143,10 @@ class BinaryTreeNode:
         return None
 
     def visit_inorder(
-        self: NodeType,
-        visit_fn: VisitFunction,
+        self,
+        visit_fn: VisitFunction[Any, Any],
         depth: int = 0,
-        data: Optional[VisitDataType] = None,
+        data: Optional[Any] = None,
     ) -> Optional[VisitStop]:
         """Visit the tree inorder, which visits the left child, then the current node,
         and then its right child.
@@ -172,7 +164,7 @@ class BinaryTreeNode:
         if self.left and self.left.visit_inorder(visit_fn, depth + 1, data) == STOP:
             return STOP
 
-        if visit_fn and visit_fn(self, depth, data) == STOP:
+        if visit_fn and visit_fn(self, depth, data) == STOP:  # type:ignore
             return STOP
 
         if self.right and self.right.visit_inorder(visit_fn, depth + 1, data) == STOP:
@@ -180,10 +172,10 @@ class BinaryTreeNode:
         return None
 
     def visit_postorder(
-        self: NodeType,
-        visit_fn: VisitFunction,
+        self,
+        visit_fn: VisitFunction[Any, Any],
         depth: int = 0,
-        data: Optional[VisitDataType] = None,
+        data: Optional[Any] = None,
     ) -> Optional[VisitStop]:
         """Visit the tree postorder, which visits its left child, then its right child,
         and finally the current node.
@@ -204,7 +196,7 @@ class BinaryTreeNode:
         if self.right and self.right.visit_postorder(visit_fn, depth + 1, data) == STOP:
             return STOP
 
-        if visit_fn and visit_fn(self, depth, data) == STOP:
+        if visit_fn and visit_fn(self, depth, data) == STOP:  # type:ignore
             return STOP
         return None
 
@@ -214,7 +206,17 @@ class BinaryTreeNode:
         while result.parent:
             result = result.parent  # type:ignore
 
-        return result
+        return cast(NodeType, result)
+
+    def get_root_side(self: "BinaryTreeNode") -> Literal["left", "right"]:
+        """Return the side of the tree that this node lives on"""
+        result = self
+        last_child = None
+        while result.parent:
+            last_child = result
+            result = result.parent  # type:ignore
+
+        return result.get_side(last_child)
 
     # **Child Management**
     #
@@ -253,7 +255,7 @@ class BinaryTreeNode:
 
         return self
 
-    def get_side(self, child: NodeType) -> SideType:
+    def get_side(self, child: Optional["BinaryTreeNode"]) -> Literal["left", "right"]:
         """Determine whether the given `child` is the left or right child of this
         node"""
         if child == self.left:
@@ -262,9 +264,11 @@ class BinaryTreeNode:
         if child == self.right:
             return RIGHT
 
-        raise ValueError("BinaryTreeNode.get_side: not a child of this node")
+        raise ValueError(
+            f"BinaryTreeNode.get_side: '{child}' is not a child of this node"
+        )
 
-    def set_side(self, child: NodeType, side: SideType) -> NodeType:
+    def set_side(self, child: NodeType, side: Literal["left", "right"]) -> NodeType:
         """Set a new `child` on the given `side`"""
         if side == LEFT:
             return self.set_left(child)  # type:ignore
@@ -274,7 +278,7 @@ class BinaryTreeNode:
 
         raise ValueError("BinaryTreeNode.set_side: Invalid side")
 
-    def get_children(self) -> List[NodeType]:
+    def get_children(self: NodeType) -> List[NodeType]:
         """Get children as an array.  If there are two children, the first object will
         always represent the left child, and the second will represent the right."""
         result: List[Any] = []
@@ -289,13 +293,10 @@ class BinaryTreeNode:
     def get_sibling(self: NodeType) -> Optional[NodeType]:
         """Get the sibling node of this node.  If there is no parent, or the node
         has no sibling, the return value will be None."""
-        if not self.parent:
-            return None
-
-        if self.parent.left == self:
+        if self.parent and self.parent.left == self:
             return self.parent.right  # type:ignore
 
-        if self.parent.right == self:
+        if self.parent and self.parent.right == self:
             return self.parent.left  # type:ignore
 
         return None

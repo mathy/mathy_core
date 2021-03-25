@@ -5,6 +5,7 @@ from .expressions import (
     ConstantExpression,
     DivideExpression,
     EqualExpression,
+    FactorialExpression,
     MathExpression,
     MultiplyExpression,
     NegateExpression,
@@ -12,24 +13,7 @@ from .expressions import (
     SubtractExpression,
     VariableExpression,
 )
-from .tokenizer import (
-    Token,
-    TokenCloseParen,
-    TokenConstant,
-    TokenDivide,
-    TokenEOF,
-    TokenEqual,
-    TokenExponent,
-    TokenFunction,
-    Tokenizer,
-    TokenMinus,
-    TokenMultiply,
-    TokenNone,
-    TokenOpenParen,
-    TokenPlus,
-    TokenVariable,
-    coerce_to_number,
-)
+from .tokenizer import TOKEN_TYPES, Token, Tokenizer, coerce_to_number
 from .types import NumberType
 
 
@@ -38,9 +22,6 @@ class ParserException(Exception):
 
     def __init__(self, message: str):
         self.message = message
-
-    def __str__(self) -> str:
-        return self.message
 
 
 class InvalidExpression(ParserException):
@@ -83,24 +64,24 @@ class TokenSet:
         return (self.tokens & type) != 0
 
 
-_FIRST_FUNCTION: TokenSet = TokenSet(TokenFunction)
-_FIRST_FACTOR: TokenSet = _FIRST_FUNCTION.add(TokenVariable | TokenOpenParen)
-_FIRST_FACTOR_PREFIX: TokenSet = _FIRST_FACTOR.add(TokenConstant)
-_FIRST_UNARY: TokenSet = _FIRST_FACTOR_PREFIX.add(TokenMinus)
+_FIRST_FUNCTION: TokenSet = TokenSet(TOKEN_TYPES.Function)
+_FIRST_FACTOR: TokenSet = _FIRST_FUNCTION.add(
+    TOKEN_TYPES.Variable | TOKEN_TYPES.OpenParen | TOKEN_TYPES.Factorial
+)
+_FIRST_FACTOR_PREFIX: TokenSet = _FIRST_FACTOR.add(TOKEN_TYPES.Constant)
+_FIRST_UNARY: TokenSet = _FIRST_FACTOR_PREFIX.add(TOKEN_TYPES.Minus)
 _FIRST_EXP: TokenSet = _FIRST_UNARY
 _FIRST_MULT: TokenSet = _FIRST_UNARY
 _FIRST_ADD: TokenSet = _FIRST_UNARY
-_FIRST_EQUAL: TokenSet = _FIRST_UNARY
+
 
 # Precedence checks
-_IS_ADD: TokenSet = TokenSet(TokenPlus | TokenMinus)
-_IS_MULT: TokenSet = TokenSet(TokenMultiply | TokenDivide)
-_IS_EXP: TokenSet = TokenSet(TokenExponent)
-_IS_EQUAL: TokenSet = TokenSet(TokenEqual)
+_IS_ADD: TokenSet = TokenSet(TOKEN_TYPES.Plus | TOKEN_TYPES.Minus)
+_IS_MULT: TokenSet = TokenSet(TOKEN_TYPES.Multiply | TOKEN_TYPES.Divide)
+_IS_EXP: TokenSet = TokenSet(TOKEN_TYPES.Exponent)
+_IS_EQUAL: TokenSet = TokenSet(TOKEN_TYPES.Equal)
 
 
-# NOTE: This cannot be shared between threads because it stores state in
-#       self.current_token and self.tokens
 class ExpressionParser:
     """Parser for converting text into binary trees. Trees encode the order of
     operations for an input, and allow evaluating it to detemrine the expression
@@ -172,13 +153,13 @@ class ExpressionParser:
         """Parse a given list of tokens into an expression tree"""
         self.tokens = tokens
         self._all_tokens = tokens[:]
-        self.current_token = Token("", TokenNone)
+        self.current_token = Token("", TOKEN_TYPES.Invalid)
         if not self.next():
             raise InvalidExpression("Cannot parse an empty function")
 
         expression: MathExpression = self.parse_equal()
         leftover = ""
-        while self.current_token.type != TokenEOF:
+        while self.current_token.type != TOKEN_TYPES.EOF:
             leftover = f"{leftover}{self.current_token.value}"
             self.next()
 
@@ -188,13 +169,11 @@ class ExpressionParser:
         return expression
 
     def parse_equal(self) -> MathExpression:
-        if not self.check(_FIRST_ADD):
-            raise InvalidSyntax("Invalid expression")
+        self.check(_FIRST_ADD, True)
 
         exp = self.parse_add()
         while self.check(_IS_EQUAL):
             opType = self.current_token.type
-            opValue = self.current_token.value
             self.eat(opType)
             expected = self.check(_FIRST_ADD)
             right = None
@@ -207,19 +186,12 @@ class ExpressionParser:
                         self.current_token.value
                     )
                 )
-
-            if opType != TokenEqual:
-                raise UnexpectedBehavior(
-                    "Expected plus or minus, got: {}".format(opValue)
-                )
-
             exp = EqualExpression(exp, right)
 
         return exp
 
     def parse_add(self) -> MathExpression:
-        if not self.check(_FIRST_MULT):
-            raise InvalidSyntax("Invalid expression")
+        self.check(_FIRST_MULT, True)
 
         exp = self.parse_mult()
         while self.check(_IS_ADD):
@@ -238,11 +210,11 @@ class ExpressionParser:
                     )
                 )
 
-            if opType == TokenPlus:
+            if opType == TOKEN_TYPES.Plus:
                 exp = AddExpression(exp, right)
-            elif opType == TokenMinus:
+            elif opType == TOKEN_TYPES.Minus:
                 exp = SubtractExpression(exp, right)
-            else:
+            else:  # pragma: nocover
                 raise UnexpectedBehavior(
                     "Expected plus or minus, got: {}".format(opValue)
                 )
@@ -250,9 +222,7 @@ class ExpressionParser:
         return exp
 
     def parse_mult(self) -> MathExpression:
-        if not self.check(_FIRST_EXP):
-            raise InvalidSyntax("Invalid expression")
-
+        self.check(_FIRST_EXP, True)
         exp = self.parse_exponent()
         while self.check(_IS_MULT):
             opType = self.current_token.type
@@ -271,66 +241,67 @@ class ExpressionParser:
                     f"\nFull input: {input_str}"
                 )
 
-            if opType == TokenMultiply:
+            if opType == TOKEN_TYPES.Multiply:
                 exp = MultiplyExpression(exp, right)
-            elif opType == TokenDivide:
+            elif opType == TOKEN_TYPES.Divide:
                 exp = DivideExpression(exp, right)
-            else:
+            else:  # pragma: nocover
                 raise UnexpectedBehavior(
                     "Expected mult or divide, got: {}".format(opValue)
                 )
         return exp
 
     def parse_exponent(self) -> MathExpression:
-        if not self.check(_FIRST_UNARY):
-            raise InvalidSyntax("Invalid expression")
-
+        self.check(_FIRST_UNARY, True)
         exp = self.parse_unary()
-        if self.check(TokenSet(TokenExponent)):
+        if self.check(_IS_EXP):
             opType = self.current_token.type
             self.eat(opType)
             if not self.check(_FIRST_UNARY):
                 raise InvalidSyntax("Expected an expression after ^ operator")
 
             right = self.parse_unary()
-            if opType == TokenExponent:
+            if opType == TOKEN_TYPES.Exponent:
                 exp = PowerExpression(exp, right)
-            else:
+            else:  # pragma: nocover
                 raise UnexpectedBehavior("Expected exponent, got: {}".format(opType))
         return exp
 
     def parse_unary(self) -> MathExpression:
         value: NumberType = 0
         negate = False
-        if self.current_token.type == TokenMinus:
-            self.eat(TokenMinus)
+        if self.current_token.type == TOKEN_TYPES.Minus:
+            self.eat(TOKEN_TYPES.Minus)
             negate = True
         expected = self.check(_FIRST_FACTOR_PREFIX)
         exp: Optional[MathExpression] = None
         if expected:
-            if self.current_token.type == TokenConstant:
-                if isinstance(self.current_token.value, str):
-                    value = coerce_to_number(self.current_token.value)
-                else:
-                    value = self.current_token.value
+            if self.current_token.type == TOKEN_TYPES.Constant:
+                value = coerce_to_number(self.current_token.value)
                 # Flip parse as float/int based on whether the value text
                 if negate:
                     value = -value
                     negate = False
 
                 exp = ConstantExpression(value)
-                self.eat(TokenConstant)
+                self.eat(TOKEN_TYPES.Constant)
 
             if self.check(_FIRST_FACTOR):
                 if exp is None:
                     exp = self.parse_factors()
+                elif self.current_token.type == TOKEN_TYPES.Factorial:
+                    self.eat(TOKEN_TYPES.Factorial)
+                    exp = FactorialExpression(exp)
                 else:
                     exp = MultiplyExpression(exp, self.parse_factors())
 
         if not expected or exp is None:
+            assert self._all_tokens is not None
+            input_str = "".join([str(f.value) for f in self._all_tokens])
             raise InvalidSyntax(
                 "Expected a function/variable/parenthesis after - or + \n"
-                f"Received : {self.current_token.value}"
+                f"Received : {self.current_token.value}\n"
+                f"Full Input : {input_str}\n"
             )
         if negate:
             return NegateExpression(exp)
@@ -344,16 +315,16 @@ class ExpressionParser:
         while found:
             right = None
             opType = self.current_token.type
-            if opType == TokenVariable:
+            if opType == TOKEN_TYPES.Variable:
                 factors.append(VariableExpression(str(self.current_token.value)))
-                self.eat(TokenVariable)
-            elif opType == TokenFunction:
+                self.eat(TOKEN_TYPES.Variable)
+            elif opType == TOKEN_TYPES.Function:
                 factors.append(self.parse_function())
-            elif opType == TokenOpenParen:
-                self.eat(TokenOpenParen)
+            elif opType == TOKEN_TYPES.OpenParen:
+                self.eat(TOKEN_TYPES.OpenParen)
                 factors.append(self.parse_add())
-                self.eat(TokenCloseParen)
-            else:
+                self.eat(TOKEN_TYPES.CloseParen)
+            else:  # pragma: nocover
                 raise UnexpectedBehavior(
                     "Unexpected token in Factor: {}".format(self.current_token.value)
                 )
@@ -388,9 +359,9 @@ class ExpressionParser:
     def parse_function(self) -> MathExpression:
         opFn = str(self.current_token.value)
         self.eat(self.current_token.type)
-        self.eat(TokenOpenParen)
+        self.eat(TOKEN_TYPES.OpenParen)
         exp = self.parse_add()
-        self.eat(TokenCloseParen)
+        self.eat(TOKEN_TYPES.CloseParen)
         func = self.tokenizer.functions[opFn]
         if func is None:
             raise UnexpectedBehavior("Unknown Function type: {}".format(opFn))
@@ -403,11 +374,11 @@ class ExpressionParser:
         Return True if there are still more tokens in the queue, or False if there
         are no more tokens to look at."""
 
-        if self.current_token.type == TokenEOF:
+        if self.current_token.type == TOKEN_TYPES.EOF:
             raise OutOfTokens("Parsed beyond the end of the expression")
 
         self.current_token = self.tokens.pop(0)
-        return self.current_token.type != TokenEOF
+        return self.current_token.type != TOKEN_TYPES.EOF
 
     def eat(self, type: int) -> bool:
         """Assign the next token in the queue to current_token if its type
@@ -422,7 +393,7 @@ class ExpressionParser:
 
         return self.next()
 
-    def check(self, tokens: TokenSet) -> bool:
+    def check(self, tokens: TokenSet, do_assert: bool = False) -> bool:
         """Check if the `self.current_token` is a member of a set Token types
 
         Args:
@@ -430,4 +401,7 @@ class ExpressionParser:
 
         `Returns` True if the `current_token`'s type is in the set else False"""
 
-        return tokens.contains(self.current_token.type)
+        result = tokens.contains(self.current_token.type)
+        if do_assert is True and result is False:
+            raise InvalidSyntax("Invalid expression")
+        return result

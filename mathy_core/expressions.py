@@ -1,9 +1,12 @@
-from typing import Dict, List, Optional, Tuple, Type, Union, cast
+import json
+import math
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Type, Union, cast
 
 import numpy as np
 from colr import color
 
-from .tree import STOP, BinaryTreeNode, NodeType, VisitDataType, VisitStop
+from .tree import STOP, BinaryTreeNode, NodeType, VisitStop
 from .types import NumberType
 
 OOO_FUNCTION = 4
@@ -14,51 +17,10 @@ OOO_ADDSUB = 0
 OOO_INVALID = -1
 
 
-MathTypeKeys = {
-    "empty": 0,
-    "negate": 1,
-    "equal": 2,
-    "add": 3,
-    "subtract": 4,
-    "multiply": 5,
-    "divide": 6,
-    "power": 7,
-    "term_root": 8,
-    "term_connector": 9,
-    "constant": 10,
-    "sgn": 11,
-    "abs": 12,
-    # NOTE: reserved 13-25 for future expression types (such as functions)
-    "variable": 26,
-    "variable_a": 27,
-    "variable_b": 28,
-    "variable_c": 29,
-    "variable_d": 30,
-    "variable_e": 31,
-    "variable_f": 32,
-    "variable_g": 33,
-    "variable_h": 34,
-    "variable_i": 35,
-    "variable_j": 36,
-    "variable_k": 37,
-    "variable_l": 38,
-    "variable_m": 39,
-    "variable_n": 40,
-    "variable_o": 41,
-    "variable_p": 42,
-    "variable_q": 43,
-    "variable_r": 44,
-    "variable_s": 45,
-    "variable_t": 46,
-    "variable_u": 47,
-    "variable_v": 48,
-    "variable_w": 49,
-    "variable_x": 50,
-    "variable_y": 51,
-    "variable_z": 52,
-}
+with open(Path(__file__).parent / "expressions.meta.json") as json_file:
+    META = json.load(json_file)
 
-
+MathTypeKeys = META["type_ids"]
 # The maximum value in type keys (for one-hot encoding)
 MathTypeKeysMax = max(MathTypeKeys.values()) + 1
 
@@ -73,6 +35,30 @@ class MathExpression(BinaryTreeNode):
     right: Optional["MathExpression"]
     parent: Optional["MathExpression"]
     r_index: Optional[int]
+
+    _rendering_change: bool
+    _changed: bool
+    classes: List[str]
+    cloned_node: Optional["MathExpression"]
+    cloned_target: Optional[str]
+
+    def __init__(
+        self,
+        id: Optional[str] = None,
+        left: Optional["MathExpression"] = None,
+        right: Optional["MathExpression"] = None,
+        parent: Optional["MathExpression"] = None,
+    ):
+        super().__init__(left, right, parent, id)
+        self._rendering_change = False
+        self._changed = False
+        self.classes = [self.id]
+        self.cloned_node = None
+        self.cloned_target = ""
+
+    @property
+    def name(self) -> str:
+        raise NotImplementedError("must be implemented in subclass")
 
     @property
     def raw(self) -> str:
@@ -90,7 +76,7 @@ class MathExpression(BinaryTreeNode):
         a transformation."""
 
         def visit_fn(
-            node: MathExpression, depth: int, data: VisitDataType
+            node: MathExpression, depth: int, data: Any
         ) -> Optional[VisitStop]:
             node._rendering_change = data
             return None
@@ -106,27 +92,7 @@ class MathExpression(BinaryTreeNode):
         `.terminal_text`"""
         return "green"
 
-    _rendering_change: bool
-    _changed: bool
-    classes: List[str]
-    cloned_node: Optional["MathExpression"]
-    cloned_target: Optional[str]
-
-    def __init__(
-        self,
-        id: str = None,
-        left: "MathExpression" = None,
-        right: "MathExpression" = None,
-        parent: "MathExpression" = None,
-    ):
-        super().__init__(left, right, parent, id)
-        self._rendering_change = False
-        self._changed = False
-        self.classes = [self.id]
-        self.cloned_node = None
-        self.cloned_target = ""
-
-    def evaluate(self, context: Dict[str, NumberType] = None) -> NumberType:
+    def evaluate(self, context: Optional[Dict[str, NumberType]] = None) -> NumberType:
         """Evaluate the expression, resolving all variables to constant values"""
         raise NotImplementedError("must be implemented in subclass")
 
@@ -138,7 +104,7 @@ class MathExpression(BinaryTreeNode):
         """Mark this node and all of its children as changed"""
 
         def visit_fn(
-            node: MathExpression, depth: int, data: VisitDataType
+            node: MathExpression, depth: int, data: Any
         ) -> Optional[VisitStop]:
             node.set_changed()
             return None
@@ -165,12 +131,24 @@ class MathExpression(BinaryTreeNode):
         self.classes = list(set(self.classes).union(class_list))
         return self
 
+    def clear_classes(self) -> None:
+        """Clear all the classes currently set on the nodes in this expression."""
+
+        def visit_fn(
+            node: MathExpression, depth: int, data: Any
+        ) -> Optional[VisitStop]:
+
+            node.classes = []
+            return None
+
+        self.visit_inorder(visit_fn)
+
     def to_list(self, visit: str = "preorder") -> List["MathExpression"]:
         """Convert this node hierarchy into a list."""
         results = []
 
         def visit_fn(
-            node: MathExpression, depth: int, data: VisitDataType
+            node: MathExpression, depth: int, data: Any
         ) -> Optional[VisitStop]:
 
             results.append(node)
@@ -186,18 +164,6 @@ class MathExpression(BinaryTreeNode):
             raise ValueError(f"invalid visit order: {visit}")
         return results
 
-    def clear_classes(self) -> None:
-        """Clear all the classes currently set on the nodes in this expression."""
-
-        def visit_fn(
-            node: MathExpression, depth: int, data: VisitDataType
-        ) -> Optional[VisitStop]:
-
-            node.classes = []
-            return None
-
-        self.visit_inorder(visit_fn)
-
     def find_type(self, instanceType: Type[NodeType]) -> List[NodeType]:
         """Find an expression in this tree by type.
 
@@ -208,7 +174,7 @@ class MathExpression(BinaryTreeNode):
         results: List[NodeType] = []
 
         def visit_fn(
-            node: MathExpression, depth: int, data: VisitDataType
+            node: MathExpression, depth: int, data: Any
         ) -> Optional[VisitStop]:
 
             if isinstance(node, instanceType):
@@ -226,7 +192,7 @@ class MathExpression(BinaryTreeNode):
         result: Optional[MathExpression] = None
 
         def visit_fn(
-            node: MathExpression, depth: int, data: VisitDataType
+            node: MathExpression, depth: int, data: Any
         ) -> Optional[VisitStop]:
 
             nonlocal result
@@ -284,7 +250,9 @@ class MathExpression(BinaryTreeNode):
             path_mark(node)
         return ".".join(points)
 
-    def clone_from_root(self, node: "MathExpression" = None) -> "MathExpression":
+    def clone_from_root(
+        self, node: Optional["MathExpression"] = None
+    ) -> "MathExpression":
         """Clone this node including the entire parent hierarchy that it has. This
         is useful when you want to clone a subtree and still maintain the overall
         hierarchy.
@@ -315,7 +283,7 @@ class MathExpression(BinaryTreeNode):
         subtree node.
 
         See #MathExpression.clone_from_root for more details."""
-        result: MathExpression = super().clone()
+        result = cast(MathExpression, super().clone())
         if self.cloned_target is not None and self.path_to_root() == self.cloned_target:
             self.cloned_node = result
 
@@ -325,25 +293,29 @@ class MathExpression(BinaryTreeNode):
 class UnaryExpression(MathExpression):
     """An expression that operates on one sub-expression"""
 
-    def __init__(self, child: MathExpression = None, child_on_left: bool = True):
+    child_on_left: bool
+
+    def __init__(
+        self, child: Optional[MathExpression] = None, child_on_left: bool = False
+    ):
         super().__init__()
         self.child = child
-        self.left_child = child_on_left
+        self.child_on_left = child_on_left
         self.set_child(child)
 
-    def set_child(self, child: MathExpression = None) -> MathExpression:
-        if self.left_child:
+    def set_child(self, child: Optional[MathExpression] = None) -> MathExpression:
+        if self.child_on_left:
             return self.set_left(child)  # type:ignore
         else:
             return self.set_right(child)  # type:ignore
 
     def get_child(self) -> Optional[MathExpression]:
-        if self.left_child:
+        if self.child_on_left:
             return self.left
         else:
             return self.right
 
-    def evaluate(self, context: Dict[str, NumberType] = None) -> float:
+    def evaluate(self, context: Optional[Dict[str, NumberType]] = None) -> float:
         child = self.get_child()
         if child is None:
             raise ValueError("cannot evaluate unary expression without a valid child")
@@ -371,11 +343,39 @@ class NegateExpression(UnaryExpression):
         return -value
 
     def __str__(self) -> str:
-        return self.with_color("-{}".format(self.get_child()))
+        inner: Union[Optional[MathExpression], str] = self.get_child()
+        binary_types = (
+            AddExpression,
+            SubtractExpression,
+        )
+        if isinstance(inner, binary_types):
+            inner = f"({inner})"
+        return self.with_color("-{}".format(inner))
 
     def to_math_ml_fragment(self) -> str:
         """Convert this single node into MathML."""
         return f"-{super().to_math_ml_fragment()}"
+
+
+class FactorialExpression(UnaryExpression):
+    """Factorial of a constant, e.g. `5` evaluates to `120`"""
+
+    @property
+    def type_id(self) -> int:
+        return MathTypeKeys["factorial"]
+
+    @property
+    def name(self) -> str:
+        return "!"
+
+    def operate(self, value: NumberType) -> NumberType:
+        return math.factorial(int(value))
+
+    def __str__(self) -> str:
+        return self.with_color("{}!".format(self.get_child()))
+
+    def to_math_ml_fragment(self) -> str:
+        return f"{super().to_math_ml_fragment()}!"
 
 
 # ### Function
@@ -467,10 +467,10 @@ class BinaryExpression(MathExpression):
         expression, to ensure the tree maintains the proper order of operations. """
         binary_parent = cast(BinaryExpression, self.parent)
         parent_is_binary = isinstance(binary_parent, BinaryExpression)
-        self_pri = self.get_priority()
         if not parent_is_binary or not binary_parent:
             return False
 
+        self_pri = self.get_priority()
         parent_pri = binary_parent.get_priority()
         if parent_pri > self_pri:
             return True
@@ -480,19 +480,20 @@ class BinaryExpression(MathExpression):
         if parent_pri == self_pri:
             self_addsub = isinstance(self, (AddExpression, SubtractExpression))
             parent_addsub = isinstance(self.parent, (AddExpression, SubtractExpression))
+            if parent_side == "right" and self_addsub and parent_addsub:
+                return True
             self_muldiv = isinstance(self, (MultiplyExpression, DivideExpression))
+
             parent_muldiv = isinstance(
                 self.parent, (MultiplyExpression, DivideExpression)
             )
-            if parent_side == "right" and self_addsub and parent_addsub:
-                return True
             if parent_side == "left" and self_muldiv and parent_muldiv:
                 return True
         return False
 
     def __str__(self) -> str:
-        self._check()
-        out = f"{self.left} {self.with_color(self.name)} {self.right}"
+        left, right = self._check()
+        out = f"{left} {self.with_color(self.name)} {right}"
         return f"({out})" if self.self_parens() else out
 
     def to_math_ml_fragment(self) -> str:
@@ -524,14 +525,15 @@ class EqualExpression(BinaryExpression):
         return "="
 
     def operate(self, one: NumberType, two: NumberType) -> NumberType:
-        """This is where assignment of context variables might make sense. But context
-        is not present in the expression's `operate` method.
+        """Return the value of the equation if one == two.
 
-        !!! warning
-
-            TODO: Investigate this thoroughly.
+        Raise ValueError if both sides of the equation don't agree.
         """
-        raise ValueError("Unsupported operation. Euqality has no operation to perform.")
+        if one != two:
+            raise ValueError(
+                f"Equation did not hold when evaluated: left({one}) != right({two})"
+            )
+        return one
 
 
 class AddExpression(BinaryExpression):
@@ -584,28 +586,25 @@ class MultiplyExpression(BinaryExpression):
     def __str__(self) -> str:
         """Multiplication special cases constant*variable to output `4x` instead of
         `4 * x`"""
-        if isinstance(self.left, ConstantExpression):
+        left, right = self._check()
+        if isinstance(left, ConstantExpression):
             # const * var
-            one = isinstance(self.right, VariableExpression)
+            one = isinstance(right, VariableExpression)
             # const * var^power
-            two = isinstance(self.right, PowerExpression) and isinstance(
-                self.right.left, VariableExpression
+            two = isinstance(right, PowerExpression) and isinstance(
+                right.left, VariableExpression
             )
             if one or two:
-                return self.with_color("{}{}".format(self.left, self.right))
-
+                return self.with_color(f"{left}{right}")
         return super().__str__()
 
     def to_math_ml_fragment(self) -> str:
         left, right = self._check()
         right_ml = right.to_math_ml_fragment()
         left_ml = left.to_math_ml_fragment()
-        if isinstance(self.left, ConstantExpression):
-            if isinstance(self.right, VariableExpression) or isinstance(
-                self.right, PowerExpression
-            ):
-                return "{}{}".format(left_ml, right_ml)
-
+        if isinstance(left, ConstantExpression):
+            if isinstance(right, (VariableExpression, PowerExpression)):
+                return f"{left_ml}{right_ml}"
         return super().to_math_ml_fragment()
 
 
@@ -669,26 +668,28 @@ class ConstantExpression(MathExpression):
 
     value: Optional[NumberType]
 
-    @property
-    def name(self) -> str:
-        if self.value is not None and self.value % 1 == 0:
-            return f"{int(self.value)}"
-        return np.format_float_positional(self.value, trim="-")
+    def __init__(self, value: Optional[NumberType] = None):
+        super().__init__()
+        self.value = value
 
     @property
     def type_id(self) -> int:
         return MathTypeKeys["constant"]
 
-    def __init__(self, value: Optional[NumberType] = None):
-        super().__init__()
-        self.value = value
+    @property
+    def name(self) -> str:
+        if self.value is not None and self.value % 1 == 0:
+            return f"{int(self.value)}"
+        # TODO: floating point values here should have some consistency
+        #       across languages. HOW?
+        return np.format_float_positional(self.value, trim="-")
 
     def clone(self) -> "ConstantExpression":  # type:ignore[override]
         result = cast(ConstantExpression, super().clone())
         result.value = self.value
         return result  # type:ignore
 
-    def evaluate(self, context: Dict[str, NumberType] = None) -> NumberType:
+    def evaluate(self, _context: Dict[str, NumberType] = None) -> NumberType:
         assert self.value is not None
         return self.value
 
@@ -711,8 +712,8 @@ class VariableExpression(MathExpression):
         id = f"_{self.identifier.lower()[0]}" if self.identifier is not None else ""
         return MathTypeKeys[f"variable{id}"]
 
-    def __init__(self, identifier: str = None):
-        super().__init__()
+    def __init__(self, identifier: Optional[str] = None, **kwargs: Any):
+        super().__init__(**kwargs)
         self.identifier = identifier
 
     def clone(self) -> "VariableExpression":  # type:ignore[override]

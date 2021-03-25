@@ -40,10 +40,10 @@ class BinarySearchTree(BinaryTreeNode):
                 break
         return self
 
-    def find(self: "BinarySearchTree", key: int) -> Optional["BinarySearchTree"]:
+    def find(self, key: int) -> Optional["BinarySearchTree"]:
         """Find a node in the tree by its key and return it.  Return None if the key
         is not found in the tree."""
-        node: BinarySearchTree = self.get_root()
+        node = self.get_root()
         while node:
             assert node.key is not None
             if key > node.key:

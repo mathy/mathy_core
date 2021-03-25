@@ -1,17 +1,43 @@
-"""Tree Layout
----
-
-In order to help visualize, understand, and debug math trees and transformations to
-them, Mathy implements a
-[Reingold-Tilford](https://reingold.co/tidier-drawings.pdf) layout
-algorithm that works with expression trees. It produces beautiful trees like:
-
-`mathy:(2x^3 + y)(14 + 2.3y)`
-
-"""
 from typing import Optional
 
 from .tree import BinaryTreeNode
+
+
+class TidierExtreme:
+
+    left: Optional[BinaryTreeNode]
+    right: Optional[BinaryTreeNode]
+    thread: Optional[BinaryTreeNode]
+    offset: float
+
+    def __init__(self) -> None:
+        self.left = None
+        self.right = None
+        self.thread = None
+        self.offset = 0
+
+
+class TreeMeasurement:
+    """Summary of the rendered tree"""
+
+    minX: float
+    maxX: float
+    minY: float
+    maxY: float
+    width: float
+    height: float
+    centerX: float
+    centerY: float
+
+    def __init__(self) -> None:
+        self.minX = 10000
+        self.maxX = 0
+        self.minY = 10000
+        self.maxY = 0
+        self.width = 0
+        self.height = 0
+        self.centerX = 0
+        self.centerY = 0
 
 
 class TreeLayout:
@@ -211,40 +237,3 @@ class TreeLayout:
         measure.centerX = measure.minX + measure.width / 2
         measure.centerY = measure.minY + measure.height / 2
         return measure
-
-
-class TidierExtreme:
-
-    left: Optional[BinaryTreeNode]
-    right: Optional[BinaryTreeNode]
-    thread: Optional[BinaryTreeNode]
-    offset: float
-
-    def __init__(self) -> None:
-        self.left = None
-        self.right = None
-        self.thread = None
-        self.offset = 0
-
-
-class TreeMeasurement:
-    """Summary of the rendered tree"""
-
-    minX: float
-    maxX: float
-    minY: float
-    maxY: float
-    width: float
-    height: float
-    centerX: float
-    centerY: float
-
-    def __init__(self) -> None:
-        self.minX = 10000
-        self.maxX = 0
-        self.minY = 10000
-        self.maxY = 0
-        self.width = 0
-        self.height = 0
-        self.centerX = 0
-        self.centerY = 0

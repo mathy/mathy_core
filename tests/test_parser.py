@@ -33,6 +33,14 @@ def test_parser_to_string() -> None:
         assert out_str == expect["output"]
 
 
+def test_parser_factorials() -> None:
+    """should parse factorials"""
+    parser = ExpressionParser()
+    expression = parser.parse("5!")
+    # 5! = 5 * 4 * 3 * 2 * 1 = 120
+    assert expression.evaluate() == 120
+
+
 def test_parser_mult_exp_precedence() -> None:
     """should respect order of operations with factor parsing"""
     parser = ExpressionParser()
@@ -48,12 +56,19 @@ def test_parser_mult_exp_precedence() -> None:
 def test_parser_exceptions() -> None:
     parser = ExpressionParser()
     expectations = [
-        ("", InvalidExpression),
-        ("4+", UnexpectedBehavior),
-        ("4=+", UnexpectedBehavior),
-        ("4^+", InvalidSyntax),
-        ("4+3+3     3", TrailingTokens),
+        ["1=5+-", InvalidSyntax, "parse_unary not expected"],
+        ["x+4^-", InvalidSyntax, "parse_unary not expected"],
+        ["4^4/.", ValueError, "parse_unary coerce_to_number"],
+        ["4*/", InvalidSyntax, "parse_mult not expected"],
+        ["4+3+3     3", TrailingTokens, "_parse trailing tokens check"],
+        ["4^+", InvalidSyntax, "parse_exponent check unary"],
+        ["4+", UnexpectedBehavior, "parse_add not expected and not right"],
+        ["", InvalidExpression, "_parse initial next check"],
+        ["4=+", UnexpectedBehavior, "parse_equal not expected"],
+        ["+!", InvalidSyntax, "parse_equal first check"],
+        ["=+", InvalidSyntax, "parse_equal first check"],
     ]
-    for in_str, out_err in expectations:
+    for in_str, out_err, meta in expectations:
         with pytest.raises(out_err):
             parser.parse(in_str)
+        assert meta != "", "add note about which parser fn throws for this case"

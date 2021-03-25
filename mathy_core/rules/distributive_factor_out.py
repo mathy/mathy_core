@@ -103,10 +103,6 @@ class DistributiveFactorOutRule(BaseRule):
 
         # Left child is a term
         if left_term is not None:
-            # TODO: I'm not sure why I had this restriction here.
-            # TODO: add a comment about it when you remember.
-            if left_term.variable is None:
-                return None
             if isinstance(node.right, AddExpression):
                 right_term = get_term_ex(node.right.left)
             if right_term is not None:
@@ -133,10 +129,6 @@ class DistributiveFactorOutRule(BaseRule):
 
         # Right child is a term
         if right_term is not None:
-            # TODO: I'm not sure why I had this restriction here.
-            # TODO: add a comment about it when you remember.
-            if right_term.variable is None:
-                return None
             if isinstance(node.left, AddExpression):
                 left_term = get_term_ex(node.left.right)
             if left_term is not None:
