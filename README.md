@@ -794,8 +794,8 @@ Template type of user data passed to visit functions.
 ```python
 AbsExpression(
     self,
-    child: Optional[mathy_core.expressions.MathExpression] = None,
-    child_on_left: bool = False,
+    child: mathy_core.expressions.MathExpression = None,
+    child_on_left: bool = True,
 )
 ```
 
@@ -886,17 +886,20 @@ EqualExpression.operate(
 ) -> Union[float, int]
 ```
 
-Return the value of the equation if one == two.
+This is where assignment of context variables might make sense. But context
+is not present in the expression's `operate` method.
 
-Raise ValueError if both sides of the equation don't agree.
+!!! warning
+
+    TODO: Investigate this thoroughly.
 
 ## FactorialExpression <kbd>class</kbd>
 
 ```python
 FactorialExpression(
     self,
-    child: Optional[mathy_core.expressions.MathExpression] = None,
-    child_on_left: bool = False,
+    child: mathy_core.expressions.MathExpression = None,
+    child_on_left: bool = True,
 )
 ```
 
@@ -907,8 +910,8 @@ Factorial of a constant, e.g. `5` evaluates to `120`
 ```python
 FunctionExpression(
     self,
-    child: Optional[mathy_core.expressions.MathExpression] = None,
-    child_on_left: bool = False,
+    child: mathy_core.expressions.MathExpression = None,
+    child_on_left: bool = True,
 )
 ```
 
@@ -921,10 +924,10 @@ class.
 ```python
 MathExpression(
     self,
-    id: Optional[str] = None,
-    left: Optional[MathExpression] = None,
-    right: Optional[MathExpression] = None,
-    parent: Optional[MathExpression] = None,
+    id: str = None,
+    left: 'MathExpression' = None,
+    right: 'MathExpression' = None,
+    parent: 'MathExpression' = None,
 )
 ```
 
@@ -979,7 +982,7 @@ See `MathExpression.clone_from_root` for more details.
 ```python
 MathExpression.clone_from_root(
     self,
-    node: Optional[MathExpression] = None,
+    node: 'MathExpression' = None,
 ) -> 'MathExpression'
 ```
 
@@ -1005,7 +1008,7 @@ Color to use for this node when rendering it as changed with
 ```python
 MathExpression.evaluate(
     self,
-    context: Union[Dict[str, Optional[float, int]]] = None,
+    context: Dict[str, Union[float, int]] = None,
 ) -> Union[float, int]
 ```
 
@@ -1139,8 +1142,8 @@ Multiply one and two
 ```python
 NegateExpression(
     self,
-    child: Optional[mathy_core.expressions.MathExpression] = None,
-    child_on_left: bool = False,
+    child: mathy_core.expressions.MathExpression = None,
+    child_on_left: bool = True,
 )
 ```
 
@@ -1171,8 +1174,8 @@ Raise one to the power of two
 ```python
 SgnExpression(
     self,
-    child: Optional[mathy_core.expressions.MathExpression] = None,
-    child_on_left: bool = False,
+    child: mathy_core.expressions.MathExpression = None,
+    child_on_left: bool = True,
 )
 ```
 
@@ -1205,8 +1208,8 @@ Subtract one from two
 ```python
 UnaryExpression(
     self,
-    child: Optional[mathy_core.expressions.MathExpression] = None,
-    child_on_left: bool = False,
+    child: mathy_core.expressions.MathExpression = None,
+    child_on_left: bool = True,
 )
 ```
 

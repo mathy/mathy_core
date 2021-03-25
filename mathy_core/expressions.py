@@ -378,6 +378,27 @@ class NegateExpression(UnaryExpression):
         return f"-{super().to_math_ml_fragment()}"
 
 
+class FactorialExpression(UnaryExpression):
+    """Factorial of a constant, e.g. `5` evaluates to `120`"""
+
+    @property
+    def type_id(self) -> int:
+        return MathTypeKeys["factorial"]
+
+    @property
+    def name(self) -> str:
+        return "!"
+
+    def operate(self, value: NumberType) -> NumberType:
+        return math.factorial(int(value))
+
+    def __str__(self) -> str:
+        return self.with_color("{}!".format(self.get_child()))
+
+    def to_math_ml_fragment(self) -> str:
+        return f"{super().to_math_ml_fragment()}!"
+
+
 # ### Function
 
 
