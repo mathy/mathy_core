@@ -37,10 +37,23 @@ def test_expressions_type_id_abstract():
         expr.type_id
 
 
+def test_expressions_name_abstract():
+    expr = MathExpression()
+    with pytest.raises(NotImplementedError):
+        expr.name
+
+
 def test_expressions_evaluate_abstract():
     expr = MathExpression()
     with pytest.raises(NotImplementedError):
         expr.evaluate()
+
+
+def test_expressions_terminal_text():
+    expr = VariableExpression("x")
+    assert "x" in expr.terminal_text
+    assert expr.terminal_text is not None
+    assert expr.raw == "x"
 
 
 def test_expressions_add_class():
@@ -71,6 +84,7 @@ def test_expressions_clear_classes():
         DivideExpression(ConstantExpression(3), ConstantExpression(3)),
         NegateExpression(ConstantExpression(3)),
         ConstantExpression(3),
+        VariableExpression("x"),
         SgnExpression(ConstantExpression(-1)),
         SgnExpression(ConstantExpression(0)),
         SgnExpression(ConstantExpression(1)),
@@ -81,8 +95,11 @@ def test_expressions_clear_classes():
 def test_expressions_common_properties_and_methods(node_instance: MathExpression):
     assert node_instance.type_id is not None
     assert node_instance.name is not None
+    assert node_instance.color is not None
+    assert node_instance.raw is not None
+    assert node_instance.terminal_text is not None
     assert str(node_instance) != ""
-    node_instance.evaluate({"x": 2})
+    assert node_instance.evaluate({"x": 2}) == node_instance.clone().evaluate({"x": 2})
 
 
 @pytest.mark.parametrize(
@@ -99,13 +116,11 @@ def test_expressions_abstract_properties_and_methods(node_instance: MathExpressi
 
 
 def test_expressions_equality_evaluate_error():
-    one = VariableExpression("x")
-    two = ConstantExpression(2)
-    expr = EqualExpression(one, two)
+    expr = EqualExpression(VariableExpression("x"), ConstantExpression(2))
     with pytest.raises(ValueError):
         expr.evaluate()
     with pytest.raises(ValueError):
-        expr.operate(one, two)  # type:ignore
+        expr.operate(1, 2)  # type:ignore
 
 
 def test_expressions_binary_errors():
@@ -125,14 +140,14 @@ def test_expressions_unary_specify_child_side():
 
 
 def test_expressions_unary_evaluate_errors():
-    ConstantExpression(1337)
     expr = UnaryExpression(None)
     with pytest.raises(ValueError):
         expr.evaluate()
 
 
 @pytest.mark.parametrize(
-    "text", ["4/x^3+2-7x*12=0", "abs(-4) + abs(34)", "-sgn(-1) / sgn(2)", "sgn(0)"]
+    "text",
+    ["4/x^3+2-7x*12=0", "abs(-4) + abs(34)", "-sgn(-1) / sgn(2)", "sgn(0)", "5!"],
 )
 def test_expressions_to_math_ml(text: str):
     expr = ExpressionParser().parse(text)
@@ -168,12 +183,15 @@ def test_expressions_clone():
 def test_expressions_clone_root():
     a = ConstantExpression(1100)
     b = ConstantExpression(100)
-    sub = SubtractExpression(a, b)
-    c = ConstantExpression(300)
-    add = AddExpression(sub, c)
-    d = ConstantExpression(37)
-    expr = AddExpression(add, d)
-    assert expr.evaluate() == 1337
+    _ = AddExpression(a, b)
+
+    assert a.clone().parent is None
+    assert a.parent is not None
+    assert a.clone_from_root().parent is not None
+
+    assert b.parent is not None
+    assert b.clone().parent is None
+    assert b.clone_from_root().parent is not None
 
 
 def test_expressions_function_exceptions():

@@ -1,55 +1,35 @@
-from typing import Callable, Dict, List, Optional, Type, Union
+from typing import Callable, Dict, List, Optional, Type
 
-from .expressions import FunctionExpression
+from .expressions import FunctionExpression, SgnExpression
 from .types import NumberType
 
-# Define the known types of tokens for the Tokenizer.
-TokensMap: Dict[str, int] = {
-    "None": 1 << 0,
-    "Constant": 1 << 1,
-    "Variable": 1 << 2,
-    "Plus": 1 << 3,
-    "Minus": 1 << 4,
-    "Multiply": 1 << 5,
-    "Divide": 1 << 6,
-    "Exponent": 1 << 7,
-    "Factorial": 1 << 8,
-    "OpenParen": 1 << 9,
-    "CloseParen": 1 << 10,
-    "Function": 1 << 11,
-    "Equal": 1 << 12,
-    "Pad": 1 << 13,
-    "EOF": 1 << 14,
-}
-MaxToken = len(TokensMap)
 
-TokenNone = TokensMap["None"]
-TokenConstant = TokensMap["Constant"]
-TokenVariable = TokensMap["Variable"]
-TokenPlus = TokensMap["Plus"]
-TokenMinus = TokensMap["Minus"]
-TokenMultiply = TokensMap["Multiply"]
-TokenDivide = TokensMap["Divide"]
-TokenExponent = TokensMap["Exponent"]
-TokenFactorial = TokensMap["Factorial"]
-TokenOpenParen = TokensMap["OpenParen"]
-TokenCloseParen = TokensMap["CloseParen"]
-TokenFunction = TokensMap["Function"]
-TokenEqual = TokensMap["Equal"]
-TokenPad = TokensMap["Pad"]
-TokenEOF = TokensMap["EOF"]
+# Define the known types of tokens for the Tokenizer.
+class TOKEN_TYPES:
+    Constant = 1 << 0
+    Variable = 1 << 1
+    Plus = 1 << 2
+    Minus = 1 << 3
+    Multiply = 1 << 4
+    Divide = 1 << 5
+    Exponent = 1 << 6
+    Factorial = 1 << 7
+    OpenParen = 1 << 8
+    CloseParen = 1 << 9
+    Function = 1 << 10
+    Equal = 1 << 11
+    Pad = 1 << 12
+    EOF = 1 << 13
+    Invalid = 1 << 14
 
 
 class Token:
-    value: Union[str, int, float]
+    value: str
     type: int
 
-    def __init__(self, value: Union[str, int, float], type: int):
+    def __init__(self, value: str, type: int):
         self.value = value
         self.type = type
-
-    def __repr__(self) -> str:
-        return str(self)
 
     def __str__(self) -> str:
         return f'(type={self.type}, value="{self.value}")'
@@ -83,29 +63,7 @@ class Tokenizer:
 
     def __init__(self, exclude_padding: bool = True):
         self.exclude_padding = exclude_padding
-        self.find_functions()
-
-    # Populate the `@functions` object with all known `FunctionExpression`s
-    # in Expressions
-    def find_functions(self) -> None:
-        self.functions = {}
-        # for (key in Expressions) {
-        #   val = Expressions[key];
-        #   check = {};
-        #   if (check.toString.call(val) != "[object Function]") {
-        #     continue;
-        #   }
-        #   inst = val();
-        #   if (not (inst instanceof FunctionExpression)) {
-        #     continue;
-        #   }
-        #   if (`${inst}` === "") {
-        #     continue;
-        #   }
-        #   self.functions[`${inst}`] = val;
-        # }
-
-    # ###Token Utilities
+        self.functions = {"sgn": SgnExpression}
 
     def is_alpha(self, c: str) -> bool:
         """Is this character a letter"""
@@ -137,7 +95,7 @@ class Tokenizer:
         ):
             context.chunk = context.buffer[context.index :]  # noqa
 
-        context.tokens.append(Token("", TokenEOF))
+        context.tokens.append(Token("", TOKEN_TYPES.EOF))
         return context.tokens
 
     def identify_operators(self, context: TokenContext) -> bool:
@@ -146,27 +104,27 @@ class Tokenizer:
         if ch == " " or ch == "\t" or ch == "\r" or ch == "\n":
             # NOTE: originally introduced this to include padding for token prediction
             if self.exclude_padding is False:
-                context.tokens.append(Token(ch, TokenPad))
+                context.tokens.append(Token(ch, TOKEN_TYPES.Pad))
         elif ch == "+":
-            context.tokens.append(Token("+", TokenPlus))
+            context.tokens.append(Token("+", TOKEN_TYPES.Plus))
         elif ch == "-" or ch == "–":
-            context.tokens.append(Token("-", TokenMinus))
+            context.tokens.append(Token("-", TOKEN_TYPES.Minus))
         elif ch == "*":
-            context.tokens.append(Token("*", TokenMultiply))
+            context.tokens.append(Token("*", TOKEN_TYPES.Multiply))
         elif ch == "/":
-            context.tokens.append(Token("/", TokenDivide))
+            context.tokens.append(Token("/", TOKEN_TYPES.Divide))
         elif ch == "^":
-            context.tokens.append(Token("^", TokenExponent))
+            context.tokens.append(Token("^", TOKEN_TYPES.Exponent))
         elif ch == "!":
-            context.tokens.append(Token("!", TokenFactorial))
+            context.tokens.append(Token("!", TOKEN_TYPES.Factorial))
         elif ch == "(" or ch == "[":
-            context.tokens.append(Token("(", TokenOpenParen))
+            context.tokens.append(Token("(", TOKEN_TYPES.OpenParen))
         elif ch == ")" or ch == "]":
-            context.tokens.append(Token(")", TokenCloseParen))
+            context.tokens.append(Token(")", TOKEN_TYPES.CloseParen))
         elif ch == "=":
-            context.tokens.append(Token("=", TokenEqual))
+            context.tokens.append(Token("=", TOKEN_TYPES.Equal))
         else:
-            raise Exception(f'Invalid token "{ch}" in expression: {context.buffer}')
+            raise ValueError(f'Invalid token "{ch}" in expression: {context.buffer}')
         context.index = context.index + 1
         return True
 
@@ -177,11 +135,11 @@ class Tokenizer:
 
         variable = self.eat_token(context, self.is_alpha)
         if variable in self.functions:
-            context.tokens.append(Token(variable, TokenFunction))
+            context.tokens.append(Token(variable, TOKEN_TYPES.Function))
         else:
             # Each letter is its own variable
             for c in variable:
-                context.tokens.append(Token(c, TokenVariable))
+                context.tokens.append(Token(c, TOKEN_TYPES.Variable))
 
         context.index += len(variable)
         return len(variable)
@@ -192,7 +150,7 @@ class Tokenizer:
             return 0
 
         val = self.eat_token(context, self.is_number)
-        context.tokens.append(Token(val, TokenConstant))
+        context.tokens.append(Token(val, TOKEN_TYPES.Constant))
         context.index += len(val)
         return len(val)
 

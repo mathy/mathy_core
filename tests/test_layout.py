@@ -1,7 +1,7 @@
 from mathy_core.layout import TreeLayout, TreeMeasurement
 from mathy_core.tree import BinaryTreeNode
 
-from .conftest import BinarySearchTree
+from .search_tree import BinarySearchTree
 
 
 def test_layout_tidier():
@@ -32,7 +32,7 @@ def test_layout_tidier_aesthetic_one():
         groups[depth].append(node)
 
     tree.visit_preorder(node_visit)
-    for k, v in groups.items():
+    for v in groups.values():
         y_coords = [n.y for n in v]
         # converting to a set removes duplicates
         assert len(set(y_coords)) == 1
@@ -135,7 +135,7 @@ def test_layout_tidier_aesthetic_four_identical_subtrees():
             return
         # expect lesser value to the left
         assert node.left.key == node.key - 1
-        # expect greater value to the left
+        # expect greater value to the right
         assert node.right.key == node.key + 1
 
         less = node.left.x
