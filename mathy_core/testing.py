@@ -1,11 +1,15 @@
 import json
 from pathlib import Path
-from typing import Callable, Optional, Type
+from typing import Any, Callable, Dict, Optional, Type
 
-from .expressions import MathExpression
+from .expressions import EqualExpression, MathExpression
 from .parser import ExpressionParser
 from .rule import BaseRule
-from .util import compare_expression_string_values, compare_expression_values
+from .util import (
+    compare_equation_values,
+    compare_expression_string_values,
+    compare_expression_values,
+)
 
 
 def get_rule_tests(name: str) -> dict:
@@ -58,17 +62,19 @@ def run_rule_tests(
     want to debug. Then you set a breakpoint and step out of your callback function
     into the parsing/evaluation of the debug example.
     """
-    tests = get_rule_tests(name)
+    tests: Dict[str, Any] = get_rule_tests(name)
     parser = ExpressionParser()
     node: Optional[MathExpression]
+    ex: Dict[str, Any]
     for ex in tests["valid"]:
         # Trigger the debug callback so the user can step over into the useful stuff
         if callback is not None:
             callback(ex)
         rule = init_rule_for_test(ex, rule_class)
         expression = parser.parse(ex["input"]).clone()
-        before = expression.clone()
+        before = expression.clone().get_root()
         print(ex)
+        target: str
         if "target" in ex:
             target = ex["target"]
             nodes = rule.find_nodes(expression)
@@ -89,10 +95,15 @@ def run_rule_tests(
             change.result is not None
         ), f"none result from rule({rule.name}) tree({node})"
         after = change.result.get_root()
-        # Compare the values of the in-memory expressions output from the rule
-        compare_expression_values(before, after)
-        # Parse the output strings to new expressions, and compare the values
-        compare_expression_string_values(str(before), str(after))
+        if isinstance(after, (EqualExpression)):
+            eval_context = ex.get("eval_context")
+            assert eval_context is not None, "Equations require eval_context"
+            compare_equation_values(before, after, eval_context=eval_context)
+        else:
+            # Compare the values of the in-memory expressions output from the rule
+            compare_expression_values(before, after)
+            # Parse the output strings to new expressions, and compare the values
+            compare_expression_string_values(str(before), str(after))
         actual = str(after).strip()
         expected = ex["output"]
         assert actual == expected, f"Expected '{actual}' to be '{expected}'"
@@ -103,7 +114,15 @@ def run_rule_tests(
             callback(ex)
         rule = init_rule_for_test(ex, rule_class)
         expression = parser.parse(ex["input"]).clone()
-        node = rule.find_node(expression)
+        node = None
+        if "target" in ex:
+            target = ex["target"]
+            nodes = rule.find_nodes(expression)
+            nodes = [n for n in nodes if n.raw == target]
+            if len(nodes) > 0:
+                node = nodes[0]
+        else:
+            node = rule.find_node(expression)
         if node is not None:
             raise ValueError(
                 "expected not to find a node, but found: {}".format(str(node))
