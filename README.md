@@ -95,285 +95,7 @@ mathy_core>=0.1.37,<0.2.0
 <!-- NOTE: The below code is auto-generated. Update source files to change API documentation. -->
 <!-- AUTO_DOCZ_START -->
 
-# mathy_core.tokenizer
-
-## TOKEN_TYPES <kbd>class</kbd>
-
-```python
-TOKEN_TYPES(self, args, kwargs)
-```
-
-### CloseParen
-
-int([x]) -> integer
-int(x, base=10) -> integer
-
-Convert a number or string to an integer, or return 0 if no arguments
-are given. If x is a number, return x.**int**(). For floating point
-numbers, this truncates towards zero.
-
-If x is not a number or if base is given, then x must be a string,
-bytes, or bytearray instance representing an integer literal in the
-given base. The literal can be preceded by '+' or '-' and be surrounded
-by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
-Base 0 means to interpret the base from the string as an integer literal.
-
-> > > int('0b100', base=0)
-> > > 4
-
-### Constant
-
-int([x]) -> integer
-int(x, base=10) -> integer
-
-Convert a number or string to an integer, or return 0 if no arguments
-are given. If x is a number, return x.**int**(). For floating point
-numbers, this truncates towards zero.
-
-If x is not a number or if base is given, then x must be a string,
-bytes, or bytearray instance representing an integer literal in the
-given base. The literal can be preceded by '+' or '-' and be surrounded
-by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
-Base 0 means to interpret the base from the string as an integer literal.
-
-> > > int('0b100', base=0)
-> > > 4
-
-### Divide
-
-int([x]) -> integer
-int(x, base=10) -> integer
-
-Convert a number or string to an integer, or return 0 if no arguments
-are given. If x is a number, return x.**int**(). For floating point
-numbers, this truncates towards zero.
-
-If x is not a number or if base is given, then x must be a string,
-bytes, or bytearray instance representing an integer literal in the
-given base. The literal can be preceded by '+' or '-' and be surrounded
-by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
-Base 0 means to interpret the base from the string as an integer literal.
-
-> > > int('0b100', base=0)
-> > > 4
-
-### EOF
-
-int([x]) -> integer
-int(x, base=10) -> integer
-
-Convert a number or string to an integer, or return 0 if no arguments
-are given. If x is a number, return x.**int**(). For floating point
-numbers, this truncates towards zero.
-
-If x is not a number or if base is given, then x must be a string,
-bytes, or bytearray instance representing an integer literal in the
-given base. The literal can be preceded by '+' or '-' and be surrounded
-by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
-Base 0 means to interpret the base from the string as an integer literal.
-
-> > > int('0b100', base=0)
-> > > 4
-
-### Equal
-
-int([x]) -> integer
-int(x, base=10) -> integer
-
-Convert a number or string to an integer, or return 0 if no arguments
-are given. If x is a number, return x.**int**(). For floating point
-numbers, this truncates towards zero.
-
-If x is not a number or if base is given, then x must be a string,
-bytes, or bytearray instance representing an integer literal in the
-given base. The literal can be preceded by '+' or '-' and be surrounded
-by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
-Base 0 means to interpret the base from the string as an integer literal.
-
-> > > int('0b100', base=0)
-> > > 4
-
-### Exponent
-
-int([x]) -> integer
-int(x, base=10) -> integer
-
-Convert a number or string to an integer, or return 0 if no arguments
-are given. If x is a number, return x.**int**(). For floating point
-numbers, this truncates towards zero.
-
-If x is not a number or if base is given, then x must be a string,
-bytes, or bytearray instance representing an integer literal in the
-given base. The literal can be preceded by '+' or '-' and be surrounded
-by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
-Base 0 means to interpret the base from the string as an integer literal.
-
-> > > int('0b100', base=0)
-> > > 4
-
-### Factorial
-
-int([x]) -> integer
-int(x, base=10) -> integer
-
-Convert a number or string to an integer, or return 0 if no arguments
-are given. If x is a number, return x.**int**(). For floating point
-numbers, this truncates towards zero.
-
-If x is not a number or if base is given, then x must be a string,
-bytes, or bytearray instance representing an integer literal in the
-given base. The literal can be preceded by '+' or '-' and be surrounded
-by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
-Base 0 means to interpret the base from the string as an integer literal.
-
-> > > int('0b100', base=0)
-> > > 4
-
-### Function
-
-int([x]) -> integer
-int(x, base=10) -> integer
-
-Convert a number or string to an integer, or return 0 if no arguments
-are given. If x is a number, return x.**int**(). For floating point
-numbers, this truncates towards zero.
-
-If x is not a number or if base is given, then x must be a string,
-bytes, or bytearray instance representing an integer literal in the
-given base. The literal can be preceded by '+' or '-' and be surrounded
-by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
-Base 0 means to interpret the base from the string as an integer literal.
-
-> > > int('0b100', base=0)
-> > > 4
-
-### Invalid
-
-int([x]) -> integer
-int(x, base=10) -> integer
-
-Convert a number or string to an integer, or return 0 if no arguments
-are given. If x is a number, return x.**int**(). For floating point
-numbers, this truncates towards zero.
-
-If x is not a number or if base is given, then x must be a string,
-bytes, or bytearray instance representing an integer literal in the
-given base. The literal can be preceded by '+' or '-' and be surrounded
-by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
-Base 0 means to interpret the base from the string as an integer literal.
-
-> > > int('0b100', base=0)
-> > > 4
-
-### Minus
-
-int([x]) -> integer
-int(x, base=10) -> integer
-
-Convert a number or string to an integer, or return 0 if no arguments
-are given. If x is a number, return x.**int**(). For floating point
-numbers, this truncates towards zero.
-
-If x is not a number or if base is given, then x must be a string,
-bytes, or bytearray instance representing an integer literal in the
-given base. The literal can be preceded by '+' or '-' and be surrounded
-by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
-Base 0 means to interpret the base from the string as an integer literal.
-
-> > > int('0b100', base=0)
-> > > 4
-
-### Multiply
-
-int([x]) -> integer
-int(x, base=10) -> integer
-
-Convert a number or string to an integer, or return 0 if no arguments
-are given. If x is a number, return x.**int**(). For floating point
-numbers, this truncates towards zero.
-
-If x is not a number or if base is given, then x must be a string,
-bytes, or bytearray instance representing an integer literal in the
-given base. The literal can be preceded by '+' or '-' and be surrounded
-by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
-Base 0 means to interpret the base from the string as an integer literal.
-
-> > > int('0b100', base=0)
-> > > 4
-
-### OpenParen
-
-int([x]) -> integer
-int(x, base=10) -> integer
-
-Convert a number or string to an integer, or return 0 if no arguments
-are given. If x is a number, return x.**int**(). For floating point
-numbers, this truncates towards zero.
-
-If x is not a number or if base is given, then x must be a string,
-bytes, or bytearray instance representing an integer literal in the
-given base. The literal can be preceded by '+' or '-' and be surrounded
-by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
-Base 0 means to interpret the base from the string as an integer literal.
-
-> > > int('0b100', base=0)
-> > > 4
-
-### Pad
-
-int([x]) -> integer
-int(x, base=10) -> integer
-
-Convert a number or string to an integer, or return 0 if no arguments
-are given. If x is a number, return x.**int**(). For floating point
-numbers, this truncates towards zero.
-
-If x is not a number or if base is given, then x must be a string,
-bytes, or bytearray instance representing an integer literal in the
-given base. The literal can be preceded by '+' or '-' and be surrounded
-by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
-Base 0 means to interpret the base from the string as an integer literal.
-
-> > > int('0b100', base=0)
-> > > 4
-
-### Plus
-
-int([x]) -> integer
-int(x, base=10) -> integer
-
-Convert a number or string to an integer, or return 0 if no arguments
-are given. If x is a number, return x.**int**(). For floating point
-numbers, this truncates towards zero.
-
-If x is not a number or if base is given, then x must be a string,
-bytes, or bytearray instance representing an integer literal in the
-given base. The literal can be preceded by '+' or '-' and be surrounded
-by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
-Base 0 means to interpret the base from the string as an integer literal.
-
-> > > int('0b100', base=0)
-> > > 4
-
-### Variable
-
-int([x]) -> integer
-int(x, base=10) -> integer
-
-Convert a number or string to an integer, or return 0 if no arguments
-are given. If x is a number, return x.**int**(). For floating point
-numbers, this truncates towards zero.
-
-If x is not a number or if base is given, then x must be a string,
-bytes, or bytearray instance representing an integer literal in the
-given base. The literal can be preceded by '+' or '-' and be surrounded
-by whitespace. The base defaults to 10. Valid bases are 0 and 2-36.
-Base 0 means to interpret the base from the string as an integer literal.
-
-> > > int('0b100', base=0)
-> > > 4
-
-## Tokenizer <kbd>class</kbd>
+# Tokenizer <kbd>class</kbd>
 
 ```python
 Tokenizer(self, exclude_padding: bool = True)
@@ -381,7 +103,7 @@ Tokenizer(self, exclude_padding: bool = True)
 
 The Tokenizer produces a list of tokens from an input string.
 
-### eat_token <kbd>method</kbd>
+## eat_token <kbd>method</kbd>
 
 ```python
 Tokenizer.eat_token(
@@ -394,7 +116,7 @@ Tokenizer.eat_token(
 Eat all of the tokens of a given type from the front of the stream
 until a different type is hit, and return the text.
 
-### identify_alphas <kbd>method</kbd>
+## identify_alphas <kbd>method</kbd>
 
 ```python
 Tokenizer.identify_alphas(
@@ -405,7 +127,7 @@ Tokenizer.identify_alphas(
 
 Identify and tokenize functions and variables.
 
-### identify_constants <kbd>method</kbd>
+## identify_constants <kbd>method</kbd>
 
 ```python
 Tokenizer.identify_constants(
@@ -416,7 +138,7 @@ Tokenizer.identify_constants(
 
 Identify and tokenize a constant number.
 
-### identify_operators <kbd>method</kbd>
+## identify_operators <kbd>method</kbd>
 
 ```python
 Tokenizer.identify_operators(
@@ -427,7 +149,7 @@ Tokenizer.identify_operators(
 
 Identify and tokenize operators.
 
-### is_alpha <kbd>method</kbd>
+## is_alpha <kbd>method</kbd>
 
 ```python
 Tokenizer.is_alpha(self, c: str) -> bool
@@ -435,7 +157,7 @@ Tokenizer.is_alpha(self, c: str) -> bool
 
 Is this character a letter
 
-### is_number <kbd>method</kbd>
+## is_number <kbd>method</kbd>
 
 ```python
 Tokenizer.is_number(self, c: str) -> bool
@@ -443,7 +165,7 @@ Tokenizer.is_number(self, c: str) -> bool
 
 Is this character a number
 
-### tokenize <kbd>method</kbd>
+## tokenize <kbd>method</kbd>
 
 ```python
 Tokenizer.tokenize(self, buffer: str) -> List[mathy_core.tokenizer.Token]
