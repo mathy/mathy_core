@@ -815,3 +815,30 @@ def print_error(error: BaseException, text: str, print_error: bool = True) -> No
         print(caught_at + caught_error)
     else:
         raise ValueError(caught_at + caught_error)
+
+
+__all__ = (
+    "is_debug_mode",
+    "compare_expression_string_values",
+    "raise_with_history",
+    "compare_expression_values",
+    "compare_equation_values",
+    "unlink",
+    "factor",
+    "is_add_or_sub",
+    "get_sub_terms",
+    "is_simple_term",
+    "is_preferred_term_form",
+    "has_like_terms",
+    "FactorResult",
+    "make_term",
+    "TermResult",
+    "get_term",
+    "TermEx",
+    "get_term_ex",
+    "factor_add_terms_ex",
+    "get_terms",
+    "terms_are_like",
+    "pad_array",
+    "print_error",
+)

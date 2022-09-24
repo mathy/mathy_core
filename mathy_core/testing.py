@@ -12,7 +12,7 @@ from .util import (
 )
 
 
-def get_rule_tests(name: str) -> dict:
+def get_rule_tests(name: str) -> Dict[str, Any]:
     """Load a set of JSON rule test assertions.
 
     # Arguments
@@ -29,7 +29,7 @@ def get_rule_tests(name: str) -> dict:
         return json.load(file)
 
 
-def init_rule_for_test(example: dict, rule_class: Type[BaseRule]) -> BaseRule:
+def init_rule_for_test(example: Dict[str, Any], rule_class: Type[BaseRule]) -> BaseRule:
     """Initialize a given rule_class from a test example.
 
     This handles optionally passing the test example constructor arguments
@@ -52,7 +52,7 @@ def init_rule_for_test(example: dict, rule_class: Type[BaseRule]) -> BaseRule:
 def run_rule_tests(
     name: str,
     rule_class: Type[BaseRule],
-    callback: Optional[Callable[[dict], None]] = None,
+    callback: Optional[Callable[[Dict[str, Any]], None]] = None,
 ) -> None:
     """Load and assert about the transformations and validity of rules
     based on given input examples.
@@ -127,3 +127,6 @@ def run_rule_tests(
             raise ValueError(
                 "expected not to find a node, but found: {}".format(str(node))
             )
+
+
+__all__ = ("get_rule_tests", "init_rule_for_test", "run_rule_tests")

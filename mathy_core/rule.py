@@ -122,3 +122,6 @@ class ExpressionChangeRule:
             self._save_parent.set_side(node, self._save_side)
         self.result = node
         return self
+
+
+__all__ = ("BaseRule", "ExpressionChangeRule")

@@ -16,11 +16,11 @@ try:
 except AttributeError:
     ...  # Boo!
 
-operators = list("+-*")
-common_variables = list("xyz")
-variables = list("abcdfghjklmnopqrstuvwxyz")
-max_const = 12
-_pretty_numbers = True
+operators: List[str] = list("+-*")
+common_variables: List[str] = list("xyz")
+variables: List[str] = list("abcdfghjklmnopqrstuvwxyz")
+max_const: int = 12
+_pretty_numbers: bool = True
 
 
 class MathyTermTemplate(BaseModel):
@@ -636,3 +636,33 @@ def gen_move_around_blockers_two(
         three_exp,
     )
     return problem, complexity
+
+
+__all__ = (
+    "DefaultType",
+    "MathyTermTemplate",
+    "MathyProblemTerm",
+    "MathyExcludedTermTemplates",
+    "mathy_term_string",
+    "get_rand_term_templates",
+    "rand_bool",
+    "rand_var",
+    "maybe_var",
+    "maybe_number",
+    "maybe_power",
+    "maybe_power",
+    "use_pretty_numbers",
+    "rand_number",
+    "truncate",
+    "rand_op",
+    "get_rand_vars",
+    "gen_binomial_times_binomial",
+    "gen_binomial_times_monomial",
+    "gen_simplify_multiple_terms",
+    "split_in_two_random",
+    "gen_combine_terms_in_place",
+    "gen_commute_haystack",
+    "get_blocker",
+    "gen_move_around_blockers_one",
+    "gen_move_around_blockers_two",
+)

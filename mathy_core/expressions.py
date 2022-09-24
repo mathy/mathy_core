@@ -1,5 +1,6 @@
 import json
 import math
+from io import TextIOWrapper
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Type, Union, cast
 
@@ -17,8 +18,10 @@ OOO_ADDSUB = 0
 OOO_INVALID = -1
 
 
-with open(Path(__file__).parent / "expressions.meta.json") as json_file:
-    META = json.load(json_file)
+_meta_path: Path = Path(__file__).parent / "expressions.meta.json"
+_json_file: TextIOWrapper
+with open(_meta_path) as _json_file:
+    META: Dict[str, Any] = json.load(_json_file)
 
 MathTypeKeys = META["type_ids"]
 # The maximum value in type keys (for one-hot encoding)
@@ -780,3 +783,26 @@ class SgnExpression(FunctionExpression):
             return 1
 
         return 0
+
+
+__all__ = (
+    "META",
+    "MathTypeKeys",
+    "MathTypeKeysMax",
+    "MathExpression",
+    "UnaryExpression",
+    "NegateExpression",
+    "FactorialExpression",
+    "FunctionExpression",
+    "BinaryExpression",
+    "EqualExpression",
+    "AddExpression",
+    "SubtractExpression",
+    "MultiplyExpression",
+    "DivideExpression",
+    "PowerExpression",
+    "ConstantExpression",
+    "VariableExpression",
+    "AbsExpression",
+    "SgnExpression",
+)

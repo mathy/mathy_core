@@ -6,21 +6,21 @@ from .types import NumberType
 
 # Define the known types of tokens for the Tokenizer.
 class TOKEN_TYPES:
-    Constant = 1 << 0
-    Variable = 1 << 1
-    Plus = 1 << 2
-    Minus = 1 << 3
-    Multiply = 1 << 4
-    Divide = 1 << 5
-    Exponent = 1 << 6
-    Factorial = 1 << 7
-    OpenParen = 1 << 8
-    CloseParen = 1 << 9
-    Function = 1 << 10
-    Equal = 1 << 11
-    Pad = 1 << 12
-    EOF = 1 << 13
-    Invalid = 1 << 14
+    Constant: int = 1 << 0
+    Variable: int = 1 << 1
+    Plus: int = 1 << 2
+    Minus: int = 1 << 3
+    Multiply: int = 1 << 4
+    Divide: int = 1 << 5
+    Exponent: int = 1 << 6
+    Factorial: int = 1 << 7
+    OpenParen: int = 1 << 8
+    CloseParen: int = 1 << 9
+    Function: int = 1 << 10
+    Equal: int = 1 << 11
+    Pad: int = 1 << 12
+    EOF: int = 1 << 13
+    Invalid: int = 1 << 14
 
 
 class Token:
@@ -157,3 +157,6 @@ class Tokenizer:
 
 def coerce_to_number(value: str) -> NumberType:
     return float(value) if "e" in value or "." in value else int(value)
+
+
+__all__ = ("TOKEN_TYPES", "Token", "TokenContext", "Tokenizer", "coerce_to_number")

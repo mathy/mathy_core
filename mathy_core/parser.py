@@ -124,6 +124,9 @@ class ExpressionParser:
     _tokens_cache: Dict[str, List[Token]]
     _all_tokens: Optional[List[Token]]
 
+    tokenizer: Tokenizer
+    current_token: Token
+
     # Initialize the tokenizer.
     def __init__(self) -> None:
         self.tokenizer = Tokenizer()
@@ -405,3 +408,16 @@ class ExpressionParser:
         if do_assert is True and result is False:
             raise InvalidSyntax("Invalid expression")
         return result
+
+
+__all__ = (
+    "ParserException",
+    "InvalidExpression",
+    "OutOfTokens",
+    "InvalidSyntax",
+    "UnexpectedBehavior",
+    "UnexpectedBehavior",
+    "TrailingTokens",
+    "TokenSet",
+    "ExpressionParser",
+)
