@@ -4,7 +4,7 @@
 Utility functions for helping generate input problems.
 """
 import random
-from typing import Any, List, Optional, Set, Tuple, TypeVar, Union
+from typing import Any, List, Optional, Set, Tuple, TypeVar, Union, cast
 
 from pydantic import BaseModel, Field
 
@@ -80,7 +80,9 @@ def get_rand_term_templates(
                 f"failed to generate a random term after {failures} tries!"
             )
         variable = rand_var(common_variables)
-        exponent: Optional[NumberType] = maybe_number(exponent_probability * 100, None)
+        exponent: Optional[NumberType] = cast(
+            Union[int, None], maybe_number(exponent_probability * 100, None)
+        )
         # Don't generate x^1
         if exponent == 1:
             exponent = 2
@@ -114,8 +116,10 @@ def maybe_var(
 
 def maybe_number(
     percent_chance: NumberType = 80, or_else: DefaultType = ""  # type:ignore
-) -> Union[int, float, DefaultType]:
-    return rand_number() if rand_bool(percent_chance) else or_else
+) -> Union[NumberType, DefaultType]:
+    if rand_bool(percent_chance):
+        return rand_number()
+    return cast(DefaultType, or_else)
 
 
 def maybe_power(
@@ -314,7 +318,7 @@ def gen_binomial_times_monomial(
 def gen_simplify_multiple_terms(
     num_terms: int,
     optional_var: bool = False,
-    op: Union[List[str], str] = None,
+    op: Optional[Union[List[str], str]] = None,
     common_variables: bool = True,
     inner_terms_scaling: float = 0.3,
     powers_probability: float = 0.33,
@@ -323,7 +327,7 @@ def gen_simplify_multiple_terms(
     shuffle_probability: float = 0.66,
     share_var_probability: float = 0.5,
     grouping_noise_probability: float = 0.66,
-    noise_terms: int = None,
+    noise_terms: Optional[int] = None,
 ) -> Tuple[str, int]:
     """Generate a polynomial problem with like terms that need to be combined and
     simplified.

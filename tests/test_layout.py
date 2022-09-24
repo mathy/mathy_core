@@ -108,6 +108,7 @@ def test_layout_tidier_aesthetic_four_reflections():
         right = tree.find(i)
         assert left is not None and right is not None
         assert left.x is not None and tree.x is not None
+        assert right.x is not None
         left_dist = abs(left.x - tree.x)
         right_dist = abs(right.x - tree.x)
         assert left_dist == right_dist
