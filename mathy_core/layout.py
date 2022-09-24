@@ -58,7 +58,7 @@ class TreeLayout:
 
     def measure(
         self,
-        node: BinaryTreeNode = None,
+        node: Optional[BinaryTreeNode] = None,
         level: int = 0,
         extremes: Optional["TidierExtreme"] = None,
     ) -> "TreeLayout":
@@ -197,13 +197,14 @@ class TreeLayout:
 
     def transform(
         self,
-        node: BinaryTreeNode = None,
+        node: Optional[BinaryTreeNode] = None,
         x: float = 0,
         unit_x_multiplier: float = 1,
         unit_y_multiplier: float = 1,
         measure: Optional["TreeMeasurement"] = None,
     ) -> "TreeMeasurement":
-        """Transform relative to absolute coordinates, and measure the bounds of the tree.
+        """Transform relative to absolute coordinates, and measure the bounds of
+        the tree.
 
         Return a measurement of the tree in output units."""
         if measure is None:

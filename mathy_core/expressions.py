@@ -413,7 +413,7 @@ class BinaryExpression(MathExpression):
     ):
         super().__init__(left=left, right=right)
 
-    def evaluate(self, context: Dict[str, NumberType] = None) -> NumberType:
+    def evaluate(self, context: Optional[Dict[str, NumberType]] = None) -> NumberType:
         left, right = self._check()
         return self.operate(left.evaluate(context), right.evaluate(context))
 
@@ -682,14 +682,14 @@ class ConstantExpression(MathExpression):
             return f"{int(self.value)}"
         # TODO: floating point values here should have some consistency
         #       across languages. HOW?
-        return np.format_float_positional(self.value, trim="-")
+        return np.format_float_positional(self.value or 0, trim="-")
 
     def clone(self) -> "ConstantExpression":  # type:ignore[override]
         result = cast(ConstantExpression, super().clone())
         result.value = self.value
         return result  # type:ignore
 
-    def evaluate(self, _context: Dict[str, NumberType] = None) -> NumberType:
+    def evaluate(self, _context: Optional[Dict[str, NumberType]] = None) -> NumberType:
         assert self.value is not None
         return self.value
 
@@ -733,7 +733,7 @@ class VariableExpression(MathExpression):
         self._check()
         return self.make_ml_tag("mi", str(self.identifier), self.classes)
 
-    def evaluate(self, context: Dict[str, NumberType] = None) -> NumberType:
+    def evaluate(self, context: Optional[Dict[str, NumberType]] = None) -> NumberType:
         self._check()
         id = cast(str, self.identifier)
         if context and context.get(id, None) is not None:

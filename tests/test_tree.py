@@ -61,10 +61,13 @@ def test_tree_node_is_leaf():
     tree = BinarySearchTree(0)
     for i in range(-1, 6):
         tree.insert(i)
-    assert tree.find(-1).is_leaf() is True
-    assert tree.find(5).is_leaf() is True
+    find = tree.find(-1)
+    assert find is not None and find.is_leaf() is True
+    find = tree.find(5)
+    assert find is not None and find.is_leaf() is True
     for i in range(4):
-        assert tree.find(i).is_leaf() is False
+        find = tree.find(i)
+        assert find is not None and find.is_leaf() is False
 
 
 def test_tree_node_rotate():
@@ -79,6 +82,7 @@ def test_tree_node_rotate():
     for i in range(1000):
         index = np.random.randint(0, len(values))  # type:ignore
         node = tree.find(values[index])
+        assert node is not None
         node.rotate()
     for v in values:
         assert tree.find(v) is not None
@@ -206,7 +210,8 @@ def test_tree_node_get_root():
     for i in values:
         tree.insert(i)
     for i in values:
-        assert tree.find(i).get_root() == tree
+        find = tree.find(i)
+        assert find is not None and find.get_root() == tree
 
 
 def test_tree_node_set_left():
@@ -250,10 +255,10 @@ def test_tree_node_get_side():
     for i in values:
         tree.insert(i)
     node = tree.find(-4)
-    assert node is not None
+    assert node is not None and node.parent is not None
     assert node.parent.get_side(node) == "left"
     node = tree.find(4)
-    assert node is not None
+    assert node is not None and node.parent is not None
     assert node.parent.get_side(node) == "right"
     with pytest.raises(ValueError):
         # Raises an error if the child does not belong to this parent
@@ -278,19 +283,27 @@ def test_tree_node_get_children():
     tree = BinarySearchTree(0)
     for i in values:
         tree.insert(i)
-    neg: List[BinarySearchTree] = tree.find(-2).get_children()
+    find = tree.find(-2)
+    assert find is not None
+    neg: List[BinarySearchTree] = find.get_children()
     assert len(neg) == 2
     assert neg[0].key == -3
     assert neg[1].key == -1
-    one: List[BinarySearchTree] = tree.find(1).get_children()
+    find = tree.find(1)
+    assert find is not None
+    one: List[BinarySearchTree] = find.get_children()
     assert len(one) == 1
     assert one[0].key == 2
-    two = tree.find(2).get_children()
+    find = tree.find(2)
+    assert find is not None
+    two = find.get_children()
     assert len(two) == 0
 
 
 def test_tree_node_get_sibling():
     tree = BinaryTreeNode(BinaryTreeNode(), BinaryTreeNode())
+    assert tree.left is not None
     assert tree.left.get_sibling() == tree.right
+    assert tree.right is not None
     assert tree.right.get_sibling() == tree.left
     assert tree.get_sibling() is None
