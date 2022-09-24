@@ -300,3 +300,14 @@ class BinaryTreeNode:
             return self.parent.left  # type:ignore
 
         return None
+
+
+__all__ = (
+    "STOP",
+    "LEFT",
+    "RIGHT",
+    "VisitStop",
+    "VisitDataType",
+    "VisitFunction",
+    "BinaryTreeNode",
+)

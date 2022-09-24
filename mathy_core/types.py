@@ -8,3 +8,5 @@ else:
     from typing import Literal  # noqa
 
 NumberType = Union[float, int]
+
+__all__ = ("NumberType", "Literal")
