@@ -140,7 +140,6 @@ class MathExpression(BinaryTreeNode):
         def visit_fn(
             node: MathExpression, depth: int, data: Any
         ) -> Optional[VisitStop]:
-
             node.classes = []
             return None
 
@@ -153,7 +152,6 @@ class MathExpression(BinaryTreeNode):
         def visit_fn(
             node: MathExpression, depth: int, data: Any
         ) -> Optional[VisitStop]:
-
             results.append(node)
             return None
 
@@ -179,7 +177,6 @@ class MathExpression(BinaryTreeNode):
         def visit_fn(
             node: MathExpression, depth: int, data: Any
         ) -> Optional[VisitStop]:
-
             if isinstance(node, instanceType):
                 results.append(node)  # type:ignore
             return None
@@ -197,7 +194,6 @@ class MathExpression(BinaryTreeNode):
         def visit_fn(
             node: MathExpression, depth: int, data: Any
         ) -> Optional[VisitStop]:
-
             nonlocal result
             if node.id == id:
                 result = node

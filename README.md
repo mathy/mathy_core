@@ -69,6 +69,22 @@ assert input_exp.evaluate(ctx) == output_exp.evaluate(ctx)
 <!-- ### Visualize a Tree -- needs mathy plugin in docs.sh -->
 <!-- ### Generate Problems -- needs example snippet -->
 
+## Development
+
+Install the prerequisites in a virtual environment (python3 required)
+
+```bash
+sh tools/setup.sh
+```
+
+Run the test suite and view code-coverage statistics
+
+```bash
+sh tools/test.sh
+```
+
+The tests cover ~90% of the code so they're a good reference for how to use the various APIs.
+
 ## Semantic Versioning
 
 Before Mathy Core reaches v1.0 the project is not guaranteed to have a consistent API, which means that types and classes may move around or be removed. That said, we try to be predictable when it comes to breaking changes, so the project uses semantic versioning to help users avoid breakage.

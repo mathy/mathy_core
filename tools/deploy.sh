@@ -10,7 +10,7 @@ echo "--- Install requirements"
 pip install twine wheel
 pip install -r requirements.txt
 echo "--- Buid dists"
-python setup.py sdist bdist_wheel
+python3 setup.py sdist bdist_wheel
 echo "--- Upload to PyPi"
 # NOTE: ignore errors on upload because our CI is dumb and tries to upload
 #       even if the version has already been uploaded. This isn't great, but

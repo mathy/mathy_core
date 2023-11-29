@@ -4,7 +4,6 @@ from .tree import BinaryTreeNode
 
 
 class TidierExtreme:
-
     left: Optional[BinaryTreeNode]
     right: Optional[BinaryTreeNode]
     thread: Optional[BinaryTreeNode]

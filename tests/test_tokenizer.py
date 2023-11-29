@@ -6,7 +6,6 @@ from mathy_core import TOKEN_TYPES, Token, Tokenizer
 
 
 def test_tokenizer_tokenize() -> None:
-
     text = "4x + 2x^3 * 7!"
     tokenizer = Tokenizer()
     tokens: List[Token] = tokenizer.tokenize(text)
@@ -18,7 +17,6 @@ def test_tokenizer_tokenize() -> None:
 
 
 def test_tokenizer_errors() -> None:
-
     text = "4x + 2x^3 * 7\\"
     tokenizer = Tokenizer()
 
