@@ -4,9 +4,8 @@
 Utility functions for helping generate input problems.
 """
 import random
+from dataclasses import dataclass
 from typing import Any, List, Optional, Set, Tuple, TypeVar, Union, cast
-
-from pydantic import BaseModel, Field
 
 from .types import NumberType
 
@@ -23,9 +22,10 @@ max_const: int = 12
 _pretty_numbers: bool = True
 
 
-class MathyTermTemplate(BaseModel):
-    variable: Optional[str] = Field(None, description="the term variable")
-    exponent: Optional[int | float] = Field(None, description="the term exponent")
+@dataclass
+class MathyTermTemplate:
+    variable: Optional[str] = None  # the term variable
+    exponent: Optional[int | float] = None  # the term exponent
 
     def make(self) -> str:
         return mathy_term_string(
