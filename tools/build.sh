@@ -3,4 +3,4 @@ set -e
 . .env/bin/activate
 
 echo "Build python package..."
-python setup.py sdist bdist_wheel
+python3 setup.py sdist bdist_wheel

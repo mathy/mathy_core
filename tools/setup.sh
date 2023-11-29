@@ -5,7 +5,7 @@ set -e
 DIR=.env
 if [ ! -d "${DIR}" ]; then
   pip install virtualenv --upgrade
-  python -m virtualenv .env -p python3
+  python3 -m virtualenv .env -p python3
 fi
 
 . .env/bin/activate
