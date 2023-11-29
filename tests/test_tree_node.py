@@ -50,7 +50,6 @@ def test_tree_node_clone():
 
 
 def test_tree_node_is_leaf():
-
     """check that the known extremes of a tree are reported as leaf nodes
     and that all other known non - extremes are not."""
     tree = BinarySearchTree(0)

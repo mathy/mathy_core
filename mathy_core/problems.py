@@ -25,7 +25,7 @@ _pretty_numbers: bool = True
 
 class MathyTermTemplate(BaseModel):
     variable: Optional[str] = Field(None, description="the term variable")
-    exponent: Optional[int] = Field(None, description="the term exponent")
+    exponent: Optional[int | float] = Field(None, description="the term exponent")
 
     def make(self) -> str:
         return mathy_term_string(

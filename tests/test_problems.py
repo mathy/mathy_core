@@ -12,7 +12,6 @@ from mathy_core.util import TermEx, get_term_ex, get_terms
 
 
 def test_number_generation() -> None:
-
     random.seed(1337)
 
     # When using pretty number generation, all values
