@@ -25,7 +25,7 @@ _pretty_numbers: bool = True
 @dataclass
 class MathyTermTemplate:
     variable: Optional[str] = None  # the term variable
-    exponent: Optional[int | float] = None  # the term exponent
+    exponent: Optional[Union[int, float]] = None  # the term exponent
 
     def make(self) -> str:
         return mathy_term_string(

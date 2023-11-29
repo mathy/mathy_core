@@ -13,9 +13,17 @@ on:
 
 jobs:
   build:
+    strategy:
+      matrix:
+        os: [ubuntu-20.04]
+        python-version: [3.7, 3.8, 3.9, 3.10.6, 3.11]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
       - name: Setup Packages
         run: sh tools/setup.sh
       - name: Build Packages
