@@ -1,6 +1,6 @@
 {
   "projectName": "mathy_core",
-  "projectOwner": "justindujardin",
+  "projectOwner": "mathy",
   "repoType": "github",
   "repoHost": "https://github.com",
   "files": [
@@ -17,10 +17,21 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "ElSupreme",
+      "name": "JT Stukes",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13594721?v=4",
+      "profile": "https://github.com/ElSupreme",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "skipCi": true,
   "contributorsPerLine": 7,
   "badgeTemplate": "[![All Contributors](https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg?style=flat-square)](#contributors)",
-  "contributorTemplate": "<a target=\"_blank\" href=\"<%= contributor.profile %>\"><img src=\"<%= contributor.avatar_url %>\" width=\"<%= options.imageSize %>px;\" alt=\"\"/><br /><sub><b><%= contributor.name %></b></sub></a>"
+  "contributorTemplate": "<a target=\"_blank\" href=\"<%= contributor.profile %>\"><img src=\"<%= contributor.avatar_url %>\" width=\"<%= options.imageSize %>px;\" alt=\"\"/><br /><sub><b><%= contributor.name %></b></sub></a>",
+  "commitType": "docs",
+  "commitConvention": "angular"
 }
