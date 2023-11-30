@@ -364,9 +364,7 @@ Return the root element of this tree
 ### get_root_side <kbd>method</kbd>
 
 ```python (doc)
-BinaryTreeNode.get_root_side(
-    self: 'BinaryTreeNode',
-) -> typing_extensions.Literal['left', 'right']
+BinaryTreeNode.get_root_side(self: 'BinaryTreeNode') -> Literal['left', 'right']
 ```
 
 Return the side of the tree that this node lives on
@@ -386,7 +384,7 @@ has no sibling, the return value will be None.
 BinaryTreeNode.get_side(
     self,
     child: Optional[BinaryTreeNode],
-) -> typing_extensions.Literal['left', 'right']
+) -> Literal['left', 'right']
 ```
 
 Determine whether the given `child` is the left or right child of this
@@ -439,7 +437,7 @@ Set the right node to the passed `child`
 BinaryTreeNode.set_side(
     self,
     child: ~NodeType,
-    side: typing_extensions.Literal['left', 'right'],
+    side: Literal['left', 'right'],
 ) -> ~NodeType
 ```
 
@@ -450,10 +448,10 @@ Set a new `child` on the given `side`
 ```python (doc)
 BinaryTreeNode.visit_inorder(
     self,
-    visit_fn: Callable[[Any, int, Optional[Any]], Optional[typing_extensions.Literal['stop']]],
+    visit_fn: Callable[[Any, int, Optional[Any]], Optional[Literal['stop']]],
     depth: int = 0,
     data: Optional[Any] = None,
-) -> Optional[typing_extensions.Literal['stop']]
+) -> Optional[Literal['stop']]
 ```
 
 Visit the tree inorder, which visits the left child, then the current node,
@@ -474,10 +472,10 @@ visited, the current depth in the tree, and a user specified data parameter.
 ```python (doc)
 BinaryTreeNode.visit_postorder(
     self,
-    visit_fn: Callable[[Any, int, Optional[Any]], Optional[typing_extensions.Literal['stop']]],
+    visit_fn: Callable[[Any, int, Optional[Any]], Optional[Literal['stop']]],
     depth: int = 0,
     data: Optional[Any] = None,
-) -> Optional[typing_extensions.Literal['stop']]
+) -> Optional[Literal['stop']]
 ```
 
 Visit the tree postorder, which visits its left child, then its right child,
@@ -498,10 +496,10 @@ visited, the current depth in the tree, and a user specified data parameter.
 ```python (doc)
 BinaryTreeNode.visit_preorder(
     self,
-    visit_fn: Callable[[Any, int, Optional[Any]], Optional[typing_extensions.Literal['stop']]],
+    visit_fn: Callable[[Any, int, Optional[Any]], Optional[Literal['stop']]],
     depth: int = 0,
     data: Optional[Any] = None,
-) -> Optional[typing_extensions.Literal['stop']]
+) -> Optional[Literal['stop']]
 ```
 
 Visit the tree preorder, which visits the current node, then its left
@@ -516,10 +514,6 @@ visited, the current depth in the tree, and a user specified data parameter.
 !!! info
 
     Traversals may be canceled by returning `STOP` from any visit function.
-
-## NodeType
-
-Template type that inherits from BinaryTreeNode.
 
 ## VisitDataType
 
@@ -585,7 +579,7 @@ Render this node as a MathML element fragment
 ## ConstantExpression <kbd>class</kbd>
 
 ```python (doc)
-ConstantExpression(self, value: Optional[int, float] = None)
+ConstantExpression(self, value: Optional[float, int] = None)
 ```
 
 A Constant value node, where the value is accessible as `node.value`
@@ -743,7 +737,7 @@ Color to use for this node when rendering it as changed with
 ```python (doc)
 MathExpression.evaluate(
     self,
-    context: Union[Dict[str, Optional[float, int]]] = None,
+    context: Optional[Dict[str, Union[float, int]]] = None,
 ) -> Union[float, int]
 ```
 
@@ -752,10 +746,7 @@ Evaluate the expression, resolving all variables to constant values
 ### find_id <kbd>method</kbd>
 
 ```python (doc)
-MathExpression.find_id(
-    self,
-    id: str,
-) -> Optional[MathExpression]
+MathExpression.find_id(self, id: str) -> Optional[MathExpression]
 ```
 
 Find an expression by its unique ID.
@@ -990,7 +981,7 @@ BalancedMoveRule(self, args, kwargs)
 Balanced rewrite rule moves nodes from one side of an equation
 to the other by performing the same operation on both sides.
 
-Addition: `a + 2 = 3` -> `a + 2 = 3 - 2`
+Addition: `a + 2 = 3` -> `a + 2 - 2 = 3 - 2`
 Multiplication: `3a = 3` -> `3a / 3 = 3 / 3`
 
 ### get_type <kbd>method</kbd>
@@ -1264,7 +1255,7 @@ Returns a TreeMeasurement object that describes the bounds of the tree
 ```python (doc)
 TreeLayout.transform(
     self,
-    node: mathy_core.tree.BinaryTreeNode = None,
+    node: Optional[mathy_core.tree.BinaryTreeNode] = None,
     x: float = 0,
     unit_x_multiplier: float = 1,
     unit_y_multiplier: float = 1,
@@ -1272,7 +1263,8 @@ TreeLayout.transform(
 ) -> 'TreeMeasurement'
 ```
 
-Transform relative to absolute coordinates, and measure the bounds of the tree.
+Transform relative to absolute coordinates, and measure the bounds of
+the tree.
 
 Return a measurement of the tree in output units.
 
@@ -1393,7 +1385,7 @@ The challenge is to commute the terms to each other in one move.
                               ^-----------^
 ```
 
-`mathy:4y + 12j + 73q + 19k + 13z + 24x + 56l + 12x + 43n + 17j`
+`mathy:4y + 12j + 73q + 19k + 13z + 24x + 56l + 12x  + 43n + 17j`
 
 ## gen_move_around_blockers_one <kbd>function</kbd>
 
@@ -1439,7 +1431,7 @@ Two like terms with three blockers.
 gen_simplify_multiple_terms(
     num_terms: int,
     optional_var: bool = False,
-    op: Union[List[str], str] = None,
+    op: Optional[List[str], str] = None,
     common_variables: bool = True,
     inner_terms_scaling: float = 0.3,
     powers_probability: float = 0.33,
@@ -1448,7 +1440,7 @@ gen_simplify_multiple_terms(
     shuffle_probability: float = 0.66,
     share_var_probability: float = 0.5,
     grouping_noise_probability: float = 0.66,
-    noise_terms: int = None,
+    noise_terms: Optional[int] = None,
 ) -> Tuple[str, int]
 ```
 
@@ -1487,6 +1479,18 @@ get_rand_vars(
 ```
 
 Get a list of random variables, excluding the given list of hold-out variables
+
+## MathyTermTemplate <kbd>dataclass</kbd>
+
+```python (doc)
+MathyTermTemplate(
+    self,
+    variable: Optional[str] = None,
+    exponent: Optional[float, int] = None,
+) -> None
+```
+
+MathyTermTemplate(variable: Optional[str] = None, exponent: Union[float, int, NoneType] = None)
 
 ## split_in_two_random <kbd>function</kbd>
 
