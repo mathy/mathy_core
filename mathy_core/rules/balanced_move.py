@@ -22,7 +22,7 @@ class BalancedMoveRule(BaseRule):
     r"""Balanced rewrite rule moves nodes from one side of an equation
     to the other by performing the same operation on both sides.
 
-    Addition: `a + 2 = 3` -> `a + 2 = 3 - 2`
+    Addition: `a + 2 = 3` -> `a + 2 - 2 = 3 - 2`
     Multiplication: `3a = 3` -> `3a / 3 = 3 / 3`
     """
 
