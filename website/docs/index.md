@@ -1,6 +1,9 @@
 # mathy_core
 
 <p align="center">
+  <a href="/"><img mathy-logo src="/img/mathy_core_logo.png" alt="Mathy Core"></a>
+</p>
+<p align="center">
     <em>Parse text into trees, visualize them, and make them dance by your rules.</em>
 </p>
 <p align="center">
