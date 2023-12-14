@@ -1,7 +1,35 @@
-Mathy includes what's called a Computer Algebra System (or CAS). Its job is to turn text into math trees that can be examined and manipulated by way of a two-step process:
+# mathy_core
+
+<p align="center">
+    <em>Parse text into trees, visualize them, and make them dance by your rules.</em>
+</p>
+<p align="center">
+<a href="https://github.com/mathy/mathy_core/actions">
+    <img src="https://github.com/mathy/mathy_core/workflows/Build/badge.svg" />
+</a>
+<a href="https://codecov.io/gh/mathy/mathy_core">
+    <img src="https://codecov.io/gh/mathy/mathy_core/branch/master/graph/badge.svg?token=CqPEOdEMJX" />
+</a>
+<a href="https://pypi.org/project/mathy_core" target="_blank">
+    <img src="https://badge.fury.io/py/mathy_core.svg" alt="Package version">
+</a>
+</p>
+
+Mathy includes a Computer Algebra System (or CAS). Its job is to turn text into math trees that can be examined and manipulated by a multi-step process:
 
 1. [Tokenize](./api/tokenizer) the text into a list of `type`/`value` pairs
 2. [Parse](./api/parser) the token list into an Expression tree
+3. [Modify](./api/rule.md) the tree by applying a transformation rule to it.
+
+## Requirements
+
+- Python 3.6+
+
+## Installation
+
+```bash
+$ pip install mathy_envs
+```
 
 ## Examples
 
