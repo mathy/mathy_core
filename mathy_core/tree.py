@@ -1,4 +1,4 @@
-from typing import Any, Callable, List, Optional, TypeVar, Union, cast
+from typing import Any, Callable, Generic, List, Optional, TypeVar, Union, cast
 
 from .types import Literal
 
@@ -29,7 +29,7 @@ VisitFunction = Callable[
 ]
 
 
-class BinaryTreeNode:
+class BinaryTreeNode(Generic[NodeType]):
     """
     The binary tree node is the base node for all of our trees, and provides a
     rich set of methods for constructing, inspecting, and modifying them.
@@ -44,18 +44,18 @@ class BinaryTreeNode:
     y: Optional[float]
     offset: Optional[float]
     level: Optional[int]
-    thread: Optional["BinaryTreeNode"]
+    thread: Optional[NodeType]
 
-    left: Optional["BinaryTreeNode"]
-    right: Optional["BinaryTreeNode"]
-    parent: Optional["BinaryTreeNode"]
+    left: Optional[NodeType]
+    right: Optional[NodeType]
+    parent: Optional[NodeType]
 
     #  Allow specifying children in the constructor
     def __init__(
-        self,
-        left: Optional["BinaryTreeNode"] = None,
-        right: Optional["BinaryTreeNode"] = None,
-        parent: Optional["BinaryTreeNode"] = None,
+        self: NodeType,
+        left: Optional[NodeType] = None,
+        right: Optional[NodeType] = None,
+        parent: Optional[NodeType] = None,
         id: Optional[str] = None,
     ):
         if id is None:
@@ -208,7 +208,7 @@ class BinaryTreeNode:
 
         return cast(NodeType, result)
 
-    def get_root_side(self: "BinaryTreeNode") -> Literal["left", "right"]:
+    def get_root_side(self: NodeType) -> Literal["left", "right"]:
         """Return the side of the tree that this node lives on"""
         result = self
         last_child = None
@@ -225,7 +225,7 @@ class BinaryTreeNode:
 
     def set_left(
         self: NodeType,
-        child: Optional["BinaryTreeNode"] = None,
+        child: Optional[NodeType] = None,
         clear_old_child_parent: bool = False,
     ) -> NodeType:
         """Set the left node to the passed `child`"""
@@ -241,7 +241,7 @@ class BinaryTreeNode:
 
     def set_right(
         self: NodeType,
-        child: Optional["BinaryTreeNode"] = None,
+        child: Optional[NodeType] = None,
         clear_old_child_parent: bool = False,
     ) -> NodeType:
         """Set the right node to the passed `child`"""
@@ -255,7 +255,7 @@ class BinaryTreeNode:
 
         return self
 
-    def get_side(self, child: Optional["BinaryTreeNode"]) -> Literal["left", "right"]:
+    def get_side(self, child: Optional[NodeType]) -> Literal["left", "right"]:
         """Determine whether the given `child` is the left or right child of this
         node"""
         if child == self.left:
