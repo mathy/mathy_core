@@ -45,7 +45,7 @@ def prepend_md_content(original_md, prepending_md):
         )
         original_content[0] = new_content
         # flatten the list of lines into a single string
-        original_content = "\n".join(original_content)
+        original_content = "".join(original_content)
 
         file.seek(0, 0)
         file.write(prepending_content + "\n" + original_content)
