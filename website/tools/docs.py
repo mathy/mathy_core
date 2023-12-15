@@ -40,15 +40,31 @@ def prepend_md_content(original_md, prepending_md):
 
         # Change to
         ticks = "```"
-        new_content = (
-            f"# API\n\n{ticks}python\n\nimport {original_content[0][2:]}{ticks}\n\n"
-        )
+        import_statement = f"{ticks}python\n\nimport {original_content[0][2:]}{ticks}"
+        new_content = f"## API\n\n"
+        module_namespace = import_statement
         original_content[0] = new_content
         # flatten the list of lines into a single string
         original_content = "".join(original_content)
 
         file.seek(0, 0)
-        file.write(prepending_content + "\n" + original_content)
+        file.write(f"{module_namespace}\n{prepending_content}\n\n{original_content}")
+
+
+def h1_to_h2(original_md: str):
+    file_path = Path(original_md)
+    original_content = file_path.read_text().splitlines()
+    # First line is a heading 1 with the full module name that is described.
+    # Make it explode if that changes so we notice.
+    assert original_content[0].startswith(
+        "# "
+    ), "Expected heading 1 at beginning of mathy_pydoc API doc file"
+    ticks = "```"
+    original_content[0] = f"{ticks}python\n\nimport {original_content[0][2:]}\n{ticks}"
+    # flatten the list of lines into a single string
+    original_content = "\n".join(original_content)
+    file_path.unlink()
+    file_path.write_text(original_content)
 
 
 def render_docs(src_rel_path, src_file, to_file, modifier="++"):
@@ -77,6 +93,8 @@ def process_directory(directory):
         existing_md = file_path.with_suffix(".md")
         if existing_md.exists():
             prepend_md_content(to_file, existing_md)
+        else:
+            h1_to_h2(to_file)
 
         nav_item = {
             file_path.stem: to_file.relative_to(parent_folder_path / "docs").as_posix()

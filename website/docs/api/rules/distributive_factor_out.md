@@ -1,3 +1,7 @@
+```python
+
+import mathy_core.rules.distributive_factor_out
+```
 The `Distributive Property` of numbers says that we can factor out common values from terms connected with an addition operator.
 
 This rule is expressed by the equation `ab + ac = a(b + c)`
@@ -30,12 +34,8 @@ Given a common parent node, this rule extracts the common value from both sides,
 
 `rule_tests:distributive_factor_out`
 
-# API
 
-```python
-
-import mathy_core.rules.distributive_factor_out
-```
+## API
 
 
 ## DistributiveFactorOutRule

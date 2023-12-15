@@ -1,4 +1,7 @@
-# mathy_core.tree
+```python
+
+import mathy_core.tree
+```
 
 ## BinaryTreeNode
 ```python

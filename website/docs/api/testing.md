@@ -1,4 +1,7 @@
-# mathy_core.testing
+```python
+
+import mathy_core.testing
+```
 
 ## get_rule_tests
 ```python
@@ -51,4 +54,3 @@ When debugging a problem it can be useful to provide a "callback" function
 and add a `"debug": true` value to the example in the rules json file you
 want to debug. Then you set a breakpoint and step out of your callback function
 into the parsing/evaluation of the debug example.
-

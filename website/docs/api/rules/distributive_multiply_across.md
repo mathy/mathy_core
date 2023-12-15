@@ -1,3 +1,7 @@
+```python
+
+import mathy_core.rules.distributive_multiply_across
+```
 The `Distributive Property` can distribute multiplication across grouped terms. This has the effect of removing a grouping and can expose the terms that were inside for further simplification depending on the problem type.
 
 This rule is expressed by the equation `a(b + c) = ab + ac`
@@ -25,12 +29,8 @@ Given a multiplication of `a` and `(b + c)`, this rule distributes `a` across `b
 
 `rule_tests:distributive_multiply_across`
 
-# API
 
-```python
-
-import mathy_core.rules.distributive_multiply_across
-```
+## API
 
 
 ## DistributiveMultiplyRule

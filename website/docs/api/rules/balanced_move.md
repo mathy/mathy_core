@@ -1,4 +1,7 @@
-# mathy_core.rules.balanced_move
+```python
+
+import mathy_core.rules.balanced_move
+```
 
 ## BalancedMoveRule
 ```python
@@ -25,4 +28,3 @@ Supports the following configurations:
    other.
  - Multiply is a coefficient of a term that must be divided on both sides of
    the equation or inequality.
-

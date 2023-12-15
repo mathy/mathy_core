@@ -1,4 +1,7 @@
-# mathy_core.problems
+```python
+
+import mathy_core.problems
+```
 Problem Generation
 ---
 

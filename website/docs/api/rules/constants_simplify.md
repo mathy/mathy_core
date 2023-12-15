@@ -1,3 +1,7 @@
+```python
+
+import mathy_core.rules.constants_simplify
+```
 The `Constant Arithmetic` rule transforms an expression tree by combining two constant values separated by a binary operation like `addition` or `division`.
 
 ### Transformations
@@ -36,12 +40,8 @@ Math trees can be represented in many different equivalent forms, so mathy suppo
 
 `rule_tests:constants_simplify`
 
-# API
 
-```python
-
-import mathy_core.rules.constants_simplify
-```
+## API
 
 
 ## ConstantsSimplifyRule

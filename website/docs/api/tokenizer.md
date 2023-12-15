@@ -1,3 +1,7 @@
+```python
+
+import mathy_core.tokenizer
+```
 ## Motivation
 
 We first need an intermediate representation to parse math text into tree structures that encode the Order of Operations of the input. Specifically, we want to build a list of text characters corresponding to relevant `tokens` for a math expression. That is what the tokenizer does.
@@ -31,12 +35,8 @@ To better understand the tokenizer, let's build a tokens array manually then com
 {!./snippets/cas/tokenizer_manual.py!}
 ```
 
-# API
 
-```python
-
-import mathy_core.tokenizer
-```
+## API
 
 
 ## TOKEN_TYPES

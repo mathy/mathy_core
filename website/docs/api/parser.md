@@ -1,3 +1,7 @@
+```python
+
+import mathy_core.parser
+```
 Mathy parses [token arrays](./tokenizer) into inspectable, transformable, visualizable symbolic trees.
 
 ## Motivation
@@ -16,12 +20,8 @@ To help better understand what the parser does, consider a few examples of expre
 | `4x + 1/3y + 7x`      | `mathy:4x+ 1/3y + 7x`       |
 | `(28 + 1j)(17j + 2y)` | `mathy:(28 + 1j)(17j + 2y)` |
 
-# API
 
-```python
-
-import mathy_core.parser
-```
+## API
 
 
 ## ExpressionParser

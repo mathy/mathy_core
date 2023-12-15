@@ -1,4 +1,7 @@
-# mathy_core.util
+```python
+
+import mathy_core.util
+```
 
 ## compare_equation_values
 ```python
@@ -192,4 +195,3 @@ Unlink an expression from it's parent.
 
 1. Clear expression references in `parent`
 2. Clear `parent` in expression
-

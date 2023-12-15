@@ -9,7 +9,7 @@ copyright: Copyright &copy; 2011 - 2023 Justin DuJardin
 
 repo_name: mathy/mathy_core
 repo_url: https://github.com/mathy/mathy_core
-edit_uri: edit/main/website/docs/
+edit_uri: edit/master/website/docs/
 
 google_analytics:
 - UA-8701293-12
@@ -65,6 +65,9 @@ theme:
   - navigation.tabs
   - navigation.tabs.sticky
   - navigation.footer
+  - content.action.edit
+  - content.action.view
+  - content.tooltips
   favicon: img/favicon/favicon-16x16.png
   palette:
     primary: purple

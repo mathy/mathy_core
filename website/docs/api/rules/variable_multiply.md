@@ -1,4 +1,7 @@
-# mathy_core.rules.variable_multiply
+```python
+
+import mathy_core.rules.variable_multiply
+```
 
 ## VariableMultiplyRule
 ```python
@@ -60,4 +63,3 @@ Support two types of tree configurations:
 Structure:
  - Simple node(mult),node.left(term),node.right(term)
  - Chained node(mult),node.left(term),node.right(mult),node.right.left(term)
-

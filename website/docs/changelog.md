@@ -17,7 +17,7 @@
 - **ci:** add cron job for CI build ([0a4e833](https://github.com/mathy/mathy_core/commit/0a4e83350bed9c2e654981ea7cd56b55d326cd1c))
 - **package:** remove pydantic dependency ([66c983f](https://github.com/mathy/mathy_core/commit/66c983f252d22a2d0a9287b2de1f2ad70bcc85ad))
 
-#### BREAKING CHANGES
+**BREAKING CHANGES**
 
 - **package:** MathyTermTemplate is no longer a pydantic model. It's now a dataclass
 
@@ -65,7 +65,7 @@
 
 - **datasets:** drop datasets submodule from library ([dd0c76a](https://github.com/mathy/mathy_core/commit/dd0c76ab31280479af5374b127c0d71217a6a5bb))
 
-#### BREAKING CHANGES
+**BREAKING CHANGES**
 
 - **datasets:** the mathy_core.datasets submodule has been removed
 

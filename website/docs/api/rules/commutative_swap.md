@@ -1,3 +1,7 @@
+```python
+
+import mathy_core.rules.commutative_swap
+```
 The `Commutative Property` of numbers says that we can re-order two `addition` or `multiplication` terms so that one occurs before the other in the expression without changing the value of the expression.
 
 The formulation of this property is the same for addition and multiplication:
@@ -39,12 +43,8 @@ Given a common parent node, this rule switches the order of the children of that
 
 `rule_tests:commutative_swap`
 
-# API
 
-```python
-
-import mathy_core.rules.commutative_swap
-```
+## API
 
 
 ## CommutativeSwapRule

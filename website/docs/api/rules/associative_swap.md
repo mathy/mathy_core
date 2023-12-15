@@ -1,3 +1,7 @@
+```python
+
+import mathy_core.rules.associative_swap
+```
 The `Associative Property` of numbers says that we can re-group two `addition` or `multiplication` terms so that one is evaluated before the other without changing the value of the expression.
 
 The formulation of this property is the same for addition and multiplication:
@@ -43,12 +47,8 @@ The formulation of this property is the same for addition and multiplication:
 
 `rule_tests:associative_swap`
 
-# API
 
-```python
-
-import mathy_core.rules.associative_swap
-```
+## API
 
 
 ## AssociativeSwapRule

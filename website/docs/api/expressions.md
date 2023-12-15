@@ -1,4 +1,7 @@
-# mathy_core.expressions
+```python
+
+import mathy_core.expressions
+```
 
 ## AbsExpression
 ```python

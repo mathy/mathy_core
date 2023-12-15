@@ -1,4 +1,7 @@
-# mathy_core.rule
+```python
+
+import mathy_core.rule
+```
 
 ## BaseRule
 ```python
