@@ -65,13 +65,14 @@
       [
         "@semantic-release/changelog",
         {
-          "changelogFile": "libraries/website/docs/changelog.md"
+          "changelogFile": "website/docs/changelog.md"
         }
       ],
       [
         "@semantic-release/git",
         {
           "assets": [
+            "website/docs/changelog.md",
             "mathy_core/about.py",
             "package.json"
           ],
