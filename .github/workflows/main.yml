@@ -46,6 +46,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "18"
+      - name: Setup Packages
+        run: sh tools/setup.sh
+      - name: Build Packages
+        run: sh tools/build.sh
       - name: Semantic Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
