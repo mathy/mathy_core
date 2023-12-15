@@ -1,0 +1,97 @@
+# Project information
+site_name: Mathy Core
+site_description: Parse and manipulate math trees with interpretable rules
+site_author: Justin DuJardin
+site_url: https://core.mathy.ai
+
+# Copyright
+copyright: Copyright &copy; 2011 - 2023 Justin DuJardin
+
+repo_name: mathy/mathy_core
+repo_url: https://github.com/mathy/mathy_core
+edit_uri: edit/main/website/docs/
+
+google_analytics:
+- UA-8701293-12
+- auto
+
+nav:
+- Home: https://mathy.ai
+- Core:
+  - Home: index.md
+  - API:
+    - expressions: api/expressions.md
+    - layout: api/layout.md
+    - parser: api/parser.md
+    - problems: api/problems.md
+    - rule: api/rule.md
+    - rules:
+      - associative_swap: api/rules/associative_swap.md
+      - balanced_move: api/rules/balanced_move.md
+      - commutative_swap: api/rules/commutative_swap.md
+      - constants_simplify: api/rules/constants_simplify.md
+      - distributive_factor_out: api/rules/distributive_factor_out.md
+      - distributive_multiply_across: api/rules/distributive_multiply_across.md
+      - restate_subtraction: api/rules/restate_subtraction.md
+      - variable_multiply: api/rules/variable_multiply.md
+    - testing: api/testing.md
+    - tokenizer: api/tokenizer.md
+    - tree: api/tree.md
+    - util: api/util.md
+  - Releases: changelog.md
+  - License: license.md
+- Environments: https://envs.mathy.ai
+extra:
+  social:
+  - icon: fontawesome/brands/github-alt
+    link: https://github.com/justindujardin
+  - icon: fontawesome/brands/twitter
+    link: https://twitter.com/justindujardin
+  - icon: fontawesome/brands/linkedin
+    link: https://linkedin.com/in/justindujardin
+
+extra_css:
+- lib/styles.css
+
+extra_javascript:
+- lib/termynal.js
+
+theme:
+  name: material
+  icon:
+    logo: material/hub
+  features:
+  - instant
+  - navigation.tabs
+  - navigation.tabs.sticky
+  - navigation.footer
+  favicon: img/favicon/favicon-16x16.png
+  palette:
+    primary: purple
+    accent: deep-purple
+  highlightjs: true
+  hljs_languages:
+  - python
+  - typescript
+  - json
+markdown_extensions:
+- markdown.extensions.codehilite:
+    guess_lang: false
+- toc:
+    permalink: true
+- markdown_include.include:
+    base_path: docs
+- admonition
+- codehilite
+- extra
+- pymdownx.superfences
+- pymdownx.details
+
+plugins:
+- mathy
+- search
+- social
+- git-revision-date-localized
+- git-committers
+- minify:
+    minify_html: true

@@ -28,7 +28,7 @@ MathTypeKeys = META["type_ids"]
 MathTypeKeysMax = max(MathTypeKeys.values()) + 1
 
 
-class MathExpression(BinaryTreeNode):
+class MathExpression(BinaryTreeNode["MathExpression"]):
     """Math tree node with helpers for manipulating expressions.
 
     `mathy:x+y=z`
@@ -117,7 +117,7 @@ class MathExpression(BinaryTreeNode):
     def with_color(self, text: str, style: str = "bright") -> str:
         """Render a string that is colored if something has changed"""
         if self._rendering_change is True and self._changed is True:
-            return color(text, fore=self.color, style=style)
+            return f"{color(text, fore=self.color, style=style)}"
         return text
 
     def add_class(self, classes: Union[List[str], str]) -> "MathExpression":
@@ -147,7 +147,7 @@ class MathExpression(BinaryTreeNode):
 
     def to_list(self, visit: str = "preorder") -> List["MathExpression"]:
         """Convert this node hierarchy into a list."""
-        results = []
+        results: List[MathExpression] = []
 
         def visit_fn(
             node: MathExpression, depth: int, data: Any
@@ -688,7 +688,7 @@ class ConstantExpression(MathExpression):
         result.value = self.value
         return result  # type:ignore
 
-    def evaluate(self, _context: Optional[Dict[str, NumberType]] = None) -> NumberType:
+    def evaluate(self, context: Optional[Dict[str, NumberType]] = None) -> NumberType:
         assert self.value is not None
         return self.value
 

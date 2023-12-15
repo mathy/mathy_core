@@ -29,7 +29,9 @@ jobs:
       - name: Build Packages
         run: sh tools/build.sh
       - name: Test Packages
-        run: sh tools/test.sh
+        run: sh tools/test_all.sh
+      - name: Update API Docs
+        run: sh tools/docs.sh
       - name: Report Code Coverage
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

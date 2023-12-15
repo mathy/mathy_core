@@ -1,0 +1,320 @@
+# mathy_core.expressions
+
+## AbsExpression
+```python
+AbsExpression(
+    self, 
+    child: Optional[mathy_core.expressions.MathExpression] = None, 
+    child_on_left: bool = False, 
+)
+```
+Evaluates the absolute value of an expression.
+## AddExpression
+```python
+AddExpression(
+    self, 
+    left: Optional[mathy_core.expressions.MathExpression] = None, 
+    right: Optional[mathy_core.expressions.MathExpression] = None, 
+)
+```
+Add one and two
+## BinaryExpression
+```python
+BinaryExpression(
+    self, 
+    left: Optional[mathy_core.expressions.MathExpression] = None, 
+    right: Optional[mathy_core.expressions.MathExpression] = None, 
+)
+```
+An expression that operates on two sub-expressions
+### get_priority
+```python
+BinaryExpression.get_priority(self) -> int
+```
+Return a number representing the order of operations priority
+of this node.  This can be used to check if a node is `locked`
+with respect to another node, i.e. the other node must be resolved
+first during evaluation because of it's priority.
+
+### to_math_ml_fragment
+```python
+BinaryExpression.to_math_ml_fragment(self) -> str
+```
+Render this node as a MathML element fragment
+## ConstantExpression
+```python
+ConstantExpression(self, value: Optional[float, int] = None)
+```
+A Constant value node, where the value is accessible as `node.value`
+## DivideExpression
+```python
+DivideExpression(
+    self, 
+    left: Optional[mathy_core.expressions.MathExpression] = None, 
+    right: Optional[mathy_core.expressions.MathExpression] = None, 
+)
+```
+Divide one by two
+## EqualExpression
+```python
+EqualExpression(
+    self, 
+    left: Optional[mathy_core.expressions.MathExpression] = None, 
+    right: Optional[mathy_core.expressions.MathExpression] = None, 
+)
+```
+Evaluate equality of two expressions
+### operate
+```python
+EqualExpression.operate(
+    self, 
+    one: Union[float, int], 
+    two: Union[float, int], 
+) -> Union[float, int]
+```
+Return the value of the equation if one == two.
+
+Raise ValueError if both sides of the equation don't agree.
+
+## FactorialExpression
+```python
+FactorialExpression(
+    self, 
+    child: Optional[mathy_core.expressions.MathExpression] = None, 
+    child_on_left: bool = False, 
+)
+```
+Factorial of a constant, e.g. `5` evaluates to `120`
+## FunctionExpression
+```python
+FunctionExpression(
+    self, 
+    child: Optional[mathy_core.expressions.MathExpression] = None, 
+    child_on_left: bool = False, 
+)
+```
+A Specialized UnaryExpression that is used for functions.  The function name in
+text (used by the parser and tokenizer) is derived from the name() method on the
+class.
+## MathExpression
+```python
+MathExpression(
+    self, 
+    id: Optional[str] = None, 
+    left: Optional[MathExpression] = None, 
+    right: Optional[MathExpression] = None, 
+    parent: Optional[MathExpression] = None, 
+)
+```
+Math tree node with helpers for manipulating expressions.
+
+`mathy:x+y=z`
+
+### add_class
+```python
+MathExpression.add_class(
+    self, 
+    classes: Union[List[str], str], 
+) -> 'MathExpression'
+```
+Associate a class name with an expression. This class name will be
+attached to nodes when the expression is converted to a capable output
+format.
+
+See `MathExpression.to_math_ml_fragment`
+### all_changed
+```python
+MathExpression.all_changed(self) -> None
+```
+Mark this node and all of its children as changed
+### clear_classes
+```python
+MathExpression.clear_classes(self) -> None
+```
+Clear all the classes currently set on the nodes in this expression.
+### clone
+```python
+MathExpression.clone(self) -> 'MathExpression'
+```
+A specialization of the clone method that can track and report a cloned
+subtree node.
+
+See `MathExpression.clone_from_root` for more details.
+### clone_from_root
+```python
+MathExpression.clone_from_root(
+    self, 
+    node: Optional[MathExpression] = None, 
+) -> 'MathExpression'
+```
+Clone this node including the entire parent hierarchy that it has. This
+is useful when you want to clone a subtree and still maintain the overall
+hierarchy.
+
+__Arguments__
+
+- __node (MathExpression)__: The node to clone.
+
+__Returns__
+
+`(MathExpression)`: The cloned node.
+
+### color
+Color to use for this node when rendering it as changed with
+`.terminal_text`
+### evaluate
+```python
+MathExpression.evaluate(
+    self, 
+    context: Optional[Dict[str, Union[float, int]]] = None, 
+) -> Union[float, int]
+```
+Evaluate the expression, resolving all variables to constant values
+### find_id
+```python
+MathExpression.find_id(self, id: str) -> Optional[MathExpression]
+```
+Find an expression by its unique ID.
+
+Returns: The found `MathExpression` or `None`
+
+### find_type
+```python
+MathExpression.find_type(self, instanceType: Type[~NodeType]) -> List[~NodeType]
+```
+Find an expression in this tree by type.
+
+- instanceType: The type to check for instances of
+
+Returns the found `MathExpression` objects of the given type.
+
+### make_ml_tag
+```python
+MathExpression.make_ml_tag(
+    self, 
+    tag: str, 
+    content: str, 
+    classes: List[str] = [], 
+) -> str
+```
+Make a MathML tag for the given content while respecting the node's given
+classes.
+
+__Arguments__
+
+- __tag (str)__: The ML tag name to create.
+- __content (str)__: The ML content to place inside of the tag.
+classes (List[str]) An array of classes to attach to this tag.
+
+__Returns__
+
+`(str)`: A MathML element with the given tag, content, and classes
+
+### path_to_root
+```python
+MathExpression.path_to_root(self) -> str
+```
+Generate a namespaced path key to from the current node to the root.
+This key can be used to identify a node inside of a tree.
+### raw
+raw text representation of the expression.
+### set_changed
+```python
+MathExpression.set_changed(self) -> None
+```
+Mark this node as having been changed by the application of a Rule
+### terminal_text
+Text output of this node that includes terminal color codes that
+highlight which nodes have been changed in this tree as a result of
+a transformation.
+### to_list
+```python
+MathExpression.to_list(
+    self, 
+    visit: str = 'preorder', 
+) -> List[MathExpression]
+```
+Convert this node hierarchy into a list.
+### to_math_ml
+```python
+MathExpression.to_math_ml(self) -> str
+```
+Convert this expression into a MathML container.
+### to_math_ml_fragment
+```python
+MathExpression.to_math_ml_fragment(self) -> str
+```
+Convert this single node into MathML.
+### with_color
+```python
+MathExpression.with_color(self, text: str, style: str = 'bright') -> str
+```
+Render a string that is colored if something has changed
+## MultiplyExpression
+```python
+MultiplyExpression(
+    self, 
+    left: Optional[mathy_core.expressions.MathExpression] = None, 
+    right: Optional[mathy_core.expressions.MathExpression] = None, 
+)
+```
+Multiply one and two
+## NegateExpression
+```python
+NegateExpression(
+    self, 
+    child: Optional[mathy_core.expressions.MathExpression] = None, 
+    child_on_left: bool = False, 
+)
+```
+Negate an expression, e.g. `4` becomes `-4`
+### to_math_ml_fragment
+```python
+NegateExpression.to_math_ml_fragment(self) -> str
+```
+Convert this single node into MathML.
+## PowerExpression
+```python
+PowerExpression(
+    self, 
+    left: Optional[mathy_core.expressions.MathExpression] = None, 
+    right: Optional[mathy_core.expressions.MathExpression] = None, 
+)
+```
+Raise one to the power of two
+## SgnExpression
+```python
+SgnExpression(
+    self, 
+    child: Optional[mathy_core.expressions.MathExpression] = None, 
+    child_on_left: bool = False, 
+)
+```
+
+### operate
+```python
+SgnExpression.operate(self, value: Union[float, int]) -> Union[float, int]
+```
+Determine the sign of an value.
+
+__Returns__
+
+`(int)`: -1 if negative, 1 if positive, 0 if 0
+## SubtractExpression
+```python
+SubtractExpression(
+    self, 
+    left: Optional[mathy_core.expressions.MathExpression] = None, 
+    right: Optional[mathy_core.expressions.MathExpression] = None, 
+)
+```
+Subtract one from two
+## UnaryExpression
+```python
+UnaryExpression(
+    self, 
+    child: Optional[mathy_core.expressions.MathExpression] = None, 
+    child_on_left: bool = False, 
+)
+```
+An expression that operates on one sub-expression
