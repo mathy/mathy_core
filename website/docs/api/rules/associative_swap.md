@@ -51,54 +51,28 @@ import mathy_core.rules.associative_swap
 ```
 
 
-
-
 ## AssociativeSwapRule
-
 ```python
-
 AssociativeSwapRule(self, args, kwargs)
-
 ```
-
 Associative Property
-
 Addition: `(a + b) + c = a + (b + c)`
 
-
-
          (y) +            + (x)
-
             / \          / \
-
            /   \        /   \
-
       (x) +     c  ->  a     + (y)
-
          / \                / \
-
         /   \              /   \
-
        a     b            b     c
-
-
 
  Multiplication: `(ab)c = a(bc)`
 
-
-
          (x) *            * (y)
-
             / \          / \
-
            /   \        /   \
-
       (y) *     c  <-  a     * (x)
-
          / \                / \
-
         /   \              /   \
-
        a     b            b     c
-
 

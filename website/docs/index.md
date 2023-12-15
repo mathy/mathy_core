@@ -20,8 +20,8 @@
 
 Mathy includes a Computer Algebra System (or CAS). Its job is to turn text into math trees that can be examined and manipulated by a multi-step process:
 
-1. [Tokenize](./api/tokenizer) the text into a list of `type`/`value` pairs
-2. [Parse](./api/parser) the token list into an Expression tree
+1. [Tokenize](./api/tokenizer.md) the text into a list of `type`/`value` pairs
+2. [Parse](./api/parser.md) the token list into an Expression tree
 3. [Modify](./api/rule.md) the tree by applying a transformation rule to it.
 
 ## Requirements

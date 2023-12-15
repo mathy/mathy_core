@@ -47,46 +47,24 @@ import mathy_core.rules.commutative_swap
 ```
 
 
-
-
 ## CommutativeSwapRule
-
 ```python
-
 CommutativeSwapRule(self, preferred: bool = True)
-
 ```
-
 Commutative Property
-
 For Addition: `a + b = b + a`
 
-
-
          +                  +
-
         / \                / \
-
        /   \     ->       /   \
-
       /     \            /     \
-
      a       b          b       a
-
-
 
 For Multiplication: `a * b = b * a`
 
-
-
          *                  *
-
         / \                / \
-
        /   \     ->       /   \
-
       /     \            /     \
-
      a       b          b       a
-
 

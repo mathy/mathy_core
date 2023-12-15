@@ -44,64 +44,33 @@ import mathy_core.rules.constants_simplify
 ```
 
 
-
-
 ## ConstantsSimplifyRule
-
 ```python
-
 ConstantsSimplifyRule(self, args, kwargs)
-
 ```
-
 Given a binary operation on two constants, simplify to the resulting
-
 constant expression
-
 ### get_type
-
 ```python
-
 ConstantsSimplifyRule.get_type(
-
     self, 
-
     node: mathy_core.expressions.MathExpression, 
-
 ) -> Optional[Tuple[str, mathy_core.expressions.ConstantExpression, mathy_core.expressions.ConstantExpression]]
-
 ```
-
 Determine the configuration of the tree for this transformation.
 
-
-
 Support the three types of tree configurations:
-
  - Simple is where the node's left and right children are exactly
-
    constants linked by an add operation.
-
  - Chained Right is where the node's left child is a constant, but the right
-
    child is another binary operation of the same type. In this case the left
-
    child of the next binary node is the target.
 
-
-
 Structure:
-
  - Simple
-
     * node(add),node.left(const),node.right(const)
-
  - Chained Right
-
     * node(add),node.left(const),node.right(add),node.right.left(const)
-
  - Chained Right Deep
-
     * node(add),node.left(const),node.right(add),node.right.left(const)
-
 

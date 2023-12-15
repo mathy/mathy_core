@@ -33,62 +33,32 @@ import mathy_core.rules.distributive_multiply_across
 ```
 
 
-
-
 ## DistributiveMultiplyRule
-
 ```python
-
 DistributiveMultiplyRule(self, args, kwargs)
-
 ```
 
-
-
 Distributive Property
-
 `a(b + c) = ab + ac`
 
-
-
 The distributive property can be used to expand out expressions
-
 to allow for simplification, as well as to factor out common properties of terms.
-
-
 
 **Distribute across a group**
 
-
-
 This handles the `a(b + c)` conversion of the distributive property, which
-
 distributes `a` across both `b` and `c`.
 
-
-
 *note: this is useful because it takes a complex Multiply expression and
-
 replaces it with two simpler ones.  This can expose terms that can be
-
 combined for further expression simplification.*
 
-
-
                              +
-
          *                  / \
-
         / \                /   \
-
        /   \              /     \
-
       a     +     ->     *       *
-
            / \          / \     / \
-
           /   \        /   \   /   \
-
          b     c      a     b a     c
-
 

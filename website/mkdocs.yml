@@ -64,10 +64,11 @@ theme:
   - instant
   - navigation.tabs
   - navigation.tabs.sticky
+  - navigation.footer
   favicon: img/favicon/favicon-16x16.png
   palette:
-    primary: red
-    accent: pink
+    primary: purple
+    accent: deep-purple
   highlightjs: true
   hljs_languages:
   - python
