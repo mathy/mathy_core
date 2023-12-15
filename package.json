@@ -73,6 +73,8 @@
         {
           "assets": [
             "website/docs/changelog.md",
+            "website/docs/api/*.md",
+            "website/docs/api/**/*.md",
             "mathy_core/about.py",
             "package.json"
           ],
