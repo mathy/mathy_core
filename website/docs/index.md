@@ -63,3 +63,27 @@ Mathy can also transform the parsed Expression trees using rules that change the
 {!./snippets/cas/overview/rules_factor_out.py!}
 
 ```
+
+## Contributors
+
+Mathy Core wouldn't be possible without the contributions of the following people:
+
+<div class="contributors-wrapper">
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a target="_blank" href="https://www.justindujardin.com/"><img src="https://avatars0.githubusercontent.com/u/101493?v=4" width="100px;" alt=""/><br /><sub><b>Justin DuJardin</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a target="_blank" href="https://github.com/ElSupreme"><img src="https://avatars.githubusercontent.com/u/13594721?v=4" width="100px;" alt=""/><br /><sub><b>JT Stukes</b></sub></a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+</div>
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind are welcome!
