@@ -19,27 +19,27 @@ nav:
 - Home: https://mathy.ai
 - Core:
   - Home: index.md
-  - API:
-    - expressions: api/expressions.md
-    - layout: api/layout.md
-    - parser: api/parser.md
-    - problems: api/problems.md
-    - rule: api/rule.md
-    - rules:
-      - associative_swap: api/rules/associative_swap.md
-      - balanced_move: api/rules/balanced_move.md
-      - commutative_swap: api/rules/commutative_swap.md
-      - constants_simplify: api/rules/constants_simplify.md
-      - distributive_factor_out: api/rules/distributive_factor_out.md
-      - distributive_multiply_across: api/rules/distributive_multiply_across.md
-      - restate_subtraction: api/rules/restate_subtraction.md
-      - variable_multiply: api/rules/variable_multiply.md
-    - testing: api/testing.md
-    - tokenizer: api/tokenizer.md
-    - tree: api/tree.md
-    - util: api/util.md
   - Releases: changelog.md
   - License: license.md
+  - API:
+    - Expressions: api/expressions.md
+    - Layout: api/layout.md
+    - Parser: api/parser.md
+    - Problems: api/problems.md
+    - Rule: api/rule.md
+    - Rules:
+      - Associative Swap: api/rules/associative_swap.md
+      - Balanced Move: api/rules/balanced_move.md
+      - Commutative Swap: api/rules/commutative_swap.md
+      - Constants Simplify: api/rules/constants_simplify.md
+      - Distributive Factor Out: api/rules/distributive_factor_out.md
+      - Distributive Multiply Across: api/rules/distributive_multiply_across.md
+      - Restate Subtraction: api/rules/restate_subtraction.md
+      - Variable Multiply: api/rules/variable_multiply.md
+    - Testing: api/testing.md
+    - Tokenizer: api/tokenizer.md
+    - Tree: api/tree.md
+    - Util: api/util.md
 - Environments: https://envs.mathy.ai
 extra:
   social:
@@ -62,6 +62,7 @@ theme:
     logo: material/hub
   features:
   - instant
+  - navigation.sections
   - navigation.tabs
   - navigation.tabs.sticky
   - navigation.footer
@@ -95,6 +96,5 @@ plugins:
 - search
 - social
 - git-revision-date-localized
-- git-committers
 - minify:
     minify_html: true

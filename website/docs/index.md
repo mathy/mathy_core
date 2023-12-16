@@ -31,7 +31,7 @@ Mathy includes a Computer Algebra System (or CAS). Its job is to turn text into 
 ## Installation
 
 ```bash
-$ pip install mathy_envs
+$ pip install mathy_core
 ```
 
 ## Examples

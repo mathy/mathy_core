@@ -2,6 +2,15 @@
 
 import mathy_core.rules.balanced_move
 ```
+Balanced move allows you to move things from one side of an equation to the other, by applying the same operation on both sides.
+
+### Examples
+
+`rule_tests:balanced_move`
+
+
+## API
+
 
 ## BalancedMoveRule
 ```python
@@ -28,3 +37,4 @@ Supports the following configurations:
    other.
  - Multiply is a coefficient of a term that must be divided on both sides of
    the equation or inequality.
+

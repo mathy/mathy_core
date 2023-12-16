@@ -26,6 +26,10 @@ dest_dir = parent_folder_path / "docs" / "api"
 yaml = YAML()
 
 
+def convert_module_to_title(input_string: str) -> str:
+    return input_string.replace("_", " ").title()
+
+
 def prepend_md_content(original_md, prepending_md):
     with open(prepending_md, "r") as file:
         prepending_content = file.read()
@@ -97,7 +101,9 @@ def process_directory(directory):
             h1_to_h2(to_file)
 
         nav_item = {
-            file_path.stem: to_file.relative_to(parent_folder_path / "docs").as_posix()
+            convert_module_to_title(file_path.stem): to_file.relative_to(
+                parent_folder_path / "docs"
+            ).as_posix()
         }
         nav_entries.append(nav_item)
     return nav_entries
@@ -133,7 +139,7 @@ def main():
             if src_folder not in [".", ""]:
                 new_entries = process_directory(folder)
                 new_entries.sort(key=lambda x: list(x)[0])
-                nav_entries.append({folder.name: new_entries})
+                nav_entries.append({convert_module_to_title(folder.name): new_entries})
             else:
                 nav_entries += process_directory(folder)
     nav_entries.sort(key=lambda x: list(x)[0])
