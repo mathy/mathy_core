@@ -66,6 +66,7 @@ theme:
   - navigation.tabs
   - navigation.tabs.sticky
   - navigation.footer
+  - navigation.top
   - content.action.edit
   - content.action.view
   - content.tooltips
