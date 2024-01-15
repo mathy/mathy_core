@@ -14,7 +14,7 @@ from ..expressions import (
 from ..rule import BaseRule, ExpressionChangeRule
 
 _OP_SUBTRACTION = "subtraction"
-_OP_SUBTRACTION_NEGATIVE_TERM_WITH_CONST = "subtract-negative-term-with-constant"
+_OP_SUBTRACTION_TERM_WITH_CONST = "subtract-term-with-constant"
 _OP_SUBTRACTION_NEGATIVE_CONST = "subtract-negative-constant"
 _OP_SUBTRACTION_NEGATE_VARIABLE = "subtract-negative-variable"
 _OP_ADD_NEG_CONST = "add_neg_const"
@@ -68,11 +68,13 @@ class RestateSubtractionRule(BaseRule):
                 node.right is not None
                 and isinstance(node.right.left, ConstantExpression)
                 and node.right.left.value is not None
-                and node.right.left.value < 0.0
             ):
                 # 4x - -1x
                 # 3u^2 - -2t^4 + -u^2
-                return _OP_SUBTRACTION_NEGATIVE_TERM_WITH_CONST
+                # 4 - 3x
+                # 12 - -2x^2
+                return _OP_SUBTRACTION_TERM_WITH_CONST
+
             # 4x - 2x
             return _OP_SUBTRACTION
 
@@ -125,8 +127,8 @@ class RestateSubtractionRule(BaseRule):
         result: MathExpression
         new_right: MathExpression
 
-        # Subtract negative to plus positive (2 - -3x^2 => 2 + 3x^2)
-        if tree_type == _OP_SUBTRACTION_NEGATIVE_TERM_WITH_CONST:
+        # Subtract term with const (2 - -3x^2 => 2 + 3x^2) or (2 - 3x => 2 + -3x)
+        if tree_type == _OP_SUBTRACTION_TERM_WITH_CONST:
             assert node.right is not None and node.right.left is not None
             new_right = cast(MultiplyExpression, node.right.clone())
             assert (
