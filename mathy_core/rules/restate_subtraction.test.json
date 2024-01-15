@@ -60,6 +60,10 @@
     {
       "input": "2x + -9x^3",
       "output": "2x - 9x^3"
+    },
+    {
+      "input": "4 - 3x",
+      "output": "4 + -3x"
     }
   ],
   "invalid": []
