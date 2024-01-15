@@ -206,7 +206,7 @@ class BinaryTreeNode(Generic[NodeType]):
         while result.parent:
             result = result.parent  # type:ignore
 
-        return cast(NodeType, result)
+        return result
 
     def get_root_side(self: NodeType) -> Literal["left", "right"]:
         """Return the side of the tree that this node lives on"""

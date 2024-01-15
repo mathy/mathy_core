@@ -4,6 +4,10 @@
   },
   "valid": [
     {
+      "input": "4x + -3x",
+      "output": "(4 + -3) * x"
+    },
+    {
       "input": "g + -x^3 + 4x^3 + 19p^4 + -1y",
       "output": "g + (-1 + 4) * x^3 + 19p^4 + -1y",
       "why": "invariance to sibling grouping"
