@@ -1,4 +1,4 @@
-from typing import Any, Callable, Generic, List, Optional, TypeVar, Union, cast
+from typing import Any, Callable, Generic, List, Optional, TypeVar, Union
 
 from .types import Literal
 
