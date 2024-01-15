@@ -1,3 +1,10 @@
+## [0.9.3](https://github.com/mathy/mathy_core/compare/v0.9.2...v0.9.3) (2024-01-15)
+
+
+### Bug Fixes
+
+* **rule:** RestateSubtraction failed to produce simple forms ([#18](https://github.com/mathy/mathy_core/issues/18)) ([71467c2](https://github.com/mathy/mathy_core/commit/71467c29c5555aabaeecfce4662592e91166bcc2))
+
 ## [0.9.2](https://github.com/mathy/mathy_core/compare/v0.9.1...v0.9.2) (2023-12-15)
 
 ### Bug Fixes
