@@ -73,8 +73,25 @@ theme:
   - content.tooltips
   favicon: img/favicon/favicon-16x16.png
   palette:
-    primary: purple
-    accent: deep-purple
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: purple
+      accent: deep-purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: purple
+      accent: deep-purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference  
+
   highlightjs: true
   hljs_languages:
   - python
