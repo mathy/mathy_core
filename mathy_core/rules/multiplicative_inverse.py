@@ -52,25 +52,25 @@ class MultiplicativeInverseRule(BaseRule):
         assert tree_type is not None, "call can_apply_to before applying a rule"
         change.save_parent()  # connect result to node.parent
 
+        assert node.left is not None, "Division must have a left child"
+        assert node.right is not None, "Division must have a right child"
+
+        if tree_type == _OP_DIVISION_NEGATIVE_DENOMINATOR:
+            # For division by a negative denominator, negate the numerator and use the positive reciprocal
+            assert isinstance(
+                node.right, NegateExpression
+            ), "Right child must be a NegateExpression"
+            child = node.right.get_child()
+            assert child is not None, "NegateExpression must have a child"
+            result = MultiplyExpression(
+                node.left.clone(),
+                DivideExpression(ConstantExpression(-1), child.clone()),
+            )
         # Handle the division based on the tree type
-        if tree_type == _OP_DIVISION_EXPRESSION:
+        else:
             result = MultiplyExpression(
                 node.left.clone(),
                 DivideExpression(ConstantExpression(1), node.right.clone()),
-            )
-
-        elif tree_type == _OP_DIVISION_NEGATIVE_DENOMINATOR:
-            # For division by a negative denominator, negate the numerator and use the positive reciprocal
-            result = MultiplyExpression(
-                node.left.clone(),
-                DivideExpression(
-                    ConstantExpression(-1), node.right.get_child().clone()
-                ),
-            )
-
-        else:
-            raise NotImplementedError(
-                "Unsupported tree configuration for MultiplicativeInverseRule"
             )
 
         result.set_changed()  # mark this node as changed for visualization
