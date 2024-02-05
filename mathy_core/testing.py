@@ -71,6 +71,8 @@ def run_rule_tests(
         if callback is not None:
             callback(ex)
         rule = init_rule_for_test(ex, rule_class)
+        assert rule.name is not None, "Rule must have a name"
+        assert rule.code is not None, "Rule must have a code"
         expression = parser.parse(ex["input"]).clone()
         before = expression.clone().get_root()
         print(ex)
