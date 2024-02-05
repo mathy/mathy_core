@@ -6,10 +6,10 @@ import mathy_core.tree
 ## BinaryTreeNode
 ```python
 BinaryTreeNode(
-    self, 
-    left: Optional[BinaryTreeNode] = None, 
-    right: Optional[BinaryTreeNode] = None, 
-    parent: Optional[BinaryTreeNode] = None, 
+    self: ~NodeType, 
+    left: Optional[~NodeType] = None, 
+    right: Optional[~NodeType] = None, 
+    parent: Optional[~NodeType] = None, 
     id: Optional[str] = None, 
 )
 ```
@@ -37,7 +37,7 @@ BinaryTreeNode.get_root(self: ~NodeType) -> ~NodeType
 Return the root element of this tree
 ### get_root_side
 ```python
-BinaryTreeNode.get_root_side(self: 'BinaryTreeNode') -> Literal['left', 'right']
+BinaryTreeNode.get_root_side(self: ~NodeType) -> Literal['left', 'right']
 ```
 Return the side of the tree that this node lives on
 ### get_sibling
@@ -50,7 +50,7 @@ has no sibling, the return value will be None.
 ```python
 BinaryTreeNode.get_side(
     self, 
-    child: Optional[BinaryTreeNode], 
+    child: Optional[~NodeType], 
 ) -> Literal['left', 'right']
 ```
 Determine whether the given `child` is the left or right child of this
@@ -72,7 +72,7 @@ the order of the nodes in the tree.
 ```python
 BinaryTreeNode.set_left(
     self: ~NodeType, 
-    child: Optional[BinaryTreeNode] = None, 
+    child: Optional[~NodeType] = None, 
     clear_old_child_parent: bool = False, 
 ) -> ~NodeType
 ```
@@ -81,7 +81,7 @@ Set the left node to the passed `child`
 ```python
 BinaryTreeNode.set_right(
     self: ~NodeType, 
-    child: Optional[BinaryTreeNode] = None, 
+    child: Optional[~NodeType] = None, 
     clear_old_child_parent: bool = False, 
 ) -> ~NodeType
 ```

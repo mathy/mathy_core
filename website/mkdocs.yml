@@ -34,6 +34,7 @@ nav:
       - Constants Simplify: api/rules/constants_simplify.md
       - Distributive Factor Out: api/rules/distributive_factor_out.md
       - Distributive Multiply Across: api/rules/distributive_multiply_across.md
+      - Multiplicative Inverse: api/rules/multiplicative_inverse.md
       - Restate Subtraction: api/rules/restate_subtraction.md
       - Variable Multiply: api/rules/variable_multiply.md
     - Testing: api/testing.md
@@ -73,26 +74,26 @@ theme:
   - content.tooltips
   favicon: img/favicon/favicon-16x16.png
   palette:
-    - media: "(prefers-color-scheme)"
-      primary: purple
-      accent: deep-purple
-      toggle:
-        icon: material/brightness-auto
-        name: Switch to light mode
-    - media: "(prefers-color-scheme: light)"
-      scheme: default
-      primary: purple
-      accent: deep-purple
-      toggle:
-        icon: material/brightness-7
-        name: Switch to dark mode
-    - media: "(prefers-color-scheme: dark)"
-      scheme: slate
-      primary: purple
-      accent: deep-purple
-      toggle:
-        icon: material/brightness-4
-        name: Switch to system preference  
+  - media: (prefers-color-scheme)
+    primary: purple
+    accent: deep-purple
+    toggle:
+      icon: material/brightness-auto
+      name: Switch to light mode
+  - media: '(prefers-color-scheme: light)'
+    scheme: default
+    primary: purple
+    accent: deep-purple
+    toggle:
+      icon: material/brightness-7
+      name: Switch to dark mode
+  - media: '(prefers-color-scheme: dark)'
+    scheme: slate
+    primary: purple
+    accent: deep-purple
+    toggle:
+      icon: material/brightness-4
+      name: Switch to system preference
 
   highlightjs: true
   hljs_languages:
