@@ -3,6 +3,7 @@
 
 Utility functions for helping generate input problems.
 """
+
 import random
 from dataclasses import dataclass
 from typing import Any, List, Optional, Set, Tuple, TypeVar, Union, cast

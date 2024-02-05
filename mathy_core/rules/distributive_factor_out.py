@@ -38,6 +38,7 @@ class DistributiveFactorOutRule(BaseRule):
               / \     / \             / \
              a   b   a   c           b   c
     """
+
     constants: bool
 
     def __init__(self, constants: bool = False):

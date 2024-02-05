@@ -30,6 +30,7 @@ class CommutativeSwapRule(BaseRule):
           /     \            /     \
          a       b          b       a
     """
+
     preferred: bool
 
     def __init__(self, preferred: bool = True):
