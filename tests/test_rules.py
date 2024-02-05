@@ -1,3 +1,4 @@
+from mathy_core import MathExpression
 from mathy_core.parser import ExpressionParser
 from mathy_core.rules import (
     AssociativeSwapRule,
@@ -8,6 +9,7 @@ from mathy_core.rules import (
     DistributiveMultiplyRule,
     RestateSubtractionRule,
     VariableMultiplyRule,
+    MultiplicativeInverseRule,
 )
 from mathy_core.testing import run_rule_tests
 
@@ -54,6 +56,13 @@ def test_rules_restate_subtraction():
     run_rule_tests("restate_subtraction", RestateSubtractionRule, debug)
 
 
+def test_rules_multiplicative_inverse():
+    def debug(ex):
+        pass
+
+    run_rule_tests("multiplicative_inverse", MultiplicativeInverseRule, debug)
+
+
 def test_rules_variable_multiply():
     def debug(ex):
         pass
@@ -80,3 +89,36 @@ def test_rules_rule_can_apply_to():
     ]
     for action in available_actions:
         assert type(action.can_apply_to(expression)) == bool
+
+
+def debug_expressions(one: MathExpression, two: MathExpression):
+    one_inputs = [f"{e.__class__.__name__}" for e in one.to_list()]
+    two_inputs = [f"{e.__class__.__name__}" for e in two.to_list()]
+    print("one: ", one.raw, one_inputs)
+    print("two: ", two.raw, two_inputs)
+
+
+def test_rules_rule_restate_subtraction_corner_case_1():
+    parser = ExpressionParser()
+    expression = parser.parse("4x - 3y + 3x")
+
+    restate = RestateSubtractionRule()
+    dfo = DistributiveFactorOutRule()
+    commute = CommutativeSwapRule(preferred=False)
+
+    node = restate.find_node(expression)
+    assert node is not None, "should find node"
+    assert restate.can_apply_to(node), "should be able to apply"
+    change = restate.apply_to(node)
+    assert change.result is not None, "should get change"
+    assert change.result.get_root().raw == "4x + -3y + 3x"
+
+    change = commute.apply_to(change.result.get_root())
+    assert change.result is not None, "should get change"
+    node = dfo.find_node(change.result.get_root())
+    assert node is not None, "should find node"
+    assert dfo.can_apply_to(node), "should be able to apply"
+    change = dfo.apply_to(node)
+    assert change.result is not None, "should get change"
+    node = change.result.get_root()
+    assert node.raw == "(4 + 3) * x + -3y"
