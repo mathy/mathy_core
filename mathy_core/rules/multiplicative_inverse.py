@@ -28,7 +28,7 @@ class MultiplicativeInverseRule(BaseRule):
         """Determine the configuration of the tree for this transformation.
 
         Support different types of tree configurations based on the division operation:
-        - DivisionExpression is a division to be restated as multiplication by reciprocal
+        - DivisionExpression restated as multiplication by reciprocal
         - DivisionNegativeDenominator is a division by a negative term
         """
         is_division = isinstance(node, DivideExpression)
@@ -55,8 +55,8 @@ class MultiplicativeInverseRule(BaseRule):
         assert node.left is not None, "Division must have a left child"
         assert node.right is not None, "Division must have a right child"
 
+        # For negative denominator, negate the numerator and use the positive reciprocal
         if tree_type == _OP_DIVISION_NEGATIVE_DENOMINATOR:
-            # For division by a negative denominator, negate the numerator and use the positive reciprocal
             assert isinstance(
                 node.right, NegateExpression
             ), "Right child must be a NegateExpression"
@@ -66,7 +66,7 @@ class MultiplicativeInverseRule(BaseRule):
                 node.left.clone(),
                 DivideExpression(ConstantExpression(-1), child.clone()),
             )
-        # Handle the division based on the tree type
+        # Multiply the numerator by the reciprocal of the denominator
         else:
             result = MultiplyExpression(
                 node.left.clone(),
