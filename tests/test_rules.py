@@ -6,6 +6,7 @@ from mathy_core.rules import (
     ConstantsSimplifyRule,
     DistributiveFactorOutRule,
     DistributiveMultiplyRule,
+    MultiplicativeInverseRule,
     RestateSubtractionRule,
     VariableMultiplyRule,
 )
@@ -52,6 +53,13 @@ def test_rules_restate_subtraction():
         pass
 
     run_rule_tests("restate_subtraction", RestateSubtractionRule, debug)
+
+
+def test_rules_multiplicative_inverse():
+    def debug(ex):
+        pass
+
+    run_rule_tests("multiplicative_inverse", MultiplicativeInverseRule, debug)
 
 
 def test_rules_variable_multiply():

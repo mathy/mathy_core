@@ -2,7 +2,7 @@ The `Variable Multiplication` rule restates `x^b * x^d` as `x^(b + d)`, which is
 
 !!! note
 
-        This rule can only be applied when the nodes have matching variable bases. This means that `x * y` cannot be combined, but `x * x` can be.
+    This rule can only be applied when the nodes have matching variable bases. This means that `x * y` cannot be combined, but `x * x` can be.
 
 ### Transformations
 
@@ -10,13 +10,13 @@ Both implicit and explicit variable powers are recognized in this transformation
 
 !!! info "Help Wanted"
 
-        The current variable multiply rule leaves out a case where there is a power
-        raised to another power, they can be combined by multiplying the exponents
-        together.
+    The current variable multiply rule leaves out a case where there is a power
+    raised to another power, they can be combined by multiplying the exponents
+    together.
+        
+    For example: `x^(2^2) = x^4`
 
-        For example: `x^(2^2) = x^4`
-
-        If you would like to help out with by updating this rule [open an issue here](https://github.com/justindujardin/mathy/issues/new?title=VariableMultiplyRaisePowerToPower){target=\_blank}
+    If you would like to help out with by updating this rule [open an issue here](https://github.com/justindujardin/mathy/issues/new?title=VariableMultiplyRaisePowerToPower){target=\_blank}
 
 #### Explicit powers
 

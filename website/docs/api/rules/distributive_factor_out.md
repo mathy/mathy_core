@@ -72,6 +72,7 @@ DistributiveFactorOutRule.get_type(
 Determine the configuration of the tree for this transformation.
 
 Support the three types of tree configurations:
+
  - Simple is where the node's left and right children are exactly
    terms linked by an add operation.
  - Chained Left is where the node's left child is a term, but the right
@@ -82,6 +83,7 @@ Support the three types of tree configurations:
    of the child add node is the target.
 
 Structure:
+
  - Simple
     * node(add),node.left(term),node.right(term)
  - Chained Left

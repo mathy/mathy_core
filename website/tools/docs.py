@@ -74,7 +74,11 @@ def h1_to_h2(original_md: str):
 def render_docs(src_rel_path, src_file, to_file, modifier="++"):
     insert = "." + src_rel_path if src_rel_path not in ["", "."] else ""
     namespace = f"mathy_core{insert}.{src_file.stem}{modifier}"
-    args = ["mathy_pydoc", "--plain", namespace]
+    args = [
+        parent_folder_path / ".." / ".env" / "bin" / "mathy_pydoc",
+        "--plain",
+        namespace,
+    ]
     if not to_file.parent.exists():
         to_file.parent.mkdir(parents=True)
     call_result = check_output(args, cwd=parent_folder_path).decode("utf-8")
