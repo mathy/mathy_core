@@ -1,3 +1,10 @@
+## [0.9.4](https://github.com/mathy/mathy_core/compare/v0.9.3...v0.9.4) (2024-02-06)
+
+
+### Features
+
+* **rules:** add MultiplicativeInverse rule ([#19](https://github.com/mathy/mathy_core/issues/19)) ([40a2d88](https://github.com/mathy/mathy_core/commit/40a2d887b11908a59516d9372f38070356a18d32))
+
 ## [0.9.3](https://github.com/mathy/mathy_core/compare/v0.9.2...v0.9.3) (2024-01-15)
 
 
