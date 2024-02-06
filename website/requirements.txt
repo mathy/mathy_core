@@ -14,7 +14,6 @@ ruamel.yaml
 # for converting snippets to ipynb notebooks
 nbformat
 mathy_pydoc>=0.7.18
-mathy_core
 ../
 git+https://github.com/mathy/mathy_mkdocs.git # TODO: remove this when published
 gym
