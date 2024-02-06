@@ -1,0 +1,67 @@
+{
+  "valid": [
+    {
+      "why": "Simple numeric fraction",
+      "input": "6x^2 / 3x",
+      "output": "2x"
+    },
+    {
+      "why": "Cancel common variable factor",
+      "input": "4xy / 2y",
+      "output": "2x"
+    },
+    {
+      "why": "Cancel and reduce constants with variables",
+      "input": "10x^2y / 5xy",
+      "output": "2x"
+    },
+    {
+      "why": "Complex polynomial reduction",
+      "input": "(x^3 - x^2) / x^2",
+      "output": "x - 1"
+    },
+    {
+      "why": "Fraction with common complex terms",
+      "input": "(3x^2 + 3) / (x^2 + 1)",
+      "output": "3"
+    },
+    {
+      "why": "Higher degree polynomial cancellation",
+      "input": "x^4 / x^2",
+      "output": "x^2"
+    },
+    {
+      "why": "Fraction where only part of the numerator cancels",
+      "input": "(x^2 + x) / x",
+      "output": "x + 1"
+    },
+    {
+      "why": "Fraction with a negative common factor",
+      "input": "-4x^2 / -2x",
+      "output": "2x"
+    },
+    {
+      "why": "Fraction with nested expression common factors",
+      "input": "(2x(x + 1)) / (x + 1)",
+      "output": "2x"
+    }
+  ],
+  "invalid": [
+    {
+      "why": "Fraction with no common factors",
+      "input": "(x + 1) / (y + 1)"
+    },
+    {
+      "why": "Zero numerator which should not change",
+      "input": "0 / (x^2 + 1)"
+    },
+    {
+      "why": "Zero denominator which is undefined",
+      "input": "(x^2 + 1) / 0"
+    },
+    {
+      "why": "Fraction with non-factorizable common terms",
+      "input": "(x + y) / (y + x^2)"
+    }
+  ]
+}
