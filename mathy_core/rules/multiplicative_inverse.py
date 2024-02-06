@@ -14,23 +14,7 @@ _OP_DIVISION_NEGATIVE_DENOMINATOR = "division-negative-denominator"
 
 
 class MultiplicativeInverseRule(BaseRule):
-    r"""Multiplicative Inverse Property
-    `a / b = a * (1/b)`
-
-    The multiplicative inverse property involves converting division operations
-    into multiplication by the reciprocal. This transformation can simplify the
-    structure of mathematical expressions and prepare them for further simplification.
-
-    **Convert Division to Multiplication by Reciprocal**
-
-    This handles the `a / b` conversion to `a * (1 / b)`.
-
-    **Handle Division by a Negative Denominator**
-
-    When the denominator is negative, the rule handles it by negating the
-    numerator and converting the division into multiplication by the positive
-    reciprocal of the denominator.
-    """
+    """Convert division operations to multiplication by the reciprocal."""
 
     @property
     def name(self) -> str:
