@@ -52,7 +52,7 @@ class BinaryTreeNode(Generic[NodeType]):
 
     #  Allow specifying children in the constructor
     def __init__(
-        self: NodeType,
+        self: NodeType,  # type:ignore
         left: Optional[NodeType] = None,
         right: Optional[NodeType] = None,
         parent: Optional[NodeType] = None,
