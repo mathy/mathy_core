@@ -41,6 +41,17 @@ def test_parser_factorials() -> None:
     assert expression.evaluate() == 120
 
 
+def test_parser_operator_precedence() -> None:
+    expects: list[dict[str, float | int | str]] = [
+        {"input": "9 / 8 * 9", "output": 10.125},
+        {"input": "4 + 9 / 8 * 9", "output": 14.125},
+    ]
+    for expect in expects:
+        parser = ExpressionParser()
+        expression = parser.parse(str(expect["input"]))
+        assert expression.evaluate() == expect["output"]
+
+
 def test_parser_mult_exp_precedence() -> None:
     """should respect order of operations with factor parsing"""
     parser = ExpressionParser()

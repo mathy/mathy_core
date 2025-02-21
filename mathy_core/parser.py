@@ -234,7 +234,7 @@ class ExpressionParser:
             expected = self.check(_FIRST_EXP)
             right = None
             if expected:
-                right = self.parse_mult()
+                right = self.parse_exponent()
 
             if not expected or right is None:
                 assert self._all_tokens is not None
