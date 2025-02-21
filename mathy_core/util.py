@@ -3,7 +3,7 @@ import random
 from typing import Any, Dict, List, NamedTuple, Optional, Set, Tuple, Union, cast
 
 import numpy as np
-from wasabi import TracebackPrinter
+from wasabi import TracebackPrinter # type: ignore
 
 from .expressions import (
     AddExpression,
