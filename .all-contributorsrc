@@ -27,6 +27,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "xiuzhilu",
+      "name": "xiuzhilu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/28184983?v=4",
+      "profile": "https://github.com/xiuzhilu",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "skipCi": true,
