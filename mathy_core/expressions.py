@@ -481,13 +481,6 @@ class BinaryExpression(MathExpression):
             parent_addsub = isinstance(self.parent, (AddExpression, SubtractExpression))
             if parent_side == "right" and self_addsub and parent_addsub:
                 return True
-            self_muldiv = isinstance(self, (MultiplyExpression, DivideExpression))
-
-            parent_muldiv = isinstance(
-                self.parent, (MultiplyExpression, DivideExpression)
-            )
-            if parent_side == "left" and self_muldiv and parent_muldiv:
-                return True
         return False
 
     def __str__(self) -> str:
