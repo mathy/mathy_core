@@ -10,7 +10,6 @@ from mathy_core.parser import (
 )
 
 
-
 @pytest.mark.parametrize(
     "expectation",
     [
