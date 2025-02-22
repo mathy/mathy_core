@@ -122,6 +122,7 @@ Mathy Core wouldn't be possible without the wonderful contributions of the follo
     <tr>
       <td align="center" valign="top" width="14.28%"><a target="_blank" href="https://www.justindujardin.com/"><img src="https://avatars0.githubusercontent.com/u/101493?v=4" width="100px;" alt=""/><br /><sub><b>Justin DuJardin</b></sub></a></td>
       <td align="center" valign="top" width="14.28%"><a target="_blank" href="https://github.com/ElSupreme"><img src="https://avatars.githubusercontent.com/u/13594721?v=4" width="100px;" alt=""/><br /><sub><b>JT Stukes</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a target="_blank" href="https://github.com/xiuzhilu"><img src="https://avatars.githubusercontent.com/u/28184983?v=4" width="100px;" alt=""/><br /><sub><b>xiuzhilu</b></sub></a></td>
     </tr>
   </tbody>
 </table>
