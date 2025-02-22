@@ -1,3 +1,10 @@
+## [0.9.5](https://github.com/mathy/mathy_core/compare/v0.9.4...v0.9.5) (2025-02-22)
+
+
+### Bug Fixes
+
+* **parser:** incorrect operator precedence in multiplication/division parsing ([349cc50](https://github.com/mathy/mathy_core/commit/349cc50953ee5777323ba39884cc53bfb8dd838b))
+
 ## [0.9.4](https://github.com/mathy/mathy_core/compare/v0.9.3...v0.9.4) (2024-02-06)
 
 
