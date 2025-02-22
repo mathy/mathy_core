@@ -127,7 +127,9 @@ def run_rule_tests(
             node = rule.find_node(expression)
         if node is not None:
             raise ValueError(
-                "expected not to find a node, but found: {}".format(str(node))
+                "expected not to find a node, but found: {} in input {}".format(
+                    str(node), ex["input"]
+                )
             )
 
 

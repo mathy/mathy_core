@@ -133,6 +133,10 @@ Mathy Core wouldn't be possible without the wonderful contributions of the follo
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
 
+---
+
+<!-- AUTO_DOCZ_START -->
+
 # Tokenizer <kbd>class</kbd>
 
 ```python (doc)
@@ -2934,3 +2938,6 @@ Determine if problems should include only pretty numbers or
 a whole range of integers and floats. Using pretty numbers will
 restrict the numbers that are generated to integers between 1 and 12. When not using pretty numbers, floats and large integers will
 be included in the output from `rand_number`
+
+
+<!-- AUTO_DOCZ_END -->

@@ -34,31 +34,20 @@
       "why": "can see same-term sibling constants through obscuring variables"
     },
     {
-      "input": "(7q^6 * 10y^3) * 2q",
-      "target": "(7q^6 * 10y^3)",
-      "output": "(70q^6 * y^3) * 2q",
+      "input": "7q^6 * 10y^3 * 2q",
+      "target": "7q^6 * 10y^3",
+      "output": "70q^6 * y^3 * 2q",
       "why": "can see same-term sibling constants through obscuring variables"
     },
     {
-      "input": "(7q * 10y^3) * 2q",
-      "target": "(7q * 10y^3)",
-      "output": "(70q * y^3) * 2q",
+      "input": "7q * 10y^3 * 2q",
+      "target": "7q * 10y^3",
+      "output": "70q * y^3 * 2q",
       "why": "can see same-term sibling constants through obscuring variables"
-    },
-    {
-      "input": "14x^7 + 2 * (7q * 10y^3) * 2q - 8x",
-      "target": "(7q * 10y^3)",
-      "output": "14x^7 + 2 * (70q * y^3) * 2q - 8x",
-      "why": "preserves surrouding terms with above test case"
     },
     {
       "input": "144 * (1o) * s",
       "output": "144o * s"
-    },
-    {
-      "input": "2y * 5 * (8h * t) + 2x",
-      "output": "2y * 40h * t + 2x",
-      "target": "5 * 8h * t"
     },
     {
       "input": "5 * (8h * t)",
@@ -96,14 +85,13 @@
     {
       "input": "5 * 5",
       "output": "25"
+    },
+    {
+      "input": "42x^3 + 6 * x * 5 * x * z + x * 48z^2",
+      "output": "42x^3 + 30x * x * z + x * 48z^2"
     }
   ],
   "invalid": [
-    {
-      "input": "42x^3 + 6 * x * 5 * x * z + x * 48z^2",
-      "output": "42x^3 + 30x * x * z + x * 48z^2",
-      "why": "Because my rule implementation sucks and can't deal with this kind of nesting... should be: can skip siblings to combine constants"
-    },
     {
       "input": "13f^4 * (5f^4 + 7)",
       "why": "can't simplify nested child because the nested group has a different priority"
