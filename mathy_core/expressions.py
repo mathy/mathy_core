@@ -576,18 +576,27 @@ class MultiplyExpression(BinaryExpression):
         return one * two
 
     def __str__(self) -> str:
-        """Multiplication special cases constant*variable to output `4x` instead of
-        `4 * x`"""
+        """Special cases:
+        1. constant*variable -> 4x
+        2. fraction*variable -> 1/2x
+        3. constant*variable^power -> 4x^2
+        """
         left, right = self._check()
+
+        # Handle fraction * variable cases
+        if isinstance(left, DivideExpression):
+            if isinstance(right, (VariableExpression, PowerExpression)):
+                return self.with_color(f"{left}{right}")
+
+        # Handle existing constant * variable cases
         if isinstance(left, ConstantExpression):
-            # const * var
             one = isinstance(right, VariableExpression)
-            # const * var^power
             two = isinstance(right, PowerExpression) and isinstance(
                 right.left, VariableExpression
             )
             if one or two:
                 return self.with_color(f"{left}{right}")
+
         return super().__str__()
 
     def to_math_ml_fragment(self) -> str:
@@ -625,6 +634,40 @@ class DivideExpression(BinaryExpression):
             return float("nan")
         else:
             return one / two
+
+    def __str__(self) -> str:
+        left, right = self._check()
+
+        # Check if we're being used as a coefficient in multiplication with a variable
+        is_coefficient = (
+            isinstance(self.parent, MultiplyExpression)
+            and self.parent.left is self  # We're the left side of the multiplication
+            and isinstance(self.parent.right, (VariableExpression, PowerExpression))
+        )
+
+        def needs_parens(expr: MathExpression) -> bool:
+            if isinstance(expr, MultiplyExpression):
+                # Only need parens for multiplication if:
+                # 1. It involves a power term (like 3x^2)
+                # 2. It's a complex multiplication (more than coefficient * variable)
+                return any(
+                    isinstance(child, PowerExpression)
+                    for child in (expr.left, expr.right)
+                ) or not (
+                    isinstance(expr.left, ConstantExpression)
+                    and isinstance(expr.right, VariableExpression)
+                )
+            return False
+
+        left_str = f"({left})" if needs_parens(left) else str(left)
+        right_str = f"({right})" if needs_parens(right) else str(right)
+
+        if is_coefficient:
+            out = f"{left_str}{self.with_color(self.name)}{right_str}"  # No spaces when coefficient
+        else:
+            out = f"{left_str} {self.with_color(self.name)} {right_str}"  # Keep spaces normally
+
+        return f"({out})" if self.self_parens() else out
 
 
 class PowerExpression(BinaryExpression):

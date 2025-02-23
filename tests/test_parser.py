@@ -119,12 +119,13 @@ def render_tree_to_text(expression: MathExpression) -> str:
     ]
 
     # Convert canvas to string
-    return "\n".join("".join(row) for row in trimmed_canvas)
+    return "\n" + "\n".join("".join(row) for row in trimmed_canvas)
 
 
 @pytest.mark.parametrize(
     "expectation",
     [
+        {"input": "(3x^2) / (6x)", "output": "(3x^2) / 6x"},
         {"input": "4x * p^(1 + 3) * 12x^2", "output": "4x * p^(1 + 3) * 12x^2"},
         {
             "input": "(-2.257893300159429e+16h^2 * v) * j^4",
@@ -143,7 +144,9 @@ def render_tree_to_text(expression: MathExpression) -> str:
 def test_parser_to_string(expectation: dict[str, str]) -> None:
     parser = ExpressionParser()
     expression = parser.parse(expectation["input"])
+    print(render_tree_to_text(expression))
     out_str = str(expression)
+    print(render_tree_to_text(parser.parse(out_str)))
     assert out_str == expectation["output"]
 
 

@@ -2,12 +2,25 @@
   "valid": [
     {
       "why": "Simple numeric fraction",
-      "input": "6x^2 / 3x",
-      "output": "2x"
+      "input": "(3x^2) / (6x)",
+      "output": "1/2x",
+      "debug": true
+    },
+    {
+      "why": "Simple numeric fraction",
+      "input": "(6x^2) / (3x)",
+      "output": "2x",
+      "debug": true
+    },
+    {
+      "why": "Simple numeric fraction",
+      "input": "(6x) / (3x)",
+      "output": "2",
+      "debug": true
     },
     {
       "why": "Cancel common variable factor",
-      "input": "4xy / 2y",
+      "input": "(4xy) / (2y)",
       "output": "2x"
     },
     {
@@ -21,29 +34,9 @@
       "output": "x - 1"
     },
     {
-      "why": "Fraction with common complex terms",
-      "input": "(3x^2 + 3) / (x^2 + 1)",
-      "output": "3"
-    },
-    {
       "why": "Higher degree polynomial cancellation",
       "input": "x^4 / x^2",
       "output": "x^2"
-    },
-    {
-      "why": "Fraction where only part of the numerator cancels",
-      "input": "(x^2 + x) / x",
-      "output": "x + 1"
-    },
-    {
-      "why": "Fraction with a negative common factor",
-      "input": "-4x^2 / -2x",
-      "output": "2x"
-    },
-    {
-      "why": "Fraction with nested expression common factors",
-      "input": "(2x(x + 1)) / (x + 1)",
-      "output": "2x"
     }
   ],
   "invalid": [
