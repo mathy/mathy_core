@@ -15,6 +15,8 @@ from mathy_core.parser import (
 @pytest.mark.parametrize(
     "expectation",
     [
+        {"input": "a * (5 + 12)", "output": "a * (5 + 12)"},
+        {"input": "(6 / 7)k^3", "output": "(6/7)k^3"},
         {"input": "(1 / 2)x", "output": "(1/2)x"},
         {"input": "(3x^2) / (6x)", "output": "(3x^2) / 6x"},
         {"input": "4x * p^(1 + 3) * 12x^2", "output": "4x * p^(1 + 3) * 12x^2"},

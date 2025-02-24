@@ -1,6 +1,19 @@
 {
   "valid": [
     {
+      "input": "(6/7)k^3",
+      "output": "k^3 * 6 / 7",
+      "args": {
+        "preferred": true
+      },
+      "why": "commuting fractional coefficient with variable raised to a power"
+    },
+    {
+      "input": "(5 + 12) * a",
+      "target": "(5 + 12) * a",
+      "output": "a * (5 + 12)"
+    },
+    {
       "input": "2x = 6x - 8",
       "target": "2x = 6x - 8",
       "output": "6x - 8 = 2x",
@@ -76,11 +89,7 @@
       "output": "2530z + 3.5x + 1m + 2z + 8.9c",
       "why": "swapping middle children shouldn't introduce parenthesis nesting"
     },
-    {
-      "input": "(5 + 12) * a",
-      "target": "(5 + 12) * a",
-      "output": "a * (5 + 12)"
-    },
+
     {
       "input": "2b^4 * 3x",
       "target": "2b^4",

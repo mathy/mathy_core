@@ -1060,7 +1060,7 @@ For Multiplication: `a * b = b * a`
 ## ConstantsSimplifyRule <kbd>class</kbd>
 
 ```python (doc)
-ConstantsSimplifyRule(self, args, kwargs)
+ConstantsSimplifyRule(self, evaluate_fractions: bool = False)
 ```
 
 Given a binary operation on two constants, simplify to the resulting
