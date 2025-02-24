@@ -82,7 +82,10 @@ def get_rand_term_templates(
             )
         variable = rand_var(common_variables)
         exponent: Optional[NumberType] = cast(
-            Union[int, None], maybe_number(exponent_probability * 100, None)
+            Union[int, None],
+            maybe_power(
+                exponent_probability * 100, or_else=None, include_exponent=False
+            ),
         )
         # Don't generate x^1
         if exponent == 1:
@@ -127,9 +130,13 @@ def maybe_power(
     percent_chance: NumberType = 80,
     max_power: int = 4,
     or_else: DefaultType = "",  # type:ignore
+    include_exponent: bool = True,
 ) -> Union[str, DefaultType]:
     if rand_bool(percent_chance):
-        return "^{}".format(random.randint(2, max_power))
+        if include_exponent:
+            return "^{}".format(random.randint(2, max_power))
+        else:
+            return str(random.randint(2, max_power))
     else:
         return or_else
 
@@ -320,7 +327,6 @@ def gen_simplify_multiple_terms(
     num_terms: int,
     optional_var: bool = False,
     op: Optional[Union[List[str], str]] = None,
-    common_variables: bool = True,
     inner_terms_scaling: float = 0.3,
     powers_probability: float = 0.33,
     optional_var_probability: float = 0.8,

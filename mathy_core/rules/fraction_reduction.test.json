@@ -1,0 +1,77 @@
+{
+  "valid": [
+    {
+      "why": "Training corner case regression",
+      "input": "9n + (8/10)n",
+      "output": "9n + (4/5)n",
+      "debug": true
+    },
+    {
+      "why": "Training corner case regression",
+      "input": "9n + 8n / 10",
+      "output": "9n + (4/5)n",
+      "debug": true
+    },
+    {
+      "why": "Simple numeric fraction",
+      "input": "(6x) / (3x)",
+      "output": "2",
+      "debug": true
+    },
+    {
+      "why": "Simple numeric fraction",
+      "input": "(6x^2) / (3x)",
+      "output": "2x",
+      "debug": true
+    },
+    {
+      "why": "Simple numeric fraction",
+      "input": "(3x^2) / (6x)",
+      "output": "(1/2)x",
+      "debug": true
+    },
+    {
+      "why": "Higher degree polynomial cancellation",
+      "input": "x^4 / x^2",
+      "output": "x^2"
+    }
+  ],
+  "invalid": [
+    {
+      "why": "Code coverage - when factoring the fraction terms fails (divide 0 coefficient)",
+      "input": "4 / 0"
+    },
+    {
+      "why": "Complex polynomial reduction -- rule sucking part 3",
+      "input": "(x^3 - x^2) / x^2",
+      "output": "x - 1"
+    },
+    {
+      "why": "Cancel and reduce constants with variables -- my rule sucks x2. plz corner case jesus, save me",
+      "input": "(10x^2y) / (5xy)",
+      "output": "2x"
+    },
+    {
+      "why": "Cancel common variable factor -- my rule sucks? needs more corner case.",
+      "input": "(4xy) / (2y)",
+      "output": "2x"
+    },
+
+    {
+      "why": "Fraction with no common factors",
+      "input": "(x + 1) / (y + 1)"
+    },
+    {
+      "why": "Zero numerator which should not change",
+      "input": "0 / (x^2 + 1)"
+    },
+    {
+      "why": "Zero denominator which is undefined",
+      "input": "(x^2 + 1) / 0"
+    },
+    {
+      "why": "Fraction with non-factorizable common terms",
+      "input": "(x + y) / (y + x^2)"
+    }
+  ]
+}

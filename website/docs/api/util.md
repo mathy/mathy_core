@@ -21,6 +21,8 @@ compare_expression_string_values(
     from_expression: str, 
     to_expression: str, 
     history: Optional[List[Any]] = None, 
+    env_name: Optional[str] = None, 
+    enforce_unique_vars: bool = True, 
 ) -> None
 ```
 Compare and evaluate two expressions strings to verify they have the
@@ -31,6 +33,8 @@ compare_expression_values(
     from_expression: mathy_core.expressions.MathExpression, 
     to_expression: mathy_core.expressions.MathExpression, 
     history: Optional[List[Any]] = None, 
+    env_name: Optional[str] = None, 
+    enforce_unique_vars: bool = True, 
 ) -> None
 ```
 Compare and evaluate two expressions to verify they have the same value
@@ -48,6 +52,112 @@ accessible by key.  That is, factoring 2 would return
         2 : 1
     }
 
+## FactorResult
+```python
+FactorResult(
+    self, 
+    best: Union[float, int] = -1, 
+    left: Union[float, int] = -1, 
+    right: Union[float, int] = -1, 
+    all_left: Dict[Union[float, int], Union[float, int]] = <factory>, 
+    all_right: Dict[Union[float, int], Union[float, int]] = <factory>, 
+    variable: Optional[str] = None, 
+    exponent: Optional[float, int] = None, 
+    leftExponent: Optional[float, int] = None, 
+    rightExponent: Optional[float, int] = None, 
+    leftVariable: Optional[str] = None, 
+    rightVariable: Optional[str] = None, 
+) -> None
+```
+FactorResult(best: Union[float, int] = -1, left: Union[float, int] = -1, right: Union[float, int] = -1, all_left: Dict[Union[float, int], Union[float, int]] = <factory>, all_right: Dict[Union[float, int], Union[float, int]] = <factory>, variable: Optional[str] = None, exponent: Union[float, int, NoneType] = None, leftExponent: Union[float, int, NoneType] = None, rightExponent: Union[float, int, NoneType] = None, leftVariable: Optional[str] = None, rightVariable: Optional[str] = None)
+### best
+int([x]) -> integer
+int(x, base=10) -> integer
+
+Convert a number or string to an integer, or return 0 if no arguments
+are given.  If x is a number, return x.__int__().  For floating point
+numbers, this truncates towards zero.
+
+If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base.  The literal can be preceded by '+' or '-' and be surrounded
+by whitespace.  The base defaults to 10.  Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer literal.
+>>> int('0b100', base=0)
+4
+### left
+int([x]) -> integer
+int(x, base=10) -> integer
+
+Convert a number or string to an integer, or return 0 if no arguments
+are given.  If x is a number, return x.__int__().  For floating point
+numbers, this truncates towards zero.
+
+If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base.  The literal can be preceded by '+' or '-' and be surrounded
+by whitespace.  The base defaults to 10.  Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer literal.
+>>> int('0b100', base=0)
+4
+### right
+int([x]) -> integer
+int(x, base=10) -> integer
+
+Convert a number or string to an integer, or return 0 if no arguments
+are given.  If x is a number, return x.__int__().  For floating point
+numbers, this truncates towards zero.
+
+If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base.  The literal can be preceded by '+' or '-' and be surrounded
+by whitespace.  The base defaults to 10.  Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer literal.
+>>> int('0b100', base=0)
+4
+## FractionReductionResult
+```python
+FractionReductionResult(
+    self, 
+    numerator: Union[float, int] = 1, 
+    denominator: Union[float, int] = 1, 
+    reduced_variable: Optional[str] = None, 
+    reduced_exponent: Optional[float, int] = None, 
+    common_variable: Optional[str] = None, 
+    common_exponent: Optional[float, int] = None, 
+) -> None
+```
+FractionReductionResult(numerator: Union[float, int] = 1, denominator: Union[float, int] = 1, reduced_variable: Optional[str] = None, reduced_exponent: Union[float, int, NoneType] = None, common_variable: Optional[str] = None, common_exponent: Union[float, int, NoneType] = None)
+### denominator
+int([x]) -> integer
+int(x, base=10) -> integer
+
+Convert a number or string to an integer, or return 0 if no arguments
+are given.  If x is a number, return x.__int__().  For floating point
+numbers, this truncates towards zero.
+
+If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base.  The literal can be preceded by '+' or '-' and be surrounded
+by whitespace.  The base defaults to 10.  Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer literal.
+>>> int('0b100', base=0)
+4
+### numerator
+int([x]) -> integer
+int(x, base=10) -> integer
+
+Convert a number or string to an integer, or return 0 if no arguments
+are given.  If x is a number, return x.__int__().  For floating point
+numbers, this truncates towards zero.
+
+If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base.  The literal can be preceded by '+' or '-' and be surrounded
+by whitespace.  The base defaults to 10.  Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer literal.
+>>> int('0b100', base=0)
+4
 ## get_term_ex
 ```python
 get_term_ex(
@@ -140,6 +250,15 @@ __Examples__
   - Simple = x^2 * 4
   - Complex = 2 * 2x^2
 
+## make_term
+```python
+make_term(
+    coefficient: Union[float, int] = 1, 
+    variable: Optional[str] = None, 
+    exponent: Optional[float, int] = None, 
+) -> mathy_core.expressions.MathExpression
+```
+Create a term node hierarchy from given parameters
 ## pad_array
 ```python
 pad_array(in_list: List[Any], max_length: int, value: Any = 0) -> List[Any]

@@ -4,6 +4,7 @@ from ..expressions import (
     AddExpression,
     BinaryExpression,
     ConstantExpression,
+    DivideExpression,
     MathExpression,
     MultiplyExpression,
     NegateExpression,
@@ -24,6 +25,12 @@ _POS_CHAINED_RIGHT_DEEP: str = "chained_right_deep"
 class ConstantsSimplifyRule(BaseRule):
     """Given a binary operation on two constants, simplify to the resulting
     constant expression"""
+
+    evaluate_fractions: bool
+
+    def __init__(self, evaluate_fractions: bool = False):
+        # If false, terms that are in preferred order will not commute
+        self.evaluate_fractions = evaluate_fractions
 
     @property
     def name(self) -> str:
@@ -72,6 +79,9 @@ class ConstantsSimplifyRule(BaseRule):
             and isinstance(node.left, ConstantExpression)
             and isinstance(node.right, ConstantExpression)
         ):
+            # If the parent is a division and we're not evaluating fractions, skip
+            if not self.evaluate_fractions and isinstance(node, DivideExpression):
+                return None
             return _POS_SIMPLE, node.left, node.right
 
         # Check for const * var * const

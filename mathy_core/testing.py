@@ -103,9 +103,13 @@ def run_rule_tests(
             compare_equation_values(before, after, eval_context=eval_context)
         else:
             # Compare the values of the in-memory expressions output from the rule
-            compare_expression_values(before, after)
+            compare_expression_values(
+                before, after, enforce_unique_vars=rule.maintains_variables
+            )
             # Parse the output strings to new expressions, and compare the values
-            compare_expression_string_values(str(before), str(after))
+            compare_expression_string_values(
+                str(before), str(after), enforce_unique_vars=rule.maintains_variables
+            )
         actual = str(after).strip()
         expected = ex["output"]
         assert actual == expected, f"Expected '{actual}' to be '{expected}'"

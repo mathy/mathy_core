@@ -80,7 +80,10 @@
     },
     {
       "input": "4 / 2",
-      "output": "2"
+      "output": "2",
+      "args": {
+        "evaluate_fractions": true
+      }
     },
     {
       "input": "5 * 5",
@@ -92,6 +95,10 @@
     }
   ],
   "invalid": [
+    {
+      "input": "(15/6)h",
+      "why": "doesn't simplify fractions by default"
+    },
     {
       "input": "13f^4 * (5f^4 + 7)",
       "why": "can't simplify nested child because the nested group has a different priority"

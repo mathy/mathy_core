@@ -1,5 +1,6 @@
 import math
 import random
+from dataclasses import dataclass, field
 from typing import Any, Dict, List, NamedTuple, Optional, Set, Tuple, Union, cast
 
 import numpy as np
@@ -17,6 +18,7 @@ from .expressions import (
     SubtractExpression,
     VariableExpression,
 )
+from .layout import render_tree_to_text  # type: ignore
 from .parser import ExpressionParser
 from .tree import LEFT, VisitStop
 from .types import Literal, NumberType
@@ -28,13 +30,21 @@ def is_debug_mode() -> bool:
 
 
 def compare_expression_string_values(
-    from_expression: str, to_expression: str, history: Optional[List[Any]] = None
+    from_expression: str,
+    to_expression: str,
+    history: Optional[List[Any]] = None,
+    env_name: Optional[str] = None,
+    enforce_unique_vars: bool = True,
 ) -> None:
     """Compare and evaluate two expressions strings to verify they have the
     same value"""
     parser = ExpressionParser()
     return compare_expression_values(
-        parser.parse(from_expression), parser.parse(to_expression), history
+        parser.parse(from_expression),
+        parser.parse(to_expression),
+        history,
+        env_name,
+        enforce_unique_vars,
     )
 
 
@@ -47,7 +57,7 @@ def raise_with_history(
 
     history_text: List[str] = []
     if history is not None:
-        history_text = [f" - {h.raw}" for h in history]
+        history_text = [f"[{h.action}] - {h.raw}" for h in history]
     history_text.insert(0, description)
     tb = TracebackPrinter()
     error = tb(title, "\n".join(history_text), tb=traceback.extract_stack())
@@ -58,6 +68,8 @@ def compare_expression_values(
     from_expression: MathExpression,
     to_expression: MathExpression,
     history: Optional[List[Any]] = None,
+    env_name: Optional[str] = None,
+    enforce_unique_vars: bool = True,
 ) -> None:
     """Compare and evaluate two expressions to verify they have the same value"""
     vars_from: Set[str] = set(
@@ -70,22 +82,14 @@ def compare_expression_values(
         for v in to_expression.find_type(VariableExpression)
         if v.identifier
     )
-    # If there are not the same unique vars in the two expressions, something
-    # bad happened, and the two expressions can only coincidentally be equal
-    # in value.
-    if len(vars_from) != len(vars_to):
-        raise_with_history(
-            "Number of variables changed",
-            f"{list(vars_from)} != {list(vars_to)}",
-            history,
-        )
 
     sorted_from = list(vars_from)
     sorted_from.sort()
-    sorted_to = list(vars_from)
+    sorted_to = list(vars_to)
     sorted_to.sort()
 
-    if sorted_from != sorted_to:
+    # Certain rules like fraction reduction can change the unique variables
+    if sorted_from != sorted_to and enforce_unique_vars:
         raise_with_history(
             "Unique variables changed",
             f"{sorted_from} != {sorted_to}",
@@ -101,15 +105,23 @@ def compare_expression_values(
     value_to = to_expression.evaluate(eval_context)
 
     # Print out the problem steps leading up to error result.
-    if not math.isclose(value_from, value_to, rel_tol=1e-9, abs_tol=0.0):
+    if not math.isclose(value_from, value_to, rel_tol=1e-6, abs_tol=0.0):
+        in_tree_visualize = render_tree_to_text(from_expression)
+        out_tree_visualize = render_tree_to_text(to_expression)
         changed = f"""
-        {from_expression} = {value_from}
+        IN: {from_expression} = {value_from}
 
-        {to_expression} = {value_to}
+        {in_tree_visualize}
 
-        {value_from} != {value_to}
+        OUT: {to_expression} = {value_to}
+
+        {out_tree_visualize}
+
+        ERROR: {value_from} != {value_to}
         """
-        raise_with_history("Expression value changed", changed, history)
+        raise_with_history(
+            f"{env_name or 'unknown env'}: Expression value changed", changed, history
+        )
 
 
 def compare_equation_values(
@@ -381,58 +393,124 @@ def has_like_terms(expression: MathExpression) -> bool:
     return False
 
 
-class FactorResult:
-    best: NumberType
-    left: NumberType
-    right: NumberType
-    all_left: Dict[NumberType, NumberType]
-    all_right: Dict[NumberType, NumberType]
-    variable: Optional[str]
-    exponent: Optional[NumberType]
-    leftExponent: Optional[NumberType]
-    rightExponent: Optional[NumberType]
-    leftVariable: Optional[str]
-    rightVariable: Optional[str]
+@dataclass
+class FractionReductionResult:
+    numerator: NumberType = 1
+    denominator: NumberType = 1
+    reduced_variable: Optional[str] = None
+    reduced_exponent: Optional[NumberType] = None
+    common_variable: Optional[str] = None
+    common_exponent: Optional[NumberType] = None
 
-    def __init__(self) -> None:
-        self.best = -1
-        self.left = -1
-        self.right = -1
-        self.all_left = {}
-        self.all_right = {}
-        self.variable = None
-        self.exponent = None
-        self.leftExponent = None
-        self.rightExponent = None
-        self.leftVariable = None
-        self.rightVariable = None
+
+@dataclass
+class FactorResult:
+    best: NumberType = -1
+    left: NumberType = -1
+    right: NumberType = -1
+    all_left: Dict[NumberType, NumberType] = field(default_factory=dict)
+    all_right: Dict[NumberType, NumberType] = field(default_factory=dict)
+    variable: Optional[str] = None
+    exponent: Optional[NumberType] = None
+    leftExponent: Optional[NumberType] = None
+    rightExponent: Optional[NumberType] = None
+    leftVariable: Optional[str] = None
+    rightVariable: Optional[str] = None
 
 
 # Create a term node hierarchy from a given set of
 # term parameters.  This takes into account removing
 # implicit coefficients of 1 where possible.
+def reduce_fraction(num: NumberType, den: NumberType) -> Tuple[NumberType, NumberType]:
+    """Reduces a fraction to its simplest form"""
+
+    def gcd(a: int, b: int) -> int:
+        while b:
+            a, b = b, a % b
+        return a
+
+    if isinstance(num, int) and isinstance(den, int):
+        divisor = gcd(abs(num), abs(den))
+        return (num // divisor, den // divisor)
+    return (num, den)
+
+
 def make_term(
     coefficient: NumberType = 1,
     variable: Optional[str] = None,
     exponent: Optional[NumberType] = None,
 ) -> MathExpression:
-    constExp = ConstantExpression(coefficient)
+    """Create a term node hierarchy from given parameters"""
+    # Handle pure constant case
     if variable is None and exponent is None:
-        return constExp
+        return ConstantExpression(coefficient)
 
-    varExp = VariableExpression(variable)
+    # Just a variable
     if coefficient == 1 and exponent is None:
-        return varExp
+        return VariableExpression(variable)
 
-    multExp = MultiplyExpression(constExp, varExp)
+    # Variable with coefficient
     if exponent is None:
-        return multExp
+        if coefficient == 1:
+            return VariableExpression(variable)
+        return MultiplyExpression(
+            ConstantExpression(coefficient), VariableExpression(variable)
+        )
 
-    expConstExp = ConstantExpression(exponent)
+    # Variable with exponent
+    var_exp = PowerExpression(
+        VariableExpression(variable), ConstantExpression(exponent)
+    )
     if coefficient == 1:
-        return PowerExpression(varExp, expConstExp)
+        return var_exp
+    return MultiplyExpression(ConstantExpression(coefficient), var_exp)
 
-    return PowerExpression(multExp, expConstExp)
+
+def make_term_fractional(
+    numerator: NumberType = 1,
+    denominator: NumberType = 1,
+    variable: Optional[str] = None,
+    exponent: Optional[NumberType] = None,
+) -> MathExpression:
+    # First reduce the fraction
+    num, den = reduce_fraction(numerator, denominator)
+
+    # If denominator is 1, we can use the simpler form
+    if den == 1:
+        if num == 1 and variable is not None:
+            if exponent is None or exponent == 1:
+                return VariableExpression(variable)
+            return PowerExpression(
+                VariableExpression(variable), ConstantExpression(exponent)
+            )
+
+        base: MathExpression
+        if variable is not None:
+            base = MultiplyExpression(
+                ConstantExpression(num),
+                VariableExpression(variable),
+            )
+        else:
+            base = ConstantExpression(num)
+
+        if exponent is None or exponent == 1:
+            return base
+        return PowerExpression(base, ConstantExpression(exponent))
+
+    # For fractions, FIRST create the fractional coefficient
+    coef = DivideExpression(ConstantExpression(num), ConstantExpression(den))
+
+    if variable is None:
+        return coef
+
+    var_term = (
+        PowerExpression(VariableExpression(variable), ConstantExpression(exponent))
+        if exponent is not None and exponent != 1
+        else VariableExpression(variable)
+    )
+
+    # Wrap the fraction in parentheses before multiplying with variable
+    return MultiplyExpression(coef, var_term)
 
 
 class TermResult:
@@ -635,6 +713,62 @@ def get_term_ex(node: Optional[MathExpression]) -> Optional[TermEx]:
             return TermEx(None, node.left.identifier, node.right.value)
 
     return None
+
+
+def factor_fraction_terms_ex(
+    left_term: TermEx, right_term: TermEx
+) -> Union[FractionReductionResult, Literal[False]]:
+    if not left_term or not right_term:
+        raise ValueError("invalid terms for factoring")
+
+    has_left: bool = left_term.variable is not None
+    has_right: bool = right_term.variable is not None
+
+    result = FractionReductionResult()
+
+    # Handle coefficients while preserving fractions
+    left_coef = left_term.coefficient if left_term.coefficient is not None else 1
+    right_coef = right_term.coefficient if right_term.coefficient is not None else 1
+
+    if right_coef == 0:
+        return False
+
+    result.numerator = left_coef
+    result.denominator = right_coef
+
+    # Handle variables and exponents
+    if has_left and has_right and left_term.variable == right_term.variable:
+        # Both terms have the same variable
+        result.common_variable = left_term.variable
+
+        left_exp = left_term.exponent if left_term.exponent is not None else 1
+        right_exp = right_term.exponent if right_term.exponent is not None else 1
+
+        reduced_exp = left_exp - right_exp
+        if reduced_exp == 0:
+            result.reduced_variable = None
+            result.reduced_exponent = None
+        else:
+            result.reduced_variable = left_term.variable
+            result.reduced_exponent = reduced_exp
+
+        result.common_exponent = min(left_exp, right_exp)
+    elif has_left and not has_right:
+        # Only numerator has a variable - preserve it
+        result.reduced_variable = left_term.variable
+        result.reduced_exponent = (
+            left_term.exponent if left_term.exponent is not None else 1
+        )
+    elif not has_left and has_right:
+        # Only denominator has a variable
+        result.reduced_variable = right_term.variable
+        result.reduced_exponent = -(
+            right_term.exponent if right_term.exponent is not None else 1
+        )
+    elif not (result.numerator != result.denominator):
+        return False
+
+    return result
 
 
 def factor_add_terms_ex(
