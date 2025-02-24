@@ -57,7 +57,7 @@ def raise_with_history(
 
     history_text: List[str] = []
     if history is not None:
-        history_text = [f" - {h.raw}" for h in history]
+        history_text = [f"[{h.action}] - {h.raw}" for h in history]
     history_text.insert(0, description)
     tb = TracebackPrinter()
     error = tb(title, "\n".join(history_text), tb=traceback.extract_stack())
@@ -738,6 +738,7 @@ def factor_fraction_terms_ex(
 
     # Handle variables and exponents
     if has_left and has_right and left_term.variable == right_term.variable:
+        # Both terms have the same variable
         result.common_variable = left_term.variable
 
         left_exp = left_term.exponent if left_term.exponent is not None else 1
@@ -752,6 +753,18 @@ def factor_fraction_terms_ex(
             result.reduced_exponent = reduced_exp
 
         result.common_exponent = min(left_exp, right_exp)
+    elif has_left and not has_right:
+        # Only numerator has a variable - preserve it
+        result.reduced_variable = left_term.variable
+        result.reduced_exponent = (
+            left_term.exponent if left_term.exponent is not None else 1
+        )
+    elif not has_left and has_right:
+        # Only denominator has a variable
+        result.reduced_variable = right_term.variable
+        result.reduced_exponent = -(
+            right_term.exponent if right_term.exponent is not None else 1
+        )
     elif not (result.numerator != result.denominator):
         return False
 

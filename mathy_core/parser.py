@@ -337,6 +337,7 @@ class ExpressionParser:
         if len(factors) == 0:
             raise InvalidExpression("No factors")
 
+        # Handle power expressions for the last factor
         exp: Optional[MathExpression] = None
         if self.check(_IS_EXP):
             opType = self.current_token.type
@@ -345,18 +346,18 @@ class ExpressionParser:
                 raise InvalidSyntax("Expected an expression after ^ operator")
 
             right = self.parse_unary()
-            exp = PowerExpression(factors[-1], right)
+            # Create power expression from the last factor
+            factors[-1] = PowerExpression(factors[-1], right)
 
+        # Combine all factors with multiplication
         if len(factors) == 1:
-            return exp or factors[0]
+            return factors[0]
 
-        while len(factors) > 0:
-            if exp is None:
-                exp = factors.pop(0)
+        # Build expression from left to right
+        exp = factors[0]
+        for i in range(1, len(factors)):
+            exp = MultiplyExpression(exp, factors[i])
 
-            exp = MultiplyExpression(exp, factors.pop(0))
-
-        assert exp is not None
         return exp
 
     def parse_function(self) -> MathExpression:

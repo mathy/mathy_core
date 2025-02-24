@@ -580,12 +580,18 @@ class MultiplyExpression(BinaryExpression):
         1. constant*variable -> 4x
         2. fraction*variable -> 1/2x
         3. constant*variable^power -> 4x^2
+        4. fraction*variable^power -> (1/2)x^2
         """
         left, right = self._check()
 
-        # Handle fraction * variable cases
+        # Handle fraction * variable or fraction * power cases
         if isinstance(left, DivideExpression):
-            if isinstance(right, (VariableExpression, PowerExpression)):
+            # Handle both direct variables and variables raised to a power
+            if isinstance(right, VariableExpression):
+                return self.with_color(f"({left}){right}")
+            elif isinstance(right, PowerExpression) and isinstance(
+                right.left, VariableExpression
+            ):
                 return self.with_color(f"({left}){right}")
 
         # Handle existing constant * variable cases
@@ -598,15 +604,6 @@ class MultiplyExpression(BinaryExpression):
                 return self.with_color(f"{left}{right}")
 
         return super().__str__()
-
-    def to_math_ml_fragment(self) -> str:
-        left, right = self._check()
-        right_ml = right.to_math_ml_fragment()
-        left_ml = left.to_math_ml_fragment()
-        if isinstance(left, ConstantExpression):
-            if isinstance(right, (VariableExpression, PowerExpression)):
-                return f"{left_ml}{right_ml}"
-        return super().to_math_ml_fragment()
 
 
 class DivideExpression(BinaryExpression):

@@ -1,6 +1,18 @@
 {
   "valid": [
     {
+      "why": "Training corner case regression",
+      "input": "9n + (8/10)n",
+      "output": "9n + (4/5)n",
+      "debug": true
+    },
+    {
+      "why": "Training corner case regression",
+      "input": "9n + 8n / 10",
+      "output": "9n + (4/5)n",
+      "debug": true
+    },
+    {
       "why": "Simple numeric fraction",
       "input": "(6x) / (3x)",
       "output": "2",
