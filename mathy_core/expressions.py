@@ -586,7 +586,7 @@ class MultiplyExpression(BinaryExpression):
         # Handle fraction * variable cases
         if isinstance(left, DivideExpression):
             if isinstance(right, (VariableExpression, PowerExpression)):
-                return self.with_color(f"{left}{right}")
+                return self.with_color(f"({left}){right}")
 
         # Handle existing constant * variable cases
         if isinstance(left, ConstantExpression):
