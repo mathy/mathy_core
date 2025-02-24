@@ -11,7 +11,6 @@ from mathy_core.rules import (
     RestateSubtractionRule,
     VariableMultiplyRule,
 )
-
 from mathy_core.testing import run_rule_tests
 
 

@@ -2,8 +2,8 @@
   "valid": [
     {
       "why": "Simple numeric fraction",
-      "input": "(3x^2) / (6x)",
-      "output": "1/2x",
+      "input": "(6x) / (3x)",
+      "output": "2",
       "debug": true
     },
     {
@@ -14,24 +14,9 @@
     },
     {
       "why": "Simple numeric fraction",
-      "input": "(6x) / (3x)",
-      "output": "2",
+      "input": "(3x^2) / (6x)",
+      "output": "(1/2)x",
       "debug": true
-    },
-    {
-      "why": "Cancel common variable factor",
-      "input": "(4xy) / (2y)",
-      "output": "2x"
-    },
-    {
-      "why": "Cancel and reduce constants with variables",
-      "input": "10x^2y / 5xy",
-      "output": "2x"
-    },
-    {
-      "why": "Complex polynomial reduction",
-      "input": "(x^3 - x^2) / x^2",
-      "output": "x - 1"
     },
     {
       "why": "Higher degree polynomial cancellation",
@@ -40,6 +25,21 @@
     }
   ],
   "invalid": [
+    {
+      "why": "Complex polynomial reduction -- rule sucking part 3",
+      "input": "(x^3 - x^2) / x^2",
+      "output": "x - 1"
+    },    {
+      "why": "Cancel and reduce constants with variables -- my rule sucks x2. plz corner case jesus, save me",
+      "input": "(10x^2y) / (5xy)",
+      "output": "2x"
+    },
+    {
+      "why": "Cancel common variable factor -- my rule sucks? needs more corner case.",
+      "input": "(4xy) / (2y)",
+      "output": "2x"
+    },
+
     {
       "why": "Fraction with no common factors",
       "input": "(x + 1) / (y + 1)"

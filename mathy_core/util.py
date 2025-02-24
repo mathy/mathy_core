@@ -1,10 +1,10 @@
-from dataclasses import dataclass, field
 import math
 import random
+from dataclasses import dataclass, field
 from typing import Any, Dict, List, NamedTuple, Optional, Set, Tuple, Union, cast
 
 import numpy as np
-from wasabi import TracebackPrinter  # type: ignore
+from wasabi import TracebackPrinter
 
 from .expressions import (
     AddExpression,
@@ -18,6 +18,7 @@ from .expressions import (
     SubtractExpression,
     VariableExpression,
 )
+from .layout import render_tree_to_text  # type: ignore
 from .parser import ExpressionParser
 from .tree import LEFT, VisitStop
 from .types import Literal, NumberType
@@ -98,10 +99,16 @@ def compare_expression_values(
 
     # Print out the problem steps leading up to error result.
     if not math.isclose(value_from, value_to, rel_tol=1e-6, abs_tol=0.0):
+        in_tree_visualize = render_tree_to_text(from_expression)
+        out_tree_visualize = render_tree_to_text(to_expression)
         changed = f"""
         IN: {from_expression} = {value_from}
 
+        {in_tree_visualize}
+
         OUT: {to_expression} = {value_to}
+
+        {out_tree_visualize}
 
         ERROR: {value_from} != {value_to}
         """
@@ -464,26 +471,25 @@ def make_term_fractional(
     # If denominator is 1, we can use the simpler form
     if den == 1:
         if num == 1 and variable is not None:
-            if exponent is None:
+            if exponent is None or exponent == 1:
                 return VariableExpression(variable)
             return PowerExpression(
                 VariableExpression(variable), ConstantExpression(exponent)
             )
 
-        base = MultiplyExpression(
-            ConstantExpression(num),
-            (
-                VariableExpression(variable)
-                if variable is not None
-                else ConstantExpression(1)
-            ),
-        )
+        if variable is not None:
+            base = MultiplyExpression(
+                ConstantExpression(num),
+                VariableExpression(variable),
+            )
+        else:
+            base = ConstantExpression(num)
 
-        if exponent is None:
+        if exponent is None or exponent == 1:
             return base
         return PowerExpression(base, ConstantExpression(exponent))
 
-    # For actual fractions, construct the term
+    # For fractions, FIRST create the fractional coefficient
     coef = DivideExpression(ConstantExpression(num), ConstantExpression(den))
 
     if variable is None:
@@ -491,10 +497,11 @@ def make_term_fractional(
 
     var_term = (
         PowerExpression(VariableExpression(variable), ConstantExpression(exponent))
-        if exponent is not None
+        if exponent is not None and exponent != 1
         else VariableExpression(variable)
     )
 
+    # Wrap the fraction in parentheses before multiplying with variable
     return MultiplyExpression(coef, var_term)
 
 
@@ -724,12 +731,18 @@ def factor_fraction_terms_ex(
     # Handle variables and exponents
     if has_left and has_right and left_term.variable == right_term.variable:
         result.common_variable = left_term.variable
-        result.reduced_variable = left_term.variable
 
         left_exp = left_term.exponent if left_term.exponent is not None else 1
         right_exp = right_term.exponent if right_term.exponent is not None else 1
 
-        result.reduced_exponent = left_exp - right_exp
+        reduced_exp = left_exp - right_exp
+        if reduced_exp == 0:
+            result.reduced_variable = None
+            result.reduced_exponent = None
+        else:
+            result.reduced_variable = left_term.variable
+            result.reduced_exponent = reduced_exp
+
         result.common_exponent = min(left_exp, right_exp)
     elif not (result.numerator != result.denominator):
         return False
