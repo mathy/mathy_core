@@ -34,12 +34,17 @@ def compare_expression_string_values(
     to_expression: str,
     history: Optional[List[Any]] = None,
     env_name: Optional[str] = None,
+    enforce_unique_vars: bool = True,
 ) -> None:
     """Compare and evaluate two expressions strings to verify they have the
     same value"""
     parser = ExpressionParser()
     return compare_expression_values(
-        parser.parse(from_expression), parser.parse(to_expression), history, env_name
+        parser.parse(from_expression),
+        parser.parse(to_expression),
+        history,
+        env_name,
+        enforce_unique_vars,
     )
 
 
@@ -64,6 +69,7 @@ def compare_expression_values(
     to_expression: MathExpression,
     history: Optional[List[Any]] = None,
     env_name: Optional[str] = None,
+    enforce_unique_vars: bool = True,
 ) -> None:
     """Compare and evaluate two expressions to verify they have the same value"""
     vars_from: Set[str] = set(
@@ -82,7 +88,8 @@ def compare_expression_values(
     sorted_to = list(vars_to)
     sorted_to.sort()
 
-    if sorted_from != sorted_to:
+    # Certain rules like fraction reduction can change the unique variables
+    if sorted_from != sorted_to and enforce_unique_vars:
         raise_with_history(
             "Unique variables changed",
             f"{sorted_from} != {sorted_to}",

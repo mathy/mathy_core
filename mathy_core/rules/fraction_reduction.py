@@ -15,6 +15,11 @@ class FractionReductionRule(BaseRule):
     denominator."""
 
     @property
+    def maintains_variables(self) -> bool:
+        # e.g. 3x / 6x -> 1/2
+        return False
+
+    @property
     def name(self) -> str:
         return "Fraction Reduction"
 

@@ -10,6 +10,12 @@ class BaseRule:
     """Basic rule class that visits a tree with a specified visit order."""
 
     @property
+    def maintains_variables(self) -> bool:
+        """Whether this rule maintains the same variables in the expression. Rules
+        that change variables should return False."""
+        return True
+
+    @property
     def name(self) -> str:
         """Readable rule name used for debug rendering and description outputs"""
         return "Abstract Base Rule"
