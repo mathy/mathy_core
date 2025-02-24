@@ -421,7 +421,7 @@ class FactorResult:
 # Create a term node hierarchy from a given set of
 # term parameters.  This takes into account removing
 # implicit coefficients of 1 where possible.
-def reduce_fraction(num: NumberType, den: NumberType) -> tuple[NumberType, NumberType]:
+def reduce_fraction(num: NumberType, den: NumberType) -> Tuple[NumberType, NumberType]:
     """Reduces a fraction to its simplest form"""
 
     def gcd(a: int, b: int) -> int:
