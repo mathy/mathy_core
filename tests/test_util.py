@@ -1,3 +1,6 @@
+import pytest
+
+from mathy_core.layout import render_tree_to_text
 from mathy_core.parser import ExpressionParser
 from mathy_core.util import (
     TermEx,
@@ -81,6 +84,22 @@ def test_util_has_like_terms():
     for input, expected in examples:
         expr = parser.parse(input)
         assert input == input and has_like_terms(expr) == expected
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "7 + 4x - 2",
+        "1/4 + 1/2",
+        "3x^7 - 4x^(3+1) + 2!",
+        "g + -x^3 + 4x^3 + 19p^4 + -1y",
+        "1f + 98i + 3f * 14t - (1/2x)",
+    ],
+)
+def test_util_render_tree_to_text(text: str) -> None:
+    parser = ExpressionParser()
+    expr = parser.parse(text)
+    assert render_tree_to_text(expr) is not None
 
 
 def test_util_terms_are_like():

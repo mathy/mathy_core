@@ -26,10 +26,15 @@
   ],
   "invalid": [
     {
+      "why": "Code coverage - when factoring the fraction terms fails (divide 0 coefficient)",
+      "input": "4 / 0"
+    },
+    {
       "why": "Complex polynomial reduction -- rule sucking part 3",
       "input": "(x^3 - x^2) / x^2",
       "output": "x - 1"
-    },    {
+    },
+    {
       "why": "Cancel and reduce constants with variables -- my rule sucks x2. plz corner case jesus, save me",
       "input": "(10x^2y) / (5xy)",
       "output": "2x"
