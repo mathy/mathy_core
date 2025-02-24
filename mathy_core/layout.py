@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Any, Optional
 
 from .expressions import BinaryExpression, MathExpression
 from .tree import BinaryTreeNode
@@ -250,9 +250,7 @@ def render_tree_to_text(expression: MathExpression) -> str:
         A string containing the ASCII representation of the tree
     """
     layout = TreeLayout()
-    measure: TreeMeasurement = layout.layout(
-        expression, 6, 2
-    )  # Adjusted units for better spacing
+    measure: TreeMeasurement = layout.layout(expression, 6, 2)  # type: ignore
 
     # Calculate canvas dimensions
     padding = 4
@@ -292,17 +290,17 @@ def render_tree_to_text(expression: MathExpression) -> str:
                 else:
                     canvas[mid_y][mid_x] = "╲" if x1 > x2 else "╱"
 
-    def node_visit(node: MathExpression, depth, data) -> None:
+    def node_visit(node: MathExpression, depth: int, data: Any) -> None:
         """Visit each node and draw it on the canvas."""
         # Adjust coordinates to canvas space
-        x = int(node.x - min_x)
-        y = int(node.y - min_y)
+        x = int(node.x - min_x)  # type: ignore
+        y = int(node.y - min_y)  # type: ignore
 
         # Draw connection to parent
         if node.parent:
-            int(node.parent.x - min_x)
-            int(node.parent.y - min_y)
-            draw_line(node.x, node.y, node.parent.x, node.parent.y)
+            int(node.parent.x - min_x)  # type: ignore
+            int(node.parent.y - min_y)  # type: ignore
+            draw_line(node.x, node.y, node.parent.x, node.parent.y)  # type: ignore
 
         # Get node value
         value = str(node)
@@ -343,7 +341,9 @@ def render_tree_to_text(expression: MathExpression) -> str:
 
     # Extract the trimmed canvas
     trimmed_canvas = [
-        row[min_col : max_col + 1] for row in canvas[min_row : max_row + 1]
+        # fmt: off
+        row[min_col:max_col + 1] for row in canvas[min_row:max_row + 1]
+        # fmt: on
     ]
 
     # Convert canvas to string

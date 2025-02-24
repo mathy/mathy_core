@@ -663,9 +663,11 @@ class DivideExpression(BinaryExpression):
         right_str = f"({right})" if needs_parens(right) else str(right)
 
         if is_coefficient:
-            out = f"{left_str}{self.with_color(self.name)}{right_str}"  # No spaces when coefficient
+            # No spaces when coefficient
+            out = f"{left_str}{self.with_color(self.name)}{right_str}"
         else:
-            out = f"{left_str} {self.with_color(self.name)} {right_str}"  # Keep spaces normally
+            # Keep spaces normally
+            out = f"{left_str} {self.with_color(self.name)} {right_str}"
 
         return f"({out})" if self.self_parens() else out
 

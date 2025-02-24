@@ -79,7 +79,7 @@ def compare_expression_values(
 
     sorted_from = list(vars_from)
     sorted_from.sort()
-    sorted_to = list(vars_from)
+    sorted_to = list(vars_to)
     sorted_to.sort()
 
     if sorted_from != sorted_to:
@@ -477,6 +477,7 @@ def make_term_fractional(
                 VariableExpression(variable), ConstantExpression(exponent)
             )
 
+        base: MathExpression
         if variable is not None:
             base = MultiplyExpression(
                 ConstantExpression(num),

@@ -136,7 +136,7 @@ def maybe_power(
         if include_exponent:
             return "^{}".format(random.randint(2, max_power))
         else:
-            return random.randint(2, max_power)
+            return str(random.randint(2, max_power))
     else:
         return or_else
 
