@@ -51,6 +51,9 @@ Find all nodes in an expression that can have this rule applied to them.
 Each node is marked with it's token index in the expression, according to
 the visit strategy, and stored as `node.r_index` starting with index 0
 
+### maintains_variables
+Whether this rule maintains the same variables in the expression. Rules
+that change variables should return False.
 ### name
 Readable rule name used for debug rendering and description outputs
 ## ExpressionChangeRule
