@@ -34,6 +34,7 @@ nav:
       - Constants Simplify: api/rules/constants_simplify.md
       - Distributive Factor Out: api/rules/distributive_factor_out.md
       - Distributive Multiply Across: api/rules/distributive_multiply_across.md
+      - Fraction Reduction: api/rules/fraction_reduction.md
       - Multiplicative Inverse: api/rules/multiplicative_inverse.md
       - Restate Subtraction: api/rules/restate_subtraction.md
       - Variable Multiply: api/rules/variable_multiply.md
